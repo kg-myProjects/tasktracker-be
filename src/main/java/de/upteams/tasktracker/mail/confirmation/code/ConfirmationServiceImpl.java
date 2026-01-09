@@ -75,7 +75,7 @@ public class ConfirmationServiceImpl implements ConfirmationService {
     }
 
     private Optional<ConfirmationCode> getConfirmationCode(String code) {
-        return repository.findByCode(UUID.fromString(code));
+        return repository.findById(UUID.fromString(code));
     }
 
     private static LocalDateTime getExpiration(int confirmationExpirationDays) {
