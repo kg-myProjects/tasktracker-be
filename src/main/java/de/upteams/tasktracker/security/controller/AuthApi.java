@@ -2,8 +2,9 @@ package de.upteams.tasktracker.security.controller;
 
 import de.upteams.tasktracker.exception.handling.response.ErrorResponseDto;
 import de.upteams.tasktracker.security.dto.LoginRequest;
-import de.upteams.tasktracker.security.entities.RefreshRequestDto;
 import de.upteams.tasktracker.security.entities.TokenResponseDto;
+import de.upteams.tasktracker.security.service.AuthUserDetails;
+import de.upteams.tasktracker.user.dto.response.UserResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -11,8 +12,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,14 +68,17 @@ public interface AuthApi {
             HttpServletResponse response
     );
 
-    @Operation(summary = "Get new access token", description = "Obtain new access token using a refresh token")
-    @ApiResponses(value = {
+    @Operation(summary = "Get new access token",
+            description = "Obtain new access token using a refresh token stored in httpOnly cookie")
+    @ApiResponses({
             @ApiResponse(responseCode = "200", description = "New access token granted",
-                    content = @Content(mediaType = "application/json",
+                    content = @Content(
+                            mediaType = "application/json",
                             schema = @Schema(implementation = TokenResponseDto.class)))
             ,
             @ApiResponse(responseCode = "401", description = "Invalid or expired refresh token",
-                    content = @Content(mediaType = "application/json",
+                    content = @Content(
+                            mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class),
                             examples = @ExampleObject(value = """
                                     {
@@ -86,12 +93,7 @@ public interface AuthApi {
     })
     @PostMapping("/refresh-token")
     TokenResponseDto refreshAccessToken(
-            @RequestBody
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    description = "Request that contains refresh token"
-            )
-            RefreshRequestDto request,
+            HttpServletRequest request,
             HttpServletResponse response
     );
 
@@ -109,4 +111,15 @@ public interface AuthApi {
     })
     @PostMapping("/logout")
     TokenResponseDto logout(HttpServletResponse response);
+
+    @Operation(summary = "Get current authenticated user",
+            description = "Returns current user based on access token stored in httpOnly cookie")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Authenticated user"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated")
+    })
+    @GetMapping("/me")
+    UserResponseDto getCurrentUser(
+            @AuthenticationPrincipal AuthUserDetails user
+    );
 }

@@ -1,15 +1,22 @@
 package de.upteams.tasktracker.security.controller;
 
 import de.upteams.tasktracker.security.dto.LoginRequest;
-import de.upteams.tasktracker.security.entities.RefreshRequestDto;
 import de.upteams.tasktracker.security.entities.TokenResponseDto;
 import de.upteams.tasktracker.security.service.AuthService;
+import de.upteams.tasktracker.security.service.AuthUserDetails;
 import de.upteams.tasktracker.security.service.CookieService;
+import de.upteams.tasktracker.user.dto.response.UserResponseDto;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Arrays;
 
 import static de.upteams.tasktracker.security.constants.Constants.ACCESS_TOKEN_COOKIE;
 import static de.upteams.tasktracker.security.constants.Constants.REFRESH_TOKEN_COOKIE;
@@ -37,13 +44,29 @@ public class AuthController implements AuthApi {
         return tokens;
     }
 
-    @Override
-    public TokenResponseDto refreshAccessToken(RefreshRequestDto request, HttpServletResponse response) {
-        final String newAccessToken = service.refreshAccessToken(request.getRefreshToken());
-        final Cookie accessCookie = new Cookie(ACCESS_TOKEN_COOKIE, newAccessToken);
 
+
+    @Override
+    public TokenResponseDto refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
+
+        String curRefreshToken = extractRefreshTokenFromCookies(request);
+        String newAccessToken = service.refreshAccessToken(curRefreshToken);
+        Cookie accessCookie = cookieService.generateAccessTokenCookie(newAccessToken);
         response.addCookie(accessCookie);
-        return new TokenResponseDto(newAccessToken, request.getRefreshToken());
+
+        return new TokenResponseDto(newAccessToken, curRefreshToken);
+
+    }
+
+    private String extractRefreshTokenFromCookies(HttpServletRequest request) {
+        if (request.getCookies() == null) {
+            throw new RuntimeException("No cookies found!");
+        }
+        return Arrays.stream(request.getCookies())
+                .filter(cookie -> REFRESH_TOKEN_COOKIE.equals(cookie.getName()))
+                .findFirst()
+                .map(Cookie::getValue)
+                .orElseThrow(() -> new RuntimeException("Refresh token not found!"));
     }
 
     @Override
@@ -56,5 +79,21 @@ public class AuthController implements AuthApi {
         response.addCookie(refreshCookie);
 
         return new TokenResponseDto(null, null);
+    }
+
+    @Override
+    public UserResponseDto getCurrentUser(@AuthenticationPrincipal AuthUserDetails user) {
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        return new UserResponseDto(
+                user.getUsername(),
+                user.getAuthorities()
+                        .iterator()
+                        .next()
+                        .getAuthority(),
+                user.user().getConfirmationStatus()
+        );
     }
 }
