@@ -55,6 +55,13 @@ public class ConfirmationServiceImpl implements ConfirmationService {
 
     @Override
     public ConfirmationCode getConfirmationIfValidOrThrow(final String code) {
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(code);
+        } catch (IllegalArgumentException e) {
+            throw new UserConfirmationException("Invalid confirmation code format");
+        }
+
         ConfirmationCode codeEntity = getConfirmationCode(code)
                 .orElseThrow(() -> new UserConfirmationException("Confirmation Code not found"));
 
