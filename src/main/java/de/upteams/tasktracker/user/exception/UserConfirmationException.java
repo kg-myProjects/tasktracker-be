@@ -17,6 +17,6 @@ public class UserConfirmationException extends RestApiException {
      *                later retrieval by the {@link #getMessage()} method.
      */
     public UserConfirmationException(String message) {
-        super(HttpStatus.BAD_REQUEST, message);
+        super(HttpStatus.NOT_FOUND, message);
     }
 }
