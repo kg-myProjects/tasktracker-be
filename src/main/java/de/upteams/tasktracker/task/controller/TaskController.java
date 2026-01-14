@@ -23,7 +23,8 @@ public class TaskController implements TaskApi {
             TaskDto task,
             AuthUserDetails principal
     ) {
-        return service.save(task);
+        // Исправлено: теперь передаем пользователя, чтобы задача знала своего автора
+        return service.save(task, principal.user());
     }
 
     @Override
@@ -31,7 +32,8 @@ public class TaskController implements TaskApi {
             String id,
             AuthUserDetails principal
     ) {
-        return service.getById(id);
+        // Исправлено: теперь передаем пользователя для проверки прав доступа к задаче
+        return service.getById(id, principal.user());
     }
 
     @Override

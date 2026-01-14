@@ -12,9 +12,11 @@ import java.util.Optional;
  */
 public interface TaskService {
 
-    TaskDto save(TaskDto newTaskDto);
+    // Обновлено: теперь принимает и данные задачи, и пользователя
+    TaskDto save(TaskDto task, AppUser user);
 
-    TaskDto getById(String id);
+    // Обновлено: теперь принимает и ID задачи, и пользователя
+    TaskDto getById(String id, AppUser user);
 
     Task getOrThrow(String id);
 

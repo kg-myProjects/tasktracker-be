@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Service for various operations with Tasks
+ * Service implementation for various operations with Tasks
  */
 @Service
 @RequiredArgsConstructor
@@ -33,14 +33,31 @@ public class TaskServiceImpl implements TaskService {
     private final CollaboratorService collaboratorService;
 
     @Override
-    public TaskDto save(final TaskDto newTaskDto) {
+    public TaskDto save(final TaskDto newTaskDto, final AppUser authUser) {
         final Task entity = mappingService.mapDtoToEntity(newTaskDto);
+
+        // Исправление бага: проверяем доступ пользователя к проекту этой задачи
+        if (entity.getProject() != null) {
+            boolean userInProject = collaboratorService.isUserInProject(authUser, entity.getProject());
+            if (!userInProject) {
+                throw new RestApiException(HttpStatus.FORBIDDEN, "User has no access to this project");
+            }
+        }
+
         return mappingService.mapEntityToDto(repository.save(entity));
     }
 
     @Override
-    public TaskDto getById(String id) {
-        return mappingService.mapEntityToDto(getOrThrow(id));
+    public TaskDto getById(final String id, final AppUser authUser) {
+        final Task task = getOrThrow(id);
+
+        // Исправление бага: проверяем, имеет ли право пользователь видеть эту задачу
+        boolean userInProject = collaboratorService.isUserInProject(authUser, task.getProject());
+        if (!userInProject) {
+            throw new RestApiException(HttpStatus.FORBIDDEN, "User has no access to this project");
+        }
+
+        return mappingService.mapEntityToDto(task);
     }
 
     @Override
@@ -82,5 +99,4 @@ public class TaskServiceImpl implements TaskService {
         }
         repository.delete(existedTask);
     }
-
 }
