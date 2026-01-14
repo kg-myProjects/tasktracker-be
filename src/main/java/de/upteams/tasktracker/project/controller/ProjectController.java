@@ -5,13 +5,11 @@ import de.upteams.tasktracker.project.dto.request.ProjectCreateDto;
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
 import de.upteams.tasktracker.project.service.interfaces.ProjectService;
 import de.upteams.tasktracker.security.service.AuthUserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal; // Добавлено
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * REST Controller that receives http-requests for various operations with Projects
- */
 @RestController
 public class ProjectController implements ProjectApi {
 
@@ -22,7 +20,8 @@ public class ProjectController implements ProjectApi {
     }
 
     @Override
-    public ProjectResponseDto save(ProjectCreateDto newProjectDto, AuthUserDetails principal) {
+    public ProjectResponseDto save(ProjectCreateDto newProjectDto, @AuthenticationPrincipal AuthUserDetails principal) {
+        // Добавлена аннотация @AuthenticationPrincipal выше
         return service.save(newProjectDto, principal.user());
     }
 
