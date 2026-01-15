@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public interface UserApiSwaggerDoc {
             summary = "Get all users",
             description = "Returns a JSON array of all users in the system"
     )
+    @SecurityRequirement(name = "cookieAuth")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -31,6 +33,22 @@ public interface UserApiSwaggerDoc {
                             array = @ArraySchema(
                                     schema = @Schema(implementation = UserResponseDto.class)
                             )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized (not authenticated)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden (not enough rights)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class)
                     )
             ),
             @ApiResponse(
