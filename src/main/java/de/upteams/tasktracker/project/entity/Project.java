@@ -39,9 +39,10 @@ public class Project extends BaseEntity {
     )
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
+    @NotBlank
     @Pattern(
-            regexp = "[A-Z][a-zA-Z1-9,.%:?&!$;*() ]{2,}",
+            regexp = "[A-Z][a-zA-Z0-9,.%:?&!$;*() ]{2,}",
             message = "Project description should be at least 3 character length and start with capital letter"
     )
     private String description;

@@ -19,8 +19,12 @@ import org.mapstruct.MappingConstants;
 )
 public interface ProjectMapper {
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "owner", ignore = true)
+    //@Mapping(target = "id", ignore = true)
+    //@Mapping(target = "owner", ignore = true)
+    @Mapping(
+            target = "id",
+            expression = "java(entity.getId() != null ? entity.getId().toString() : null)"
+    )
     ProjectResponseDto mapEntityToDto(Project entity);
 
     @Mapping(target = "id", ignore = true)
