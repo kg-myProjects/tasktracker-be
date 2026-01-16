@@ -3,6 +3,7 @@ package de.upteams.tasktracker.project.service.impl;
 import de.upteams.tasktracker.project.dto.request.ProjectCreateDto;
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
 import de.upteams.tasktracker.project.entity.Project;
+import de.upteams.tasktracker.project.exception.InvalidProjectPayloadException;
 import de.upteams.tasktracker.project.exception.ProjectNotFoundException;
 import de.upteams.tasktracker.project.persistence.ProjectRepository;
 import de.upteams.tasktracker.project.service.interfaces.ProjectService;
@@ -26,6 +27,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectResponseDto save(ProjectCreateDto newProjectDto, AppUser projectOwner) {
+        if (newProjectDto.title() == null || newProjectDto.title().isBlank()) {
+            throw new InvalidProjectPayloadException("Invalid project payload");
+        }
+        if (newProjectDto.description() == null || newProjectDto.description().isBlank()) {
+            throw new InvalidProjectPayloadException("Invalid project payload");
+        }
+
         Project project = mappingService.mapDtoToEntity(newProjectDto);
         project.setOwner(projectOwner);
         return mappingService.mapEntityToDto(repository.save(project));
