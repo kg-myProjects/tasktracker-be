@@ -102,17 +102,6 @@ public interface TaskStatusApi {
             );
 
 
-            @Operation(summary = "Get all Tasks Status for Project", description = "Retrieves all tasks Status for Project")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "List of tasks status for Project",
-                    content = @Content(mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = TaskStatusCreateDto.class))))
-    })
-    @GetMapping("/project/{projectId}")
-    List<TaskStatusResponseDto> getAllByProjectId(
-            @PathVariable
-            @Parameter(required = true, description = "Project ID to search")
-            String projectId);
 
     @Operation(summary = "Delete tasks Status", description = "Deletes a tasks status by its ID")
     @ApiResponses(value = {

@@ -27,10 +27,6 @@ public class TaskStatusController implements TaskStatusApi {
     }
 
 
-    @Override
-    public List<TaskStatusResponseDto> getAllByProjectId(String projectId) {
-        return service.getAllByProjectId(projectId);
-    }
 
     @Override
     public void deleteById(String id, AuthUserDetails principal) {

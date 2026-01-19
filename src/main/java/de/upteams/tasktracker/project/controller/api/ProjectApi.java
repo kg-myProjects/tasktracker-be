@@ -5,6 +5,10 @@ import de.upteams.tasktracker.exception.handling.response.ValidationErrorDto;
 import de.upteams.tasktracker.project.dto.request.ProjectCreateDto;
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
 import de.upteams.tasktracker.security.service.AuthUserDetails;
+import de.upteams.tasktracker.task.dto.request.TaskCreateDto;
+import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
+import de.upteams.tasktracker.taskstatus.dto.request.TaskStatusCreateDto;
+import de.upteams.tasktracker.taskstatus.dto.response.TaskStatusResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -20,6 +24,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Project API description for Swagger
@@ -96,7 +101,7 @@ public interface ProjectApi {
     ProjectResponseDto getById(
             @PathVariable
             @Parameter(required = true, description = "Project ID to search")
-            String id
+            UUID id
     );
 
     @Operation(summary = "Get all Projects", description = "Get all Projects from the Database")
@@ -107,6 +112,41 @@ public interface ProjectApi {
     })
     @GetMapping
     List<ProjectResponseDto> getAll();
+
+    @Operation(summary = "Get all Tasks Status for Project", description = "Retrieves all tasks Status for Project")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of tasks status for Project",
+                    content = @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = TaskStatusCreateDto.class))))
+    })
+    @GetMapping("/{id}/status")
+    List<TaskStatusResponseDto> getAllStatusByProjectId(
+            @PathVariable
+            @Parameter(required = true, description = "Project ID to search")
+            UUID id);
+
+    @Operation(summary = "Get all Tasks for Project", description = "Retrieves all tasks under a specific project")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of tasks",
+                    content = @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = TaskCreateDto.class))))
+            ,
+            @ApiResponse(responseCode = "403", description = "Forbidden - user has no access to the project",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class))
+            )
+    })
+    @GetMapping("/{id}/tasks")
+    List<TaskResponseDto> getAllTasksByProject(
+            @PathVariable
+            UUID id
+
+//            @AuthenticationPrincipal
+//            @Parameter(hidden = true)
+//            AuthUserDetails principal
+    );
+
+
 
     @Operation(summary = "Delete Project", description = "Delete Project from the Database by its ID")
     @ApiResponses(value = {

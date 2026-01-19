@@ -40,14 +40,6 @@ public class TaskController implements TaskApi {
         return service.getById(id);
     }
 
-    @Override
-    public List<TaskResponseDto> getAllByProject(
-            String projectId
-//            AuthUserDetails principal
-    ) {
-//        return service.getAllByProject(projectId, principal.user());
-        return service.getAllByProject(projectId);
-    }
 
 
     @Override

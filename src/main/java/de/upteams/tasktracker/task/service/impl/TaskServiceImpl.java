@@ -119,19 +119,6 @@ public class TaskServiceImpl implements TaskService {
                 .findById(UUID.fromString(id));
     }
 
-    @Override
-    public List<TaskResponseDto> getAllByProject(final String projectId) {
-        final Project project = projectService.getOrTrow(projectId);
- //       boolean userInProject = collaboratorService.isUserInProject(authUser, project);
-//        if (!userInProject) {
-//            throw new RestApiException(HttpStatus.FORBIDDEN, "User has no access to this project");
-//        }
-        return repository
-                .findByProject(project)
-                .stream()
-                .map(mappingService::mapEntityToDto)
-                .toList();
-    }
 
 
     @Override

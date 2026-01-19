@@ -178,26 +178,6 @@ public interface TaskApi {
             AuthUserDetails principal
     );
 
-    @Operation(summary = "Get all Tasks for Project", description = "Retrieves all tasks under a specific project")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "List of tasks",
-                    content = @Content(mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = TaskCreateDto.class))))
-            ,
-            @ApiResponse(responseCode = "403", description = "Forbidden - user has no access to the project",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponseDto.class))
-            )
-    })
-    @GetMapping("/project/{projectId}")
-    List<TaskResponseDto> getAllByProject(
-            @PathVariable
-            String projectId
-
-//            @AuthenticationPrincipal
-//            @Parameter(hidden = true)
-//            AuthUserDetails principal
-    );
 
 
 

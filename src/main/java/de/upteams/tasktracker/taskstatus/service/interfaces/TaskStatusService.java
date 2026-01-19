@@ -19,7 +19,7 @@ public interface TaskStatusService {
 
     Optional<TaskStatus> findById(String id);
 
-    List<TaskStatusResponseDto> getAllByProjectId(String projectId);
+
 
     void delete(String id, AppUser changer);
 

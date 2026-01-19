@@ -23,7 +23,6 @@ public interface TaskService {
     Optional<Task> findById(String id);
 
  //   List<TaskResponseDto> getAllByProject(String projectId, AppUser authUser);
-    List<TaskResponseDto> getAllByProject(String projectId);
 
     void delete(String id, AppUser changer);
 

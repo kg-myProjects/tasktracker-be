@@ -74,15 +74,6 @@ public class TaskStatusServiceImpl implements TaskStatusService {
         return repository.findById(UUID.fromString(id));
     }
 
-
-    @Override
-    public List<TaskStatusResponseDto> getAllByProjectId(String projectId) {
-        return repository.findByProjectId(UUID.fromString(projectId))
-                .stream()
-                .map(mappingService::mapEntityToStatusDto)
-                .toList();
-    }
-
     @Override
     public void delete(String id, AppUser changer) {
       repository.deleteById(UUID.fromString(id));
