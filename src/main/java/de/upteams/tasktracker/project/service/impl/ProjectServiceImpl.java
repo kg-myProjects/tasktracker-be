@@ -8,6 +8,12 @@ import de.upteams.tasktracker.project.exception.ProjectNotFoundException;
 import de.upteams.tasktracker.project.persistence.ProjectRepository;
 import de.upteams.tasktracker.project.service.interfaces.ProjectService;
 import de.upteams.tasktracker.project.utils.ProjectMapper;
+import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
+import de.upteams.tasktracker.task.persistence.TaskRepository;
+import de.upteams.tasktracker.task.utils.TaskMappingService;
+import de.upteams.tasktracker.taskstatus.dto.response.TaskStatusResponseDto;
+import de.upteams.tasktracker.taskstatus.persistence.TaskStatusRepository;
+import de.upteams.tasktracker.taskstatus.utils.TaskStatusMappingService;
 import de.upteams.tasktracker.user.entity.AppUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +29,10 @@ import java.util.UUID;
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository repository;
+    private final TaskStatusRepository taskStatusRepository;
+    private final TaskStatusMappingService taskStatusMappingService;
+    private final TaskRepository taskRepository;
+    private final TaskMappingService taskMappingService;
     private final ProjectMapper mappingService;
 
     @Override
@@ -40,14 +50,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectResponseDto getById(String id) {
+    public ProjectResponseDto getById(UUID id) {
         return mappingService.mapEntityToDto(getOrTrow(id));
     }
 
     @Override
-    public Project getOrTrow(String id) {
+    public Project getOrTrow(UUID id) {
         return repository
-                .findById(UUID.fromString(id))
+                .findById(id)
                 .orElseThrow(ProjectNotFoundException::new);
     }
 
@@ -58,6 +68,30 @@ public class ProjectServiceImpl implements ProjectService {
                 .stream()
                 .map(mappingService::mapEntityToDto)
                 .toList();
+    }
+
+    @Override
+    public List<TaskStatusResponseDto> getAllStatusByProjectId(UUID id) {
+        return taskStatusRepository.findByProjectId(id)
+                .stream()
+                .map(taskStatusMappingService::mapEntityToStatusDto)
+                .toList();
+    }
+
+    @Override
+    public List<TaskResponseDto> getAllTasksByProject(UUID id) {
+
+        final Project project = getOrTrow(id);
+        //       boolean userInProject = collaboratorService.isUserInProject(authUser, project);
+//        if (!userInProject) {
+//            throw new RestApiException(HttpStatus.FORBIDDEN, "User has no access to this project");
+//        }
+        return taskRepository
+                .findByProject(project)
+                .stream()
+                .map(taskMappingService::mapEntityToDto)
+                .toList();
+
     }
 
     @Override

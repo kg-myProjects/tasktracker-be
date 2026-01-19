@@ -12,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -71,6 +73,16 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+        @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+        @ResponseStatus(HttpStatus.BAD_REQUEST)
+        public Map<String, String> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+            return Map.of(
+                    "error", "Invalid UUID",
+                    "value", String.valueOf(ex.getValue())
+            );
+        }
+
 
 //    *
 //     * Delegate any AuthenticationException (401 Unauthorized)
