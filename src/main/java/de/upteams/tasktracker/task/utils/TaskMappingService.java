@@ -1,9 +1,7 @@
 package de.upteams.tasktracker.task.utils;
 
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
-import de.upteams.tasktracker.taskstatus.dto.response.TaskStatusResponseDto;
 import de.upteams.tasktracker.task.entity.Task;
-import de.upteams.tasktracker.taskstatus.entity.TaskStatus;
 import de.upteams.tasktracker.user.util.AppUserMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

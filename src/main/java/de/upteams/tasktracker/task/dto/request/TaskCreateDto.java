@@ -1,17 +1,10 @@
 package de.upteams.tasktracker.task.dto.request;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
-import de.upteams.tasktracker.user.dto.EmployeeDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Value;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * Task DTO

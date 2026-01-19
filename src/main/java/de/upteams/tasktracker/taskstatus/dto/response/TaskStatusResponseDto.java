@@ -1,7 +1,6 @@
 package de.upteams.tasktracker.taskstatus.dto.response;
 
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
-import de.upteams.tasktracker.project.entity.Project;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Value;
 
