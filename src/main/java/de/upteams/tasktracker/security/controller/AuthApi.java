@@ -2,6 +2,8 @@ package de.upteams.tasktracker.security.controller;
 
 import de.upteams.tasktracker.exception.handling.response.ErrorResponseDto;
 import de.upteams.tasktracker.security.dto.LoginRequest;
+import de.upteams.tasktracker.security.dto.request.ForgotPasswordRequestDto;
+import de.upteams.tasktracker.security.dto.request.ResetPasswordRequestDto;
 import de.upteams.tasktracker.security.entities.TokenResponseDto;
 import de.upteams.tasktracker.security.service.AuthUserDetails;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
@@ -15,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -122,4 +125,28 @@ public interface AuthApi {
     UserResponseDto getCurrentUser(
             @AuthenticationPrincipal AuthUserDetails user
     );
+
+    @Operation(summary = "Forgot password")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Reset link sent to email"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @PostMapping("/forgot-password")
+    void forgotPassword(
+            @Valid
+            @RequestBody
+            ForgotPasswordRequestDto dto
+    );
+
+    @Operation(summary = "Reset password")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Password successfully reset"),
+            @ApiResponse(responseCode = "400", description = "Invalid or expired token")
+    })
+    @PostMapping("/reset-password")
+    ResponseEntity<Void> resetPassword(
+            @Valid @RequestBody ResetPasswordRequestDto dto
+    );
+
+
 }
