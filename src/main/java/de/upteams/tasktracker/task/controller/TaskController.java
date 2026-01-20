@@ -8,23 +8,14 @@ import de.upteams.tasktracker.task.service.interfaces.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 public class TaskController implements TaskApi {
 
-    /**
-     * Service for various operations with Tasks
-     */
     private final TaskService service;
 
     @Override
-    public TaskResponseDto save(
-            TaskCreateDto task,
-            AuthUserDetails principal
-    ) {
-        // Исправлено: теперь передаем пользователя, чтобы задача знала своего автора
+    public TaskResponseDto save(TaskCreateDto task, AuthUserDetails principal) {
         return service.save(task, principal.user());
     }
 
@@ -34,21 +25,12 @@ public class TaskController implements TaskApi {
     }
 
     @Override
-    public TaskResponseDto getById(
-            String id,
-            AuthUserDetails principal
-    ) {
-        // Исправлено: теперь передаем пользователя для проверки прав доступа к задаче
+    public TaskResponseDto getById(String id, AuthUserDetails principal) {
         return service.getById(id, principal.user());
     }
 
-
-
     @Override
-    public void deleteById(
-            String id,
-            AuthUserDetails principal
-    ) {
+    public void deleteById(String id, AuthUserDetails principal) {
         service.delete(id, principal.user());
     }
 }
