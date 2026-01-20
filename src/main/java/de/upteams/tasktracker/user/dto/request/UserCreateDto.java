@@ -7,7 +7,13 @@ import jakarta.validation.constraints.Pattern;
 
 public record UserCreateDto(
         @NotBlank
-        @Email(message = "must be a well-formed email addres")
+        @Pattern(
+                regexp = "^(?=.{6,254}$)(?=.{1,64}@)[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*@" +
+                        "[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?" +
+                        "(?:\\.[A-Za-z]{2,})+$",
+                message = "Invalid email format"
+        )
+
         @Schema(
                 description = "new User email",
                 example = "tes_dev@upteams.de"

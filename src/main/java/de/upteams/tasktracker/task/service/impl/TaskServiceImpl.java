@@ -4,17 +4,23 @@ import de.upteams.tasktracker.collaborator.entity.ProjectRoles;
 import de.upteams.tasktracker.collaborator.service.interfaces.CollaboratorService;
 import de.upteams.tasktracker.exception.handling.exceptions.common.RestApiException;
 import de.upteams.tasktracker.project.entity.Project;
+import de.upteams.tasktracker.project.persistence.ProjectRepository;
 import de.upteams.tasktracker.project.service.interfaces.ProjectService;
-import de.upteams.tasktracker.task.dto.TaskDto;
+import de.upteams.tasktracker.task.dto.request.TaskCreateDto;
+import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.task.entity.Task;
+import de.upteams.tasktracker.taskstatus.entity.TaskStatus;
+import de.upteams.tasktracker.task.exception.InvalidTaskPayloadEsception;
 import de.upteams.tasktracker.task.exception.TaskNotFoundException;
 import de.upteams.tasktracker.task.persistence.TaskRepository;
+import de.upteams.tasktracker.taskstatus.persistence.TaskStatusRepository;
 import de.upteams.tasktracker.task.service.interfaces.TaskService;
 import de.upteams.tasktracker.task.utils.TaskMappingService;
 import de.upteams.tasktracker.user.entity.AppUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +34,8 @@ import java.util.UUID;
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository repository;
+    private final TaskStatusRepository taskStatusRepository;
+    private final ProjectRepository projectRepository;
     private final TaskMappingService mappingService;
     private final ProjectService projectService;
     private final CollaboratorService collaboratorService;
@@ -58,6 +66,70 @@ public class TaskServiceImpl implements TaskService {
         }
 
         return mappingService.mapEntityToDto(task);
+    @Transactional
+    public TaskResponseDto save(TaskCreateDto dto) {
+        TaskStatus status = taskStatusRepository.findById(UUID.fromString(dto.getStatusId())
+        ).orElseThrow(() ->
+                new InvalidTaskPayloadEsception("TaskStatus not found")
+        );
+        Project project = projectRepository.findById(UUID.fromString(dto.getProjectId())
+        ).orElseThrow(() ->
+                new InvalidTaskPayloadEsception("Project of the task not found")
+        );
+        if (dto.getTitle() == null || dto.getTitle().isBlank()) {
+            throw new InvalidTaskPayloadEsception("Invalid task payload");
+        }
+        Task task = new Task();
+        task.setTitle(dto.getTitle());
+        if (dto.getDescription() == null) {
+            task.setDescription("");
+        }else {
+            task.setDescription(dto.getDescription());
+        }
+        task.setStatus(status);
+        task.setProject(project);
+        Task saved = repository.save(task);
+        return mappingService.mapEntityToDto(saved);
+    }
+
+    @Override
+    @Transactional
+    public TaskResponseDto update(String id, TaskCreateDto dto) {
+         if(id== null || id.isBlank()){
+             throw new InvalidTaskPayloadEsception("Task id must not be null or empty");
+         }
+            Task task = getOrThrow(id);
+
+        if (dto.getTitle() != null && !dto.getTitle().isBlank()) {
+            task.setTitle(dto.getTitle());
+        }
+
+        if (dto.getDescription() != null && !dto.getDescription().isBlank()) {
+            task.setDescription(dto.getDescription());
+        }
+
+        if (dto.getStatusId() != null) {
+            TaskStatus status = taskStatusRepository.findById(UUID.fromString(dto.getStatusId())
+            ).orElseThrow(() ->
+                    new InvalidTaskPayloadEsception("TaskStatus not found")
+            );
+            task.setStatus(status);
+        }
+        if (dto.getProjectId() != null) {
+            Project project = projectRepository.findById(UUID.fromString(dto.getProjectId())
+
+            ).orElseThrow(() ->
+                    new InvalidTaskPayloadEsception("Task Project not found")
+            );
+            task.setProject(project);
+        }
+
+        return mappingService.mapEntityToDto(task);
+    }
+
+    @Override
+    public TaskResponseDto getById(String id) {
+        return mappingService.mapEntityToDto(getOrThrow(id));
     }
 
     @Override
@@ -72,19 +144,7 @@ public class TaskServiceImpl implements TaskService {
                 .findById(UUID.fromString(id));
     }
 
-    @Override
-    public List<TaskDto> getAll(final String projectId, final AppUser authUser) {
-        final Project project = projectService.getOrTrow(projectId);
-        boolean userInProject = collaboratorService.isUserInProject(authUser, project);
-        if (!userInProject) {
-            throw new RestApiException(HttpStatus.FORBIDDEN, "User has no access to this project");
-        }
-        return repository
-                .findByProject(project)
-                .stream()
-                .map(mappingService::mapEntityToDto)
-                .toList();
-    }
+
 
     @Override
     public void delete(final String id, final AppUser changer) {

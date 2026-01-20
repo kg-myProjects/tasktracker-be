@@ -6,9 +6,12 @@ import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
 import de.upteams.tasktracker.project.service.interfaces.ProjectService;
 import de.upteams.tasktracker.security.service.AuthUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal; // Добавлено
+import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
+import de.upteams.tasktracker.taskstatus.dto.response.TaskStatusResponseDto;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class ProjectController implements ProjectApi {
@@ -26,13 +29,23 @@ public class ProjectController implements ProjectApi {
     }
 
     @Override
-    public ProjectResponseDto getById(String id) {
+    public ProjectResponseDto getById(UUID id) {
         return service.getById(id);
     }
 
     @Override
     public List<ProjectResponseDto> getAll() {
         return service.getAll();
+    }
+
+    @Override
+    public List<TaskStatusResponseDto> getAllStatusByProjectId(UUID id) {
+        return service.getAllStatusByProjectId(id);
+    }
+
+    @Override
+    public List<TaskResponseDto> getAllTasksByProject(UUID id) {
+        return service.getAllTasksByProject(id);
     }
 
     @Override

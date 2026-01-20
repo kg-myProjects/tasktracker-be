@@ -1,6 +1,7 @@
 package de.upteams.tasktracker.task.service.interfaces;
 
-import de.upteams.tasktracker.task.dto.TaskDto;
+import de.upteams.tasktracker.task.dto.request.TaskCreateDto;
+import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.task.entity.Task;
 import de.upteams.tasktracker.user.entity.AppUser;
 
@@ -17,12 +18,16 @@ public interface TaskService {
 
     // Обновлено: теперь принимает и ID задачи, и пользователя
     TaskDto getById(String id, AppUser user);
+    TaskResponseDto save(TaskCreateDto newTaskCreateDto);
+    TaskResponseDto update(String id, TaskCreateDto newTaskCreateDto);
+
+    TaskResponseDto getById(String id);
 
     Task getOrThrow(String id);
 
     Optional<Task> findById(String id);
 
-    List<TaskDto> getAll(String projectId, AppUser authUser);
+ //   List<TaskResponseDto> getAllByProject(String projectId, AppUser authUser);
 
     void delete(String id, AppUser changer);
 

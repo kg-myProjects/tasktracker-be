@@ -3,6 +3,7 @@ package de.upteams.tasktracker.project.entity;
 import de.upteams.tasktracker.collaborator.entity.Collaborator;
 import de.upteams.tasktracker.project.constants.ProjectValidationConstats;
 import de.upteams.tasktracker.task.entity.Task;
+import de.upteams.tasktracker.taskstatus.entity.TaskStatus;
 import de.upteams.tasktracker.user.entity.AppUser;
 import de.upteams.tasktracker.utils.BaseEntity;
 import jakarta.persistence.*;
@@ -39,9 +40,10 @@ public class Project extends BaseEntity {
     )
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
+    @NotBlank
     @Pattern(
-            regexp = "[A-Z][a-zA-Z1-9,.%:?&!$;*() ]{2,}",
+            regexp = "[A-Z][a-zA-Z0-9,.%:?&!$;*() ]{2,}",
             message = "Project description should be at least 3 character length and start with capital letter"
     )
     private String description;
@@ -53,6 +55,9 @@ public class Project extends BaseEntity {
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private Set<Collaborator> projectTeam = new HashSet<>();
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    private final Set<TaskStatus> taskStatuses = new HashSet<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private final Set<Task> tasks = new HashSet<>();

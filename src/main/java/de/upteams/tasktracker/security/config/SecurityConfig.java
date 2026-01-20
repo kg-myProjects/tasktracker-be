@@ -84,17 +84,44 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh-token").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/logout").permitAll()
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+            .cors(cors -> {})
+            .csrf(AbstractHttpConfigurer::disable)
+            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authenticationProvider(authenticationProvider())
+            .authorizeHttpRequests(auth -> auth
+                    // Swagger UI
+                    .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/webjars/**").permitAll()
 
-                        .anyRequest().authenticated()
-                )
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(new RestAuthenticationEntryPoint())
-                        .accessDeniedHandler(new CustomAccessDeniedHandler())
-                )
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+                    // Register / confirmation
+                    .requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/users/confirm/{code}").permitAll()
 
-        return http.build();
-    }
+                    // Auth
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh-token").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/logout").permitAll()
+
+                    // Forgot / Reset password
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/forgot-password").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/auth/reset-password/validate").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/reset-password").permitAll()
+
+                    .anyRequest().authenticated()
+            )
+            .exceptionHandling(ex -> ex
+                    .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                    .accessDeniedHandler(new CustomAccessDeniedHandler())
+            )
+            .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
+    return http.build();
+}
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
