@@ -13,22 +13,15 @@ import java.util.Optional;
  */
 public interface TaskService {
 
-    // Обновлено: теперь принимает и данные задачи, и пользователя
-    TaskDto save(TaskDto task, AppUser user);
+    TaskResponseDto save(TaskCreateDto newTaskCreateDto, AppUser user);
 
-    // Обновлено: теперь принимает и ID задачи, и пользователя
-    TaskDto getById(String id, AppUser user);
-    TaskResponseDto save(TaskCreateDto newTaskCreateDto);
     TaskResponseDto update(String id, TaskCreateDto newTaskCreateDto);
 
-    TaskResponseDto getById(String id);
+    TaskResponseDto getById(String id, AppUser user);
 
     Task getOrThrow(String id);
 
     Optional<Task> findById(String id);
 
- //   List<TaskResponseDto> getAllByProject(String projectId, AppUser authUser);
-
     void delete(String id, AppUser changer);
-
 }
