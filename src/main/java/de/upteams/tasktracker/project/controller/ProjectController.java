@@ -5,9 +5,9 @@ import de.upteams.tasktracker.project.dto.request.ProjectCreateDto;
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
 import de.upteams.tasktracker.project.service.interfaces.ProjectService;
 import de.upteams.tasktracker.security.service.AuthUserDetails;
-import org.springframework.security.core.annotation.AuthenticationPrincipal; // Добавлено
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.taskstatus.dto.response.TaskStatusResponseDto;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -23,9 +23,8 @@ public class ProjectController implements ProjectApi {
     }
 
     @Override
-    public ProjectResponseDto save(ProjectCreateDto newProjectDto, @AuthenticationPrincipal AuthUserDetails principal) {
-        // Добавлена аннотация @AuthenticationPrincipal выше
-        return service.save(newProjectDto, principal.user());
+    public ProjectResponseDto save(ProjectCreateDto dto, @AuthenticationPrincipal AuthUserDetails principal) {
+        return service.save(dto, principal.user());
     }
 
     @Override
