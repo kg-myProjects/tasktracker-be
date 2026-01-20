@@ -2,7 +2,8 @@ package de.upteams.tasktracker.task.controller;
 
 import de.upteams.tasktracker.security.service.AuthUserDetails;
 import de.upteams.tasktracker.task.controller.api.TaskApi;
-import de.upteams.tasktracker.task.dto.TaskDto;
+import de.upteams.tasktracker.task.dto.request.TaskCreateDto;
+import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.task.service.interfaces.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,28 +20,27 @@ public class TaskController implements TaskApi {
     private final TaskService service;
 
     @Override
-    public TaskDto save(
-            TaskDto task,
+    public TaskResponseDto save(
+            TaskCreateDto task,
             AuthUserDetails principal
     ) {
         return service.save(task);
     }
 
     @Override
-    public TaskDto getById(
+    public TaskResponseDto update(String id, TaskCreateDto task, AuthUserDetails principal) {
+        return service.update(id, task);
+    }
+
+    @Override
+    public TaskResponseDto getById(
             String id,
             AuthUserDetails principal
     ) {
         return service.getById(id);
     }
 
-    @Override
-    public List<TaskDto> getAll(
-            String projectId,
-            AuthUserDetails principal
-    ) {
-        return service.getAll(projectId, principal.user());
-    }
+
 
     @Override
     public void deleteById(
