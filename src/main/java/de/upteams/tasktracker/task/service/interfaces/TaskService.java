@@ -5,7 +5,6 @@ import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.task.entity.Task;
 import de.upteams.tasktracker.user.entity.AppUser;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
