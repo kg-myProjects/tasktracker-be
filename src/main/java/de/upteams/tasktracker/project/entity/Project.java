@@ -53,7 +53,7 @@ public class Project extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private AppUser owner;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Collaborator> projectTeam = new HashSet<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)

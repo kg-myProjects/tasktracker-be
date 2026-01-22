@@ -31,8 +31,11 @@ public class Collaborator extends BaseEntity {
     private Project project;
 
     @NotNull
+    @ElementCollection(targetClass = ProjectRoles.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private final Set<ProjectRoles> projectRolesSet = new HashSet<>();
+    @Column(name = "role_name")
+    @CollectionTable(name = "collaborator_roles", joinColumns = @JoinColumn(name = "collaborator_id"))
+    private  Set<ProjectRoles> projectRolesSet = new HashSet<>();
 
     @ManyToMany
     private final Set<Task> tasks = new HashSet<>();
