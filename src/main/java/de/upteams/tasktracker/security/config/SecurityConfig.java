@@ -74,6 +74,7 @@ public class SecurityConfig {
                   .authorizeHttpRequests(auth -> auth
                         // Swagger UI и спецификация — только GET
                         .requestMatchers(HttpMethod.GET, "/api/v1/users/confirm-redirect/**", "/v3/api-docs/**").permitAll()
+                          .requestMatchers(HttpMethod.GET, "/api/v1/users/confirm-redirect/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
                         .requestMatchers(HttpMethod.GET, "/webjars/**").permitAll()
