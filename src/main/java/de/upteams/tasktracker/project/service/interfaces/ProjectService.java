@@ -1,5 +1,6 @@
 package de.upteams.tasktracker.project.service.interfaces;
 
+import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortResponseDto;
 import de.upteams.tasktracker.project.dto.request.InviteRequestDto;
 import de.upteams.tasktracker.project.dto.request.ProjectCreateDto;
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
@@ -30,6 +31,6 @@ public interface ProjectService {
 
     void delete(String id);
 
-    void inviteUser( InviteRequestDto inviteDto, UUID projectId);
+    CollaboratorShortResponseDto inviteUser(InviteRequestDto inviteDto, UUID projectId);
 
 }

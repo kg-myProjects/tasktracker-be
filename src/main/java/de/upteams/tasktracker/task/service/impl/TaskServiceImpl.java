@@ -43,10 +43,15 @@ public class TaskServiceImpl implements TaskService {
         Project project = projectRepository.findById(UUID.fromString(dto.getProjectId()))
                 .orElseThrow(() -> new InvalidTaskPayloadException("Project not found"));
 
-        if (!collaboratorService.isUserInProject(authUser, project)) {
-            throw new RestApiException(HttpStatus.FORBIDDEN, "User has no access to this project");
-        }
+        boolean canCreate = collaboratorService.hasUserPermission(
+                authUser,
+                project,
+                List.of(ProjectRoles.OWNER, ProjectRoles.ADMIN, ProjectRoles.MEMBER)
+        );
 
+        if (!canCreate) {
+            throw new RestApiException(HttpStatus.FORBIDDEN, "You don't have permission to create tasks in this project");
+        }
         Task task = new Task();
         task.setTitle(dto.getTitle());
         task.setDescription(dto.getDescription() == null ? "" : dto.getDescription());
@@ -58,18 +63,39 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public TaskResponseDto update(String id, TaskCreateDto dto) {
+    public TaskResponseDto update(String id, TaskCreateDto dto, AppUser authUser) {
         Task task = getOrThrow(id);
+        boolean hasPermission = collaboratorService.hasUserPermission(
+                authUser,
+                task.getProject(),
+                List.of(ProjectRoles.OWNER, ProjectRoles.ADMIN, ProjectRoles.MEMBER)
+        );
+
+        if (!hasPermission) {
+            throw new RestApiException(HttpStatus.FORBIDDEN, "You don't have permission to modify tasks in this project");
+        }
         if (dto.getTitle() != null) task.setTitle(dto.getTitle());
         if (dto.getDescription() != null) task.setDescription(dto.getDescription());
+        if (dto.getStatusId() != null) {
+            TaskStatus status = taskStatusRepository.findById(UUID.fromString(dto.getStatusId()))
+                    .orElseThrow(() -> new InvalidTaskPayloadException("Status not found"));
+            task.setStatus(status);
+        }
+
         return mappingService.mapEntityToDto(repository.save(task));
     }
 
     @Override
     public TaskResponseDto getById(String id, AppUser authUser) {
         Task task = getOrThrow(id);
-        if (!collaboratorService.isUserInProject(authUser, task.getProject())) {
-            throw new RestApiException(HttpStatus.FORBIDDEN, "User has no access to this project");
+        boolean canView = collaboratorService.hasUserPermission(
+                authUser,
+                task.getProject(),
+                List.of(ProjectRoles.OWNER, ProjectRoles.ADMIN, ProjectRoles.MEMBER, ProjectRoles.VIEWER)
+        );
+
+        if (!canView) {
+            throw new RestApiException(HttpStatus.FORBIDDEN, "You don't have access to view this task");
         }
         return mappingService.mapEntityToDto(task);
     }
@@ -90,7 +116,7 @@ public class TaskServiceImpl implements TaskService {
         boolean hasPermission = collaboratorService.hasUserPermission(
                 changer, 
                 existedTask.getProject(), 
-                List.of(ProjectRoles.MEMBER, ProjectRoles.OWNER, ProjectRoles.ADMIN)
+                List.of(ProjectRoles.OWNER, ProjectRoles.ADMIN)
         );
         if (!hasPermission) {
             throw new RestApiException(HttpStatus.FORBIDDEN, "No delete permission");

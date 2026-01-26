@@ -14,6 +14,7 @@ import lombok.Value;
 @Value
 public class TaskCreateDto {
 
+//   @Schema(
 //                description = "Unique identifier of the Task",
 //                example = "5",
 //                accessMode = Schema.AccessMode.READ_ONLY

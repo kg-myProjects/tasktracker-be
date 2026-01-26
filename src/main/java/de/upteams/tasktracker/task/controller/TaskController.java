@@ -21,7 +21,7 @@ public class TaskController implements TaskApi {
 
     @Override
     public TaskResponseDto update(String id, TaskCreateDto task, AuthUserDetails principal) {
-        return service.update(id, task);
+        return service.update(id, task, principal.user());
     }
 
     @Override

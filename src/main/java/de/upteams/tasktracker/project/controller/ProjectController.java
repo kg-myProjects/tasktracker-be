@@ -1,5 +1,6 @@
 package de.upteams.tasktracker.project.controller;
 
+import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortResponseDto;
 import de.upteams.tasktracker.project.controller.api.ProjectApi;
 import de.upteams.tasktracker.project.dto.request.InviteRequestDto;
 import de.upteams.tasktracker.project.dto.request.ProjectCreateDto;
@@ -54,9 +55,9 @@ public class ProjectController implements ProjectApi {
     }
 
     @Override
-    public void inviteUser(InviteRequestDto inviteDto, UUID id,  AuthUserDetails principal) {
+    public CollaboratorShortResponseDto inviteUser(InviteRequestDto inviteDto, UUID id, AuthUserDetails principal) {
         // Здесь вызывается метод сервиса, который мы обсуждали ранее
-        service.inviteUser(inviteDto, id);
+     return    service.inviteUser(inviteDto, id);
     }
 
 

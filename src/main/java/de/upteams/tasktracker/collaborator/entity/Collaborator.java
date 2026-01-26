@@ -33,7 +33,7 @@ public class Collaborator extends BaseEntity {
     @NotNull
     @ElementCollection(targetClass = ProjectRoles.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    @Column(name = "role_name")
+    @Column(name = "role_name", nullable = false)
     @CollectionTable(name = "collaborator_roles", joinColumns = @JoinColumn(name = "collaborator_id"))
     private  Set<ProjectRoles> projectRolesSet = new HashSet<>();
 

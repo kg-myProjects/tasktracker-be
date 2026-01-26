@@ -1,8 +1,10 @@
 package de.upteams.tasktracker.project.service.impl;
 
+import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortResponseDto;
 import de.upteams.tasktracker.collaborator.entity.Collaborator;
 import de.upteams.tasktracker.collaborator.entity.ProjectRoles;
 import de.upteams.tasktracker.collaborator.persistence.CollaboratorRepository;
+import de.upteams.tasktracker.collaborator.utils.CollaboratorMapper;
 import de.upteams.tasktracker.project.dto.request.InviteRequestDto;
 import de.upteams.tasktracker.project.dto.request.ProjectCreateDto;
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
@@ -24,7 +26,10 @@ import de.upteams.tasktracker.user.persistence.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,25 +48,28 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectMapper mappingService;
     private final CollaboratorRepository collaboratorRepository;
     private final UserRepository userRepository;
+    private final CollaboratorMapper collaboratorMapper;
+
     @Override
     @Transactional
     public ProjectResponseDto save(ProjectCreateDto newProjectDto, AppUser projectOwner) {
-        if (newProjectDto.title() == null || newProjectDto.title().isBlank()) {
-            throw new InvalidProjectPayloadException("Invalid project payload");
-        }
-        if (newProjectDto.description() == null || newProjectDto.description().isBlank()) {
-            throw new InvalidProjectPayloadException("Invalid project payload");
+        if (!StringUtils.hasText(newProjectDto.title()) || !StringUtils.hasText(newProjectDto.description())) {
+            throw new InvalidProjectPayloadException("Title and description are required");
         }
 
         Project project = mappingService.mapDtoToEntity(newProjectDto);
         project.setOwner(projectOwner);
+        if (project.getProjectTeam() == null) {
+            project.setProjectTeam(new HashSet<>());
+        }
+
         Project savedProject = repository.save(project);
 
         Collaborator owner = new Collaborator();
         owner.setAppUser(projectOwner);
         owner.setProject(savedProject);
         owner.getProjectRolesSet().add(ProjectRoles.OWNER);
- //       project.getProjectTeam().add(owner);
+        savedProject.getProjectTeam().add(owner);
         collaboratorRepository.save(owner);
         return mappingService.mapEntityToDto(savedProject);
     }
@@ -74,14 +82,14 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Project getOrTrow(UUID id) {
         return repository
-                .findById(id)
+                .findByIdWithTeam(id)
                 .orElseThrow(ProjectNotFoundException::new);
     }
 
     @Override
     public List<ProjectResponseDto> getAll() {
         return repository
-                .findAll()
+                .findAllWithTeam()
                 .stream()
                 .map(mappingService::mapEntityToDto)
                 .toList();
@@ -117,7 +125,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void inviteUser(InviteRequestDto inviteDto, UUID projectId) {
+    public CollaboratorShortResponseDto inviteUser(InviteRequestDto inviteDto, UUID projectId) {
+        if (inviteDto.role() == ProjectRoles.OWNER) {
+            throw new IllegalArgumentException("Cannot invite another OWNER");
+        }
         Project project = repository.findById(projectId)
                 .orElseThrow(ProjectNotFoundException::new);
 
@@ -134,7 +145,7 @@ public class ProjectServiceImpl implements ProjectService {
         collaborator.setProject(project);
         collaborator.getProjectRolesSet().add(inviteDto.role());
 
-        collaboratorRepository.save(collaborator);
-
+        Collaborator saved = collaboratorRepository.save(collaborator);
+        return collaboratorMapper.mapEntityToShortDto(saved);
     }
 }

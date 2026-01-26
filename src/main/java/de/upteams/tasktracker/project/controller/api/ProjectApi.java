@@ -1,5 +1,6 @@
 package de.upteams.tasktracker.project.controller.api;
 
+import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortResponseDto;
 import de.upteams.tasktracker.exception.handling.response.ErrorResponseDto;
 import de.upteams.tasktracker.exception.handling.response.ValidationErrorDto;
 import de.upteams.tasktracker.project.dto.request.InviteRequestDto;
@@ -184,7 +185,7 @@ public interface ProjectApi {
     })
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/{id}/invite")
-    void inviteUser(
+    CollaboratorShortResponseDto inviteUser(
             @RequestBody
             @Valid
             InviteRequestDto inviteDto,
