@@ -29,10 +29,6 @@ public record ProjectCreateDto(
                 example = "A Project to develop a new company website"
         )
         @NotBlank(message = "must not be blank" )
-        @Pattern(
-                regexp = "[A-Z][a-zA-Z0-9 ]{2,}",
-                message = "Project title should be at least 3 characters and start with capital letter"
-        )
 
         String description) {
 

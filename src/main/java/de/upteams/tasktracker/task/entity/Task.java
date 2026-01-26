@@ -30,17 +30,9 @@ public class Task extends BaseEntity {
 
     @NotBlank
     @Column(name = "title", nullable = false)
-    @Pattern(
-            regexp = "[A-Z][a-zA-Z0-9,.%:?&!$;*() ]{2,}",
-            message = "Task title should be at least 3 character length and start with capital letter"
-    )
     private String title;
 
     @Column(name = "description")
-    @Pattern(
-            regexp = "[A-Z][a-zA-Z0-9,.%:?&!$;*() ]{2,}",
-            message = "Task description should be at least 3 character length and start with capital letter"
-    )
     private String description;
 
     @NotNull

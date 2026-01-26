@@ -14,7 +14,7 @@ public interface TaskService {
 
     TaskResponseDto save(TaskCreateDto newTaskCreateDto, AppUser user);
 
-    TaskResponseDto update(String id, TaskCreateDto newTaskCreateDto);
+    TaskResponseDto update(String id, TaskCreateDto newTaskCreateDto, AppUser user);
 
     TaskResponseDto getById(String id, AppUser user);
 

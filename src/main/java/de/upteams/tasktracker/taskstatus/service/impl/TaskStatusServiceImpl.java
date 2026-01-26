@@ -31,21 +31,22 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     @Override
     @Transactional
     public TaskStatusResponseDto save(TaskStatusCreateDto dto) {
-        Project project = projectRepository.findById(UUID.fromString(dto.getProjectId())
+        Project project = projectRepository.findByIdWithTeam(UUID.fromString(dto.getProjectId())
         ).orElseThrow(() ->
                 new InvalidTaskStatusPayloadEsception("Project of the tasks status not found")
         );
         if (dto.getName() == null || dto.getName().isBlank()) {
             throw new InvalidTaskStatusPayloadEsception("Invalid tasks status payload");
         }
-
+        repository.shiftPositionsForward(project.getId(), dto.getPosition());
+        repository.flush();
 
         TaskStatus taskStatus =new TaskStatus();
       taskStatus.setName(dto.getName());
       taskStatus.setPosition(dto.getPosition());
       taskStatus.setProject(project);
       TaskStatus saved = repository.save(taskStatus);
-        return mappingService.mapEntityToStatusDto(repository.save(saved));
+        return mappingService.mapEntityToStatusDto(saved);
     }
 
     @Override
@@ -54,7 +55,13 @@ public class TaskStatusServiceImpl implements TaskStatusService {
         String id = dto.getId();
         TaskStatus taskStatus= findById(id).orElseThrow(TaskStatusNotFoundException::new);
         if (dto.getPosition() != null){
-            taskStatus.setPosition(dto.getPosition());
+            Integer oldPosition = taskStatus.getPosition();
+            Integer newPosition = dto.getPosition();
+
+            if (!oldPosition.equals(newPosition)) {
+                repository.shiftPositionsForward(taskStatus.getProject().getId(), newPosition);
+                taskStatus.setPosition(newPosition);
+            }
         }
         return mappingService.mapEntityToStatusDto(repository.save(taskStatus));
     }

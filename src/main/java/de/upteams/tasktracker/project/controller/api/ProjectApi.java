@@ -1,7 +1,9 @@
 package de.upteams.tasktracker.project.controller.api;
 
+import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortResponseDto;
 import de.upteams.tasktracker.exception.handling.response.ErrorResponseDto;
 import de.upteams.tasktracker.exception.handling.response.ValidationErrorDto;
+import de.upteams.tasktracker.project.dto.request.InviteRequestDto;
 import de.upteams.tasktracker.project.dto.request.ProjectCreateDto;
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
 import de.upteams.tasktracker.security.service.AuthUserDetails;
@@ -170,4 +172,32 @@ public interface ProjectApi {
             @Parameter(required = true, description = "Project ID to delete")
             String id
     );
+
+    @Operation(summary = "Invite User to Project", description = "Add a new collaborator to the project by email and assign a role")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User successfully invited"),
+            @ApiResponse(responseCode = "404", description = "User or Project not found",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "409", description = "User is already a collaborator",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class)))
+    })
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/{id}/invite")
+    CollaboratorShortResponseDto inviteUser(
+            @RequestBody
+            @Valid
+            InviteRequestDto inviteDto,
+
+            @PathVariable
+            @Parameter(required = true, description = "ID of the project to invite to")
+            UUID id,
+
+            @AuthenticationPrincipal
+            @Parameter(hidden = true)
+            AuthUserDetails principal
+    );
+
+
 }

@@ -42,10 +42,6 @@ public class Project extends BaseEntity {
 
     @Column(name = "description", nullable = false)
     @NotBlank
-    @Pattern(
-            regexp = "[A-Z][a-zA-Z0-9,.%:?&!$;*() ]{2,}",
-            message = "Project description should be at least 3 character length and start with capital letter"
-    )
     private String description;
 
     @ManyToOne
@@ -53,13 +49,13 @@ public class Project extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private AppUser owner;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Collaborator> projectTeam = new HashSet<>();
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private final Set<TaskStatus> taskStatuses = new HashSet<>();
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private final Set<Task> tasks = new HashSet<>();
 
     public Project(String title, String description, AppUser owner) {

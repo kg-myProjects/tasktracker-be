@@ -62,3 +62,8 @@ Thumbs.db                             # Windows Explorer
 # Custom
 # =========================
 .fastRequest/
+.gradle/
+.idea/
+build/
+out/
+db_data/

@@ -1,7 +1,10 @@
 package de.upteams.tasktracker.project.dto.response;
 
+import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortResponseDto;
 import de.upteams.tasktracker.user.dto.EmployeeDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.Set;
 
 /**
  * Project DTO
@@ -35,6 +38,9 @@ public record ProjectResponseDto(
         @Schema(
                 description = "The User who created the Project",
                 accessMode = Schema.AccessMode.READ_ONLY)
-        EmployeeDto owner) {
-
-}
+        EmployeeDto owner,
+        @Schema(
+                description = "Detailed description of the Project",
+                accessMode = Schema.AccessMode.READ_ONLY)
+        Set<CollaboratorShortResponseDto> projectTeam
+        ) {}
