@@ -1,8 +1,13 @@
 package de.upteams.tasktracker.security.service;
 
 import de.upteams.tasktracker.exception.handling.exceptions.common.RestApiException;
+import de.upteams.tasktracker.mail.EmailService;
 import de.upteams.tasktracker.security.dto.LoginRequest;
+import de.upteams.tasktracker.security.entities.PasswordResetToken;
 import de.upteams.tasktracker.security.entities.TokenResponseDto;
+import de.upteams.tasktracker.security.persistence.PasswordResetTokenRepository;
+import de.upteams.tasktracker.user.entity.AppUser;
+import de.upteams.tasktracker.user.persistence.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -10,8 +15,10 @@ import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +28,11 @@ public class AuthService {
     private final JwtTokenService jwtTokenService;
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;
+    private final UserRepository userRepository;
+    private final PasswordResetTokenRepository resetTokenRepository;
+    private final EmailService emailService;
+    private final PasswordResetService passwordResetService;
+    private final PasswordEncoder passwordEncoder;
 
     public TokenResponseDto login(LoginRequest loginRequest) {
         String userEmail = loginRequest.email();
@@ -58,12 +70,47 @@ public class AuthService {
         return new TokenResponseDto(accessToken, refreshToken);
     }
 
-
     public String refreshAccessToken(String refreshToken) {
         if (jwtTokenService.validateToken(refreshToken, JwtTokenService.TokenType.REFRESH)) {
             String username = jwtTokenService.getUsernameFromToken(refreshToken, JwtTokenService.TokenType.REFRESH);
             return jwtTokenService.generateAccessToken(username);
         }
         throw new RestApiException(HttpStatus.UNAUTHORIZED, "Invalid refresh token");
+    }
+
+    public void forgotPassword(String email) {
+        userRepository.findByEmailIgnoreCase(email).ifPresent(user -> {
+
+            PasswordResetToken token = passwordResetService.createToken(user);
+
+            emailService.sendResetPasswordEmail(
+                    user.getEmail(),
+                    token.getToken()
+            );
+        });
+    }
+
+    public void validateResetToken(String token) {
+        PasswordResetToken resetToken = resetTokenRepository.findByToken(token)
+                .orElseThrow(() -> new RestApiException(
+                        HttpStatus.BAD_REQUEST,
+                        "Invalid reset token"
+                ));
+
+        if (resetToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new RestApiException(
+                    HttpStatus.BAD_REQUEST,
+                    "Reset token expired"
+            );
+        }
+    }
+
+    public void resetPassword(String token, String newPassword) {
+        PasswordResetToken resetToken = resetTokenRepository.findByToken(token)
+                .orElseThrow(() -> new RestApiException(HttpStatus.BAD_REQUEST, "Invalid reset token"));
+        AppUser user = resetToken.getUser();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        resetTokenRepository.delete(resetToken);
     }
 }
