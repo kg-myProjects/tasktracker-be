@@ -7,14 +7,12 @@ import de.upteams.tasktracker.project.service.interfaces.ProjectService;
 import de.upteams.tasktracker.security.service.AuthUserDetails;
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.taskstatus.dto.response.TaskStatusResponseDto;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
 
-/**
- * REST Controller that receives http-requests for various operations with Projects
- */
 @RestController
 public class ProjectController implements ProjectApi {
 
@@ -25,8 +23,8 @@ public class ProjectController implements ProjectApi {
     }
 
     @Override
-    public ProjectResponseDto save(ProjectCreateDto newProjectDto, AuthUserDetails principal) {
-        return service.save(newProjectDto, principal.user());
+    public ProjectResponseDto save(ProjectCreateDto dto, @AuthenticationPrincipal AuthUserDetails principal) {
+        return service.save(dto, principal.user());
     }
 
     @Override

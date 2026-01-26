@@ -25,7 +25,11 @@ import static de.upteams.tasktracker.security.constants.Constants.ACCESS_TOKEN_C
 
 @Component
 @RequiredArgsConstructor
+
 public class JwtTokenFilter extends OncePerRequestFilter {
+
+    private static final org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(JwtTokenFilter.class);
 
     private final CustomUserDetailsService userDetailsService;
     private final JwtTokenService jwtTokenService;
@@ -43,6 +47,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             try {
                 if (jwtTokenService.validateToken(token, tokenType)) {
                     final String username = jwtTokenService.getUsernameFromToken(token, tokenType);
+                    try{
                     final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                             userDetails,
@@ -52,7 +57,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                     auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(auth);
 
-                }
+                } catch (Exception ex){
+                        SecurityContextHolder.clearContext();
+                    logger.warn("JWT token is valid but user not found in DB: {}", username); }
+                    }
             } catch (ExpiredJwtException ex) {
                 SecurityContextHolder.clearContext();
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

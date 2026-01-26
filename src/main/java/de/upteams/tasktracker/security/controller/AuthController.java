@@ -1,5 +1,6 @@
 package de.upteams.tasktracker.security.controller;
 
+import de.upteams.tasktracker.exception.handling.exceptions.common.RestApiException;
 import de.upteams.tasktracker.security.dto.LoginRequest;
 import de.upteams.tasktracker.security.dto.request.ForgotPasswordRequestDto;
 import de.upteams.tasktracker.security.dto.request.ResetPasswordRequestDto;
@@ -60,13 +61,17 @@ public class AuthController implements AuthApi {
 
     private String extractRefreshTokenFromCookies(HttpServletRequest request) {
         if (request.getCookies() == null) {
-            throw new RuntimeException("No cookies found!");
+            throw new RestApiException(
+                    HttpStatus.UNAUTHORIZED,"No cookies found!"
+            );
         }
         return Arrays.stream(request.getCookies())
                 .filter(cookie -> REFRESH_TOKEN_COOKIE.equals(cookie.getName()))
                 .findFirst()
                 .map(Cookie::getValue)
-                .orElseThrow(() -> new RuntimeException("Refresh token not found!"));
+                .orElseThrow(() -> new RestApiException(
+                        HttpStatus.UNAUTHORIZED, "Refresh token not found!"
+                ));
     }
 
     @Override

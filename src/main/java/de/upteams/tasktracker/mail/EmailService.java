@@ -5,6 +5,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
+/**
+ * Service for email sending
+ */
 @Service
 @RequiredArgsConstructor
 public class EmailService {
@@ -13,28 +18,17 @@ public class EmailService {
     private String baseUrl;
 
     private final EmailSender emailSender;
+    private final TemplateEngine templateEngine;
 
     @Async
     public void sendConfirmationEmail(String sentTo, String confirmationCode) {
-        String confirmationLink =
-                "%s/api/v1/users/confirm/%s".formatted(baseUrl, confirmationCode);
+        String confirmationLink = "%s/api/v1/users/confirm-redirect/%s".formatted(baseUrl, confirmationCode);
 
-        String htmlContent = """
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Confirm Registration</title>
-                </head>
-                <body>
-                    <h1>Confirm Registration</h1>
-                    <p>Click the link below to confirm your registration:</p>
-                    <p>
-                        <a href="%s">Confirm Email</a>
-                    </p>
-                </body>
-                </html>
-                """.formatted(confirmationLink);
+        Map<String, Object> model = Map.of(
+                "link", confirmationLink
+        );
 
+        String htmlContent = templateEngine.generateHtml("confirm_registration_mail.ftlh", model);
         emailSender.sendEmail(sentTo, "Confirm your registration", htmlContent);
     }
 
