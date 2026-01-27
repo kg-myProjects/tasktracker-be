@@ -82,7 +82,16 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     }
 
     @Override
+    @Transactional
     public void delete(String id, AppUser changer) {
-      repository.deleteById(UUID.fromString(id));
-    }
+        TaskStatus status = repository.findById(UUID.fromString(id))
+                .orElseThrow(TaskStatusNotFoundException::new);
+
+        Project project = status.getProject();
+
+        if (project != null) {
+            project.getTaskStatuses().remove(status);
+        }
+
+        repository.delete(status);    }
 }

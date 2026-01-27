@@ -5,6 +5,7 @@ import de.upteams.tasktracker.taskstatus.dto.response.TaskStatusResponseDto;
 import de.upteams.tasktracker.taskstatus.entity.TaskStatus;
 import de.upteams.tasktracker.user.util.AppUserMapper;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
 @Mapper(
@@ -12,6 +13,7 @@ import org.mapstruct.MappingConstants;
         uses = {AppUserMapper.class, TaskMappingService.class}
 )
 public interface TaskStatusMappingService {
+    @Mapping(target = "project.projectTeam", ignore = true)
     TaskStatusResponseDto mapEntityToStatusDto(TaskStatus status);
 
 }
