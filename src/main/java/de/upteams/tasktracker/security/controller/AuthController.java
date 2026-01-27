@@ -2,6 +2,8 @@ package de.upteams.tasktracker.security.controller;
 
 import de.upteams.tasktracker.exception.handling.exceptions.common.RestApiException;
 import de.upteams.tasktracker.security.dto.LoginRequest;
+import de.upteams.tasktracker.security.dto.request.ForgotPasswordRequestDto;
+import de.upteams.tasktracker.security.dto.request.ResetPasswordRequestDto;
 import de.upteams.tasktracker.security.entities.TokenResponseDto;
 import de.upteams.tasktracker.security.service.AuthService;
 import de.upteams.tasktracker.security.service.AuthUserDetails;
@@ -44,8 +46,6 @@ public class AuthController implements AuthApi {
 
         return tokens;
     }
-
-
 
     @Override
     public TokenResponseDto refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
@@ -100,5 +100,20 @@ public class AuthController implements AuthApi {
                         .getAuthority(),
                 user.user().getConfirmationStatus()
         );
+    }
+
+    @Override
+    public void forgotPassword(ForgotPasswordRequestDto request) {
+        service.forgotPassword(request.email());
+    }
+
+    @Override
+    public void validateResetToken(String token) {
+        service.validateResetToken(token);
+    }
+
+    @Override
+    public void resetPassword(ResetPasswordRequestDto request) {
+        service.resetPassword(request.token(), request.newPassword());
     }
 }

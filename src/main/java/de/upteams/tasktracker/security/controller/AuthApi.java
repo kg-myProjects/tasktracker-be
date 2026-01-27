@@ -2,6 +2,8 @@ package de.upteams.tasktracker.security.controller;
 
 import de.upteams.tasktracker.exception.handling.response.ErrorResponseDto;
 import de.upteams.tasktracker.security.dto.LoginRequest;
+import de.upteams.tasktracker.security.dto.request.ForgotPasswordRequestDto;
+import de.upteams.tasktracker.security.dto.request.ResetPasswordRequestDto;
 import de.upteams.tasktracker.security.entities.TokenResponseDto;
 import de.upteams.tasktracker.security.service.AuthUserDetails;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
@@ -16,10 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Authorization API description for Swagger
@@ -121,5 +120,22 @@ public interface AuthApi {
     @GetMapping("/me")
     UserResponseDto getCurrentUser(
             @AuthenticationPrincipal AuthUserDetails user
+    );
+
+    @Operation(summary = "Forgot password")
+    @PostMapping("/forgot-password")
+    void forgotPassword(
+            @RequestBody @Valid ForgotPasswordRequestDto request
+    );
+
+    @Operation(summary = "Validate reset password token")
+    @GetMapping("/reset-password/validate")
+    void validateResetToken(
+            @RequestParam String token
+    );
+
+    @PostMapping("/reset-password")
+    void resetPassword(
+            @RequestBody @Valid ResetPasswordRequestDto request
     );
 }

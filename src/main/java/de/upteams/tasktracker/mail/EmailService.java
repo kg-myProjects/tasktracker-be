@@ -31,4 +31,30 @@ public class EmailService {
         String htmlContent = templateEngine.generateHtml("confirm_registration_mail.ftlh", model);
         emailSender.sendEmail(sentTo, "Confirm your registration", htmlContent);
     }
+
+    @Async
+    public void sendResetPasswordEmail(String sentTo, String token) {
+        String resetLink =
+                "%s/reset-password?token=%s".formatted(baseUrl, token);
+
+        String htmlContent = """
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Password Reset</title>
+                </head>
+                <body>
+                    <h1>Password Reset</h1>
+                    <p>You requested a password reset.</p>
+                    <p>Click the link below to set a new password:</p>
+                    <p>
+                        <a href="%s">Reset Password</a>
+                    </p>
+                    <p>If you did not request this, please ignore this email.</p>
+                </body>
+                </html>
+                """.formatted(resetLink);
+
+        emailSender.sendEmail(sentTo, "Reset your password", htmlContent);
+    }
 }
