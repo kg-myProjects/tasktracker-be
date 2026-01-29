@@ -1,5 +1,6 @@
 package de.upteams.tasktracker.task.service.impl;
 
+import de.upteams.tasktracker.collaborator.entity.Collaborator;
 import de.upteams.tasktracker.collaborator.entity.ProjectRoles;
 import de.upteams.tasktracker.collaborator.service.interfaces.CollaboratorService;
 import de.upteams.tasktracker.exception.handling.exceptions.common.RestApiException;
@@ -123,4 +124,31 @@ public class TaskServiceImpl implements TaskService {
         }
         repository.delete(existedTask);
     }
+
+
+    @Override
+    @Transactional
+    public TaskResponseDto addExecutor(String taskId, String collaboratorId, AppUser authUser) {
+        Task task = getOrThrow(taskId);
+
+        boolean hasPermission = collaboratorService.hasUserPermission(
+                authUser, task.getProject(),
+                List.of(ProjectRoles.OWNER, ProjectRoles.ADMIN, ProjectRoles.MEMBER));
+
+        if (!hasPermission) {
+            throw new RestApiException(HttpStatus.FORBIDDEN, "No permission to assign executors");
+        }
+
+        Collaborator collaborator = collaboratorService.findById(UUID.fromString(collaboratorId));
+
+        if (!collaborator.getProject().getId().equals(task.getProject().getId())) {
+            throw new RestApiException(HttpStatus.BAD_REQUEST, "Collaborator belongs to another project");
+        }
+
+        task.getExecutors().add(collaborator);
+
+        return mappingService.mapEntityToDto(repository.save(task));
+    }
+
+
 }

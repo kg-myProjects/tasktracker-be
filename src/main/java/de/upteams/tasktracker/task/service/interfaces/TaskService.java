@@ -23,4 +23,7 @@ public interface TaskService {
     Optional<Task> findById(String id);
 
     void delete(String id, AppUser changer);
+
+    TaskResponseDto addExecutor(String taskId, String collaboratorId, AppUser authUser);
+
 }
