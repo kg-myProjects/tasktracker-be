@@ -11,7 +11,7 @@ import org.mapstruct.NullValueCheckStrategy;
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface CollaboratorMapper {
 
-    @Mapping(target = "userId", expression = "java(entity.getAppUser().getId().toString())")
+    @Mapping(target = "userId", expression = "java(entity.getId().toString())")
     @Mapping(target = "email", source = "appUser.email")
     @Mapping(target = "roles", source = "projectRolesSet")
     CollaboratorShortResponseDto mapEntityToShortDto(Collaborator entity);

@@ -1,5 +1,6 @@
 package de.upteams.tasktracker.collaborator.service.impl;
 
+import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortResponseDto;
 import de.upteams.tasktracker.collaborator.entity.Collaborator;
 import de.upteams.tasktracker.collaborator.entity.ProjectRoles;
 import de.upteams.tasktracker.collaborator.persistence.CollaboratorRepository;
@@ -10,9 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -43,10 +42,33 @@ public class CollaboratorServiceImpl implements CollaboratorService {
                 .orElse(false);
     }
 
+    @Override
+    public Collaborator findById(UUID id) {
+        return collaboratorRepository.findById(id)
+                .orElseThrow(() -> new de.upteams.tasktracker.exception.handling.exceptions.common.RestApiException(
+                        org.springframework.http.HttpStatus.NOT_FOUND,
+                        "Collaborator not found with id: " + id));
+    }
+
+
     private boolean hasAnyRequiredRole(Collaborator collaborator, Collection<ProjectRoles> requiredRoles) {
         return collaborator.getProjectRolesSet()
                 .stream()
                 .anyMatch(requiredRoles::contains);
+    }
+
+    @Override
+    public List<CollaboratorShortResponseDto> findByProjectId(String projectId, AppUser authUser) {
+
+        List<Collaborator> collaborators = collaboratorRepository.findAllByProjectId(UUID.fromString(projectId));
+
+        return collaborators.stream()
+                .map(c -> new CollaboratorShortResponseDto(
+                        c.getId().toString(),
+                        c.getAppUser().getEmail(),
+                        c.getProjectRolesSet()
+                ))
+                .toList();
     }
 
 }
