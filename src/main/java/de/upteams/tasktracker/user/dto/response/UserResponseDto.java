@@ -26,5 +26,11 @@ public record UserResponseDto(
                 example     = "UNCONFIRMED",
                 accessMode  = Schema.AccessMode.READ_ONLY
         )
-        ConfirmationStatus confirmationStatus
+        ConfirmationStatus confirmationStatus,
+
+        @Schema(description = "User nickname", example="Nikita")
+        String nickname,
+
+        @Schema(description = "Avatar url", example = "/uploads/avatars/uuid.png")
+        String avatarUrl
 ) {}

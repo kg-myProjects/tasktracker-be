@@ -1,7 +1,9 @@
 package de.upteams.tasktracker.user.service;
 
+import de.upteams.tasktracker.user.dto.request.UpdateProfileRequest;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
 import de.upteams.tasktracker.user.entity.AppUser;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,4 +22,10 @@ public interface UserService {
     AppUser getByIdOrThrow(String id);
 
     List<UserResponseDto> getAll();
+
+    UserResponseDto getMe();
+
+    UserResponseDto updateNickname(String nickname);
+
+    UserResponseDto updateAvatar(MultipartFile file);
 }

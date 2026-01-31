@@ -36,15 +36,21 @@ public class GlobalExceptionHandler {
             RestApiException ex,
             HttpServletRequest request
     ) {
+        HttpStatus status = ex.getHttpStatus(); // здесь нормальный HttpStatus
+        String message = ex.getMessage();
+        if (status == HttpStatus.UNAUTHORIZED && "No cookies found!".equals(message)) {
+            message = "Authorization required: token missing";
+        }
+
         ErrorResponseDto errorResponse = new ErrorResponseDto(
                 LocalDateTime.now(),
-                ex.getHttpStatus().value(),
-                ex.getHttpStatus().getReasonPhrase(),
-                ex.getMessage(),
+                status.value(),
+                status.getReasonPhrase(),
+                message,
                 List.of(),
                 request.getRequestURI()
         );
-        log.error("RestApi exception caught: {}.", ExceptionUtils.getMessage(ex), ex);
+        log.info("RestApi exception caught: {}.", ExceptionUtils.getMessage(ex), ex);
         return new ResponseEntity<>(errorResponse, ex.getHttpStatus());
     }
 
@@ -82,6 +88,8 @@ public class GlobalExceptionHandler {
                     "value", String.valueOf(ex.getValue())
             );
         }
+
+
 
 
 //    *

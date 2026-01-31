@@ -15,6 +15,7 @@ import de.upteams.tasktracker.user.dto.EmployeeDto;
 )
 public interface AppUserMapper {
 
+
     UserResponseDto mapEntityToDto(AppUser entity);
 
     @Mapping(target = "id", source = "id")

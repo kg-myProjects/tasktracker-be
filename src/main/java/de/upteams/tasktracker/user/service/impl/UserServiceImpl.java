@@ -10,6 +10,15 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,6 +32,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
     private final AppUserMapper mappingService;
+    private static final Path AVATAR_DIR = Paths.get("uploads", "avatars");
 
     @Override
     public AppUser saveOrUpdate(final AppUser user) {
@@ -58,4 +68,56 @@ public class UserServiceImpl implements UserService {
                 .map(mappingService::mapEntityToDto)
                 .toList();
     }
+    @Transactional
+    public UserResponseDto getMe(){
+        AppUser user = getCurrentUserOrThrow();
+        return mappingService.mapEntityToDto(user);
+    }
+    @Transactional
+    public UserResponseDto updateNickname(String nickname){
+        AppUser user = getCurrentUserOrThrow();
+        user.setNickname(nickname);
+        AppUser saved = repository.save(user);
+        return mappingService.mapEntityToDto(saved);
+    }
+    @Transactional
+    public UserResponseDto updateAvatar(MultipartFile file) {
+        if(file==null || file.isEmpty()) {
+            throw new IllegalArgumentException("File is empty");
+        }
+        AppUser user = getCurrentUserOrThrow();
+        try{Files.createDirectories(AVATAR_DIR);
+            String originalName = file.getOriginalFilename();
+            String ext = (originalName != null && originalName.contains("."))
+                    ? originalName.substring(originalName.lastIndexOf("."))
+                    : ".png";
+
+            String filename = user.getId() + ext;
+            Path target = AVATAR_DIR.resolve(filename);
+
+            Files.write(target, file.getBytes());
+
+            String avatarUrl = "/uploads/avatars/" + filename;
+
+            user.setAvatarUrl(avatarUrl);
+            AppUser saved = repository.save(user);
+
+            return mappingService.mapEntityToDto(saved);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save avatar", e);
+        }
+    }
+    private AppUser getCurrentUserOrThrow() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getName() == null) {
+            throw new UserNotFoundException();
+        }
+
+        String email = auth.getName();
+        return repository.findByEmailIgnoreCase(email)
+                .orElseThrow(UserNotFoundException::new);
+    }
 }
+
+

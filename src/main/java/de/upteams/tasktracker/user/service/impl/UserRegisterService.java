@@ -79,7 +79,9 @@ public class UserRegisterService {
         return new UserResponseDto(
                 registeredUser.getEmail(),
                 registeredUser.getRole().name(),
-                registeredUser.getConfirmationStatus()
+                registeredUser.getConfirmationStatus(),
+                registeredUser.getNickname(),
+                registeredUser.getAvatarUrl()
         );
     }
 }
