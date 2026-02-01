@@ -1,10 +1,13 @@
 package de.upteams.tasktracker.project.service.interfaces;
 
 import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortResponseDto;
+import de.upteams.tasktracker.marker.dto.request.MarkerCreateDto;
+import de.upteams.tasktracker.marker.dto.response.MarkerResponseDto;
 import de.upteams.tasktracker.project.dto.request.InviteRequestDto;
 import de.upteams.tasktracker.project.dto.request.ProjectCreateDto;
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
 import de.upteams.tasktracker.project.entity.Project;
+import de.upteams.tasktracker.security.service.AuthUserDetails;
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.taskstatus.dto.response.TaskStatusResponseDto;
 import de.upteams.tasktracker.user.entity.AppUser;
@@ -26,11 +29,16 @@ public interface ProjectService {
     List<ProjectResponseDto> getAll();
 
     List<TaskStatusResponseDto> getAllStatusByProjectId(UUID id);
+
     List<TaskResponseDto> getAllTasksByProject(UUID id);
+
+    List<MarkerResponseDto> getMarkersByProjectId(UUID id);
 
 
     void delete(String id);
 
     CollaboratorShortResponseDto inviteUser(InviteRequestDto inviteDto, UUID projectId);
+
+    MarkerResponseDto createMarker(MarkerCreateDto dto, UUID projectId, AppUser authUser);
 
 }

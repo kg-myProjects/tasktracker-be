@@ -1,6 +1,7 @@
 package de.upteams.tasktracker.project.dto.response;
 
 import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortResponseDto;
+import de.upteams.tasktracker.marker.dto.response.MarkerResponseDto;
 import de.upteams.tasktracker.user.dto.EmployeeDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -42,5 +43,9 @@ public record ProjectResponseDto(
         @Schema(
                 description = "Detailed description of the Project",
                 accessMode = Schema.AccessMode.READ_ONLY)
-        Set<CollaboratorShortResponseDto> projectTeam
-        ) {}
+        Set<CollaboratorShortResponseDto> projectTeam,
+        @Schema(
+                description = "List of Markers assigned to this Task",
+                accessMode = Schema.AccessMode.READ_ONLY
+        )
+        Set<MarkerResponseDto> markers) {}

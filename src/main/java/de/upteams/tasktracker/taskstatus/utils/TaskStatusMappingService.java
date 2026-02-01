@@ -14,6 +14,7 @@ import org.mapstruct.MappingConstants;
 )
 public interface TaskStatusMappingService {
     @Mapping(target = "project.projectTeam", ignore = true)
+    @Mapping(target = "project.markers", ignore = true)
     TaskStatusResponseDto mapEntityToStatusDto(TaskStatus status);
 
 }

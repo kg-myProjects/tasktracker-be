@@ -1,6 +1,9 @@
 package de.upteams.tasktracker.task.dto.response;
 
+import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortResponseDto;
+import de.upteams.tasktracker.marker.dto.response.MarkerResponseDto;
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
+import de.upteams.tasktracker.task.dto.request.ChecklistItemDto;
 import de.upteams.tasktracker.taskstatus.dto.response.TaskStatusResponseDto;
 import de.upteams.tasktracker.user.dto.EmployeeDto;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -8,6 +11,7 @@ import lombok.Getter;
 import lombok.Value;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -48,6 +52,17 @@ public class TaskResponseDto {
             description = "List of Users assigned to this Task",
             accessMode = Schema.AccessMode.READ_ONLY
     )
-    Set<EmployeeDto> executors = new HashSet<>();
+    Set<CollaboratorShortResponseDto> executors = new HashSet<>();
 
+    @Schema(
+            description = "List of Markers assigned to this Task",
+            accessMode = Schema.AccessMode.READ_ONLY
+    )
+    Set<MarkerResponseDto> markers;
+
+    @Schema(
+            description = "List of ChecklistItem  of this Task",
+            accessMode = Schema.AccessMode.READ_ONLY
+    )
+    List<ChecklistItemDto> checklist;
 }
