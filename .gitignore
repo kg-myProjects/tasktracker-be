@@ -67,3 +67,4 @@ Thumbs.db                             # Windows Explorer
 build/
 out/
 db_data/
+uploads/

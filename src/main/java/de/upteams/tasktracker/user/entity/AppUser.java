@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.ColumnDefault;
+import jakarta.persistence.Column;
 
 /**
  * Application User entity
@@ -32,6 +33,12 @@ public class AppUser extends BaseEntity {
             columnDefinition = "VARCHAR(255) COLLATE ascii_bin"
     )
     private String email;
+
+    @Column(name = "nickname")
+    private String nickname;
+
+    @Column (name = "avatar_url", length =512)
+    private String avatarUrl;
 
     @NotNull(message = "{field.notNull}")
     @Column(name = "confirm_status", nullable = false)
