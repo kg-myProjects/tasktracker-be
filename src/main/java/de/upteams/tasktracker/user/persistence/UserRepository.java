@@ -13,4 +13,5 @@ public interface UserRepository extends JpaRepository<AppUser, UUID> {
 
     @Query("select a from AppUser a where upper(a.email) = upper(?1)")
     Optional<AppUser> findByEmailIgnoreCase(String email);
+    Optional<AppUser> findByEmail(String email);
 }
