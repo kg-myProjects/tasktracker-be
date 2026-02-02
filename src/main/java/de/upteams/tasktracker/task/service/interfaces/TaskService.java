@@ -24,6 +24,4 @@ public interface TaskService {
 
     void delete(String id, AppUser changer);
 
-    TaskResponseDto addExecutor(String taskId, String collaboratorId, AppUser authUser);
-
 }

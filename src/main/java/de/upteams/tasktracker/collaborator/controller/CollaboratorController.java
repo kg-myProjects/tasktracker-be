@@ -23,8 +23,4 @@ public class CollaboratorController implements CollaboratorApi {
         return collaboratorService.findByProjectId(projectId, principal.user());
     }
 
-    @Override
-    public TaskResponseDto addExecutor(String collaboratorId, String taskId, AuthUserDetails principal) {
-        return taskService.addExecutor(taskId, collaboratorId, principal.user());
-    }
 }

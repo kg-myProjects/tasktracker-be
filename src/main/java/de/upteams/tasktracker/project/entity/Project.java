@@ -3,6 +3,7 @@ package de.upteams.tasktracker.project.entity;
 import de.upteams.tasktracker.collaborator.entity.Collaborator;
 import de.upteams.tasktracker.project.constants.ProjectValidationConstats;
 import de.upteams.tasktracker.task.entity.Task;
+import de.upteams.tasktracker.marker.entity.Marker;
 import de.upteams.tasktracker.taskstatus.entity.TaskStatus;
 import de.upteams.tasktracker.user.entity.AppUser;
 import de.upteams.tasktracker.utils.BaseEntity;
@@ -57,6 +58,11 @@ public class Project extends BaseEntity {
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private final Set<Task> tasks = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final Set<Marker> markers = new HashSet<>();
+
 
     public Project(String title, String description, AppUser owner) {
         this.title = title;

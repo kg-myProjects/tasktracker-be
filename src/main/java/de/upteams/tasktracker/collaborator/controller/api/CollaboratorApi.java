@@ -48,32 +48,4 @@ public interface CollaboratorApi {
             @AuthenticationPrincipal @Parameter(hidden = true) AuthUserDetails principal
     );
 
-    @Operation(summary = "Assign collaborator to task", description = "Links a project member to a specific task as an executor")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Collaborator successfully assigned",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = TaskResponseDto.class),
-                            examples = @ExampleObject(value = """
-                                    {
-                                      "id": "task-5",
-                                      "title": "Fix bug",
-                                      "executors": [
-                                        { "id": "uuid-1", "email": "dev@upteams.de" }
-                                      ]
-                                    }
-                                    """))
-            ),
-            @ApiResponse(responseCode = "404", description = "Task or Collaborator not found",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponseDto.class))),
-            @ApiResponse(responseCode = "400", description = "Collaborator does not belong to the task's project",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponseDto.class)))
-    })
-    @PostMapping("/{collaboratorId}/tasks/{taskId}")
-    TaskResponseDto addExecutor(
-            @PathVariable @Parameter(description = "ID of the collaborator") String collaboratorId,
-            @PathVariable @Parameter(description = "ID of the task") String taskId,
-            @AuthenticationPrincipal @Parameter(hidden = true) AuthUserDetails principal
-    );
 }

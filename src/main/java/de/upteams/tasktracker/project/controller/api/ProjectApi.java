@@ -3,6 +3,8 @@ package de.upteams.tasktracker.project.controller.api;
 import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortResponseDto;
 import de.upteams.tasktracker.exception.handling.response.ErrorResponseDto;
 import de.upteams.tasktracker.exception.handling.response.ValidationErrorDto;
+import de.upteams.tasktracker.marker.dto.request.MarkerCreateDto;
+import de.upteams.tasktracker.marker.dto.response.MarkerResponseDto;
 import de.upteams.tasktracker.project.dto.request.InviteRequestDto;
 import de.upteams.tasktracker.project.dto.request.ProjectCreateDto;
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
@@ -199,5 +201,31 @@ public interface ProjectApi {
             AuthUserDetails principal
     );
 
+    @Operation(summary = "Get all markers for project")
+    @GetMapping("/{id}/markers")
+    List<MarkerResponseDto> getMarkersByProjectId(
+            @PathVariable
+            @Parameter(required = true, description = "ID of the project to invite to")
+            UUID id);
+
+
+    @Operation(summary = "Create new marker for project")
+    @PostMapping("/{projectId}/markers")
+    MarkerResponseDto createMarker(
+               @RequestBody
+               @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                       required = true,
+                       description = "Instance of Project to save"
+               )
+
+               @Valid MarkerCreateDto dto,
+
+            @PathVariable
+            @Parameter(required = true, description = "ID of the project to invite to")
+            UUID projectId,
+
+            @AuthenticationPrincipal
+            @Parameter(hidden = true)
+            AuthUserDetails principal);
 
 }

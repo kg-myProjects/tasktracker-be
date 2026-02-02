@@ -1,6 +1,8 @@
 package de.upteams.tasktracker.project.controller;
 
 import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortResponseDto;
+import de.upteams.tasktracker.marker.dto.request.MarkerCreateDto;
+import de.upteams.tasktracker.marker.dto.response.MarkerResponseDto;
 import de.upteams.tasktracker.project.controller.api.ProjectApi;
 import de.upteams.tasktracker.project.dto.request.InviteRequestDto;
 import de.upteams.tasktracker.project.dto.request.ProjectCreateDto;
@@ -56,8 +58,17 @@ public class ProjectController implements ProjectApi {
 
     @Override
     public CollaboratorShortResponseDto inviteUser(InviteRequestDto inviteDto, UUID id, AuthUserDetails principal) {
-        // Здесь вызывается метод сервиса, который мы обсуждали ранее
      return    service.inviteUser(inviteDto, id);
+    }
+
+    @Override
+    public List<MarkerResponseDto> getMarkersByProjectId(UUID projectId) {
+        return service.getMarkersByProjectId(projectId);
+    }
+
+    @Override
+    public MarkerResponseDto createMarker(MarkerCreateDto dto, UUID projectId, @AuthenticationPrincipal AuthUserDetails principal) {
+        return service.createMarker(dto, projectId, principal.user());
     }
 
 

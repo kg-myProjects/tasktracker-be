@@ -2,12 +2,16 @@ package de.upteams.tasktracker.task.service.impl;
 
 import de.upteams.tasktracker.collaborator.entity.Collaborator;
 import de.upteams.tasktracker.collaborator.entity.ProjectRoles;
+import de.upteams.tasktracker.collaborator.persistence.CollaboratorRepository;
 import de.upteams.tasktracker.collaborator.service.interfaces.CollaboratorService;
 import de.upteams.tasktracker.exception.handling.exceptions.common.RestApiException;
+import de.upteams.tasktracker.marker.entity.Marker;
+import de.upteams.tasktracker.marker.persistence.MarkerRepository;
 import de.upteams.tasktracker.project.entity.Project;
 import de.upteams.tasktracker.project.persistence.ProjectRepository;
 import de.upteams.tasktracker.task.dto.request.TaskCreateDto;
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
+import de.upteams.tasktracker.task.entity.ChecklistItem;
 import de.upteams.tasktracker.task.entity.Task;
 import de.upteams.tasktracker.taskstatus.entity.TaskStatus;
 import de.upteams.tasktracker.task.exception.InvalidTaskPayloadException;
@@ -23,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,6 +38,8 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository repository;
     private final TaskStatusRepository taskStatusRepository;
     private final ProjectRepository projectRepository;
+    private final MarkerRepository markerRepository;
+    private final CollaboratorRepository collaboratorRepository;
     private final TaskMappingService mappingService;
     private final CollaboratorService collaboratorService;
 
@@ -58,7 +65,7 @@ public class TaskServiceImpl implements TaskService {
         task.setDescription(dto.getDescription() == null ? "" : dto.getDescription());
         task.setStatus(status);
         task.setProject(project);
-        
+
         return mappingService.mapEntityToDto(repository.save(task));
     }
 
@@ -82,8 +89,60 @@ public class TaskServiceImpl implements TaskService {
                     .orElseThrow(() -> new InvalidTaskPayloadException("Status not found"));
             task.setStatus(status);
         }
+        if (dto.getExecutorIds() != null) {
+            List<UUID> executorUuids = dto.getExecutorIds().stream()
+                    .filter(Objects::nonNull)
+                    .filter(idp -> !idp.isBlank())
+                    .map(UUID::fromString).toList();
 
-        return mappingService.mapEntityToDto(repository.save(task));
+            List<Collaborator> collaborators = collaboratorRepository.findAllById(executorUuids);
+
+            task.getExecutors().clear();
+            task.getExecutors().addAll(collaborators);
+        }
+
+        if (dto.getMarkerIds() != null) {
+            List<UUID> markerUuids = dto.getMarkerIds().stream()
+                    .filter(Objects::nonNull)
+                    .filter(idStr -> !idStr.isBlank())
+                    .map(UUID::fromString).toList();
+
+            List<Marker> markers = markerRepository.findAllById(markerUuids);
+
+            task.getMarkers().clear();
+            task.getMarkers().addAll(markers);
+        }
+
+        if (dto.getChecklist() != null) {
+            List<ChecklistItem> currentChecklist = task.getChecklist();
+
+            List<ChecklistItem> updatedItems = dto.getChecklist().stream()
+                    .map(itemDto -> {
+                        ChecklistItem item;
+                        if (itemDto.id() != null && !itemDto.id().isBlank()) {
+
+                            item = currentChecklist.stream()
+                                    .filter(existing -> existing.getId().toString().equals(itemDto.id()))
+                                    .findFirst()
+                                    .orElse(new ChecklistItem());
+                        } else {
+                            item = new ChecklistItem();
+                        }
+
+                        item.setText(itemDto.text());
+                        item.setCompleted(itemDto.completed());
+                        item.setTask(task);
+                        return item;
+                    }).toList();
+
+            currentChecklist.clear();
+            currentChecklist.addAll(updatedItems);
+        }
+
+
+        Task savedTask = repository.saveAndFlush(task);
+        return mappingService.mapEntityToDto(savedTask);
+
     }
 
     @Override
@@ -115,8 +174,8 @@ public class TaskServiceImpl implements TaskService {
     public void delete(String id, AppUser changer) {
         Task existedTask = getOrThrow(id);
         boolean hasPermission = collaboratorService.hasUserPermission(
-                changer, 
-                existedTask.getProject(), 
+                changer,
+                existedTask.getProject(),
                 List.of(ProjectRoles.OWNER, ProjectRoles.ADMIN)
         );
         if (!hasPermission) {
@@ -124,31 +183,5 @@ public class TaskServiceImpl implements TaskService {
         }
         repository.delete(existedTask);
     }
-
-
-    @Override
-    @Transactional
-    public TaskResponseDto addExecutor(String taskId, String collaboratorId, AppUser authUser) {
-        Task task = getOrThrow(taskId);
-
-        boolean hasPermission = collaboratorService.hasUserPermission(
-                authUser, task.getProject(),
-                List.of(ProjectRoles.OWNER, ProjectRoles.ADMIN, ProjectRoles.MEMBER));
-
-        if (!hasPermission) {
-            throw new RestApiException(HttpStatus.FORBIDDEN, "No permission to assign executors");
-        }
-
-        Collaborator collaborator = collaboratorService.findById(UUID.fromString(collaboratorId));
-
-        if (!collaborator.getProject().getId().equals(task.getProject().getId())) {
-            throw new RestApiException(HttpStatus.BAD_REQUEST, "Collaborator belongs to another project");
-        }
-
-        task.getExecutors().add(collaborator);
-
-        return mappingService.mapEntityToDto(repository.save(task));
-    }
-
 
 }

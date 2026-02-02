@@ -4,7 +4,14 @@ import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortRespons
 import de.upteams.tasktracker.collaborator.entity.Collaborator;
 import de.upteams.tasktracker.collaborator.entity.ProjectRoles;
 import de.upteams.tasktracker.collaborator.persistence.CollaboratorRepository;
+import de.upteams.tasktracker.collaborator.service.interfaces.CollaboratorService;
 import de.upteams.tasktracker.collaborator.utils.CollaboratorMapper;
+import de.upteams.tasktracker.exception.handling.exceptions.common.RestApiException;
+import de.upteams.tasktracker.marker.dto.request.MarkerCreateDto;
+import de.upteams.tasktracker.marker.dto.response.MarkerResponseDto;
+import de.upteams.tasktracker.marker.entity.Marker;
+import de.upteams.tasktracker.marker.persistence.MarkerRepository;
+import de.upteams.tasktracker.marker.utils.MarkerMapper;
 import de.upteams.tasktracker.project.dto.request.InviteRequestDto;
 import de.upteams.tasktracker.project.dto.request.ProjectCreateDto;
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
@@ -14,6 +21,7 @@ import de.upteams.tasktracker.project.exception.ProjectNotFoundException;
 import de.upteams.tasktracker.project.persistence.ProjectRepository;
 import de.upteams.tasktracker.project.service.interfaces.ProjectService;
 import de.upteams.tasktracker.project.utils.ProjectMapper;
+import de.upteams.tasktracker.security.service.AuthUserDetails;
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.task.persistence.TaskRepository;
 import de.upteams.tasktracker.task.utils.TaskMappingService;
@@ -25,6 +33,8 @@ import de.upteams.tasktracker.user.exception.UserNotFoundException;
 import de.upteams.tasktracker.user.persistence.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -47,8 +57,11 @@ public class ProjectServiceImpl implements ProjectService {
     private final TaskMappingService taskMappingService;
     private final ProjectMapper mappingService;
     private final CollaboratorRepository collaboratorRepository;
+    private final CollaboratorService collaboratorService;
     private final UserRepository userRepository;
     private final CollaboratorMapper collaboratorMapper;
+    private final MarkerRepository markerRepository;
+    private final MarkerMapper markerMapper;
 
     @Override
     @Transactional
@@ -120,6 +133,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public List<MarkerResponseDto> getMarkersByProjectId(UUID id) {
+        final Project project = getOrTrow(id);
+        return markerRepository
+                .findAllByProjectId(id)
+                .stream()
+                .map(markerMapper::mapEntityToDto)
+                .toList();
+    }
+
+    @Override
     public void delete(String id) {
         repository.deleteById(UUID.fromString(id));
     }
@@ -148,4 +171,27 @@ public class ProjectServiceImpl implements ProjectService {
         Collaborator saved = collaboratorRepository.save(collaborator);
         return collaboratorMapper.mapEntityToShortDto(saved);
     }
+
+
+    @Override
+    @Transactional
+    public MarkerResponseDto createMarker(MarkerCreateDto dto, UUID projectId, AppUser authUser) {
+        Project project = getOrTrow(projectId);
+
+        boolean canView = collaboratorService.hasUserPermission(
+                authUser,
+                project,
+                List.of(ProjectRoles.OWNER, ProjectRoles.ADMIN, ProjectRoles.MEMBER, ProjectRoles.VIEWER)
+        );
+
+        if (!canView) {
+            throw new RestApiException(HttpStatus.FORBIDDEN, "You don't have access to view this task");
+        }
+
+        Marker marker = markerMapper.mapDtoToEntity(dto);
+        marker.setProject(project);
+        Marker savedMarker = markerRepository.save(marker);
+        return markerMapper.mapEntityToDto(savedMarker);
+    }
+
 }

@@ -1,28 +1,27 @@
 package de.upteams.tasktracker.task.dto.request;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Value;
 
+import java.util.List;
 
-/**
- * Task DTO
- */
 @Schema(description = "Data Transfer Object for Task entity")
 @Getter
 @Value
 public class TaskCreateDto {
 
-//   @Schema(
-//                description = "Unique identifier of the Task",
-//                example = "5",
-//                accessMode = Schema.AccessMode.READ_ONLY
-//        )
-//        String id;
+    @Schema(
+            description = "Unique identifier of the Task",
+            example = "5",
+            accessMode = Schema.AccessMode.READ_ONLY
+    )
+    String id;
 
     @Schema(description = "Title of the Task", example = "Implement repository layer")
-    @NotBlank(message = "must not be blank" )
+    @NotBlank(message = "must not be blank")
     String title;
 
     @Schema(
@@ -38,12 +37,17 @@ public class TaskCreateDto {
 
     @Schema(description = "Id of the project of the task", example = "06753a51-51de-4a04-8d75-2b96cc5a7f92")
     @NotNull
-    String  projectId;
+    String projectId;
 
-//    @Schema(
-//            description = "List of Users assigned to this Task",
-//            accessMode = Schema.AccessMode.READ_ONLY
-//    )
-//    Set<EmployeeDto> executors = new HashSet<>();
+    @Schema(
+            description = "List of User Ids assigned to this Task")
+    List<String> executorIds;
 
+    @Schema(
+            description = "List of marker IDs assigned to this task")
+    List<String> markerIds;
+
+    @Schema(
+            description = "List of checklist of this task")
+    List<ChecklistItemDto> checklist;
 }
