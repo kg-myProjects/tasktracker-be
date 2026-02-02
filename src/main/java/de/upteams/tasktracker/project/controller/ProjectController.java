@@ -52,8 +52,8 @@ public class ProjectController implements ProjectApi {
     }
 
     @Override
-    public void deleteById(String id) {
-        service.delete(id);
+    public void deleteById(String id, @AuthenticationPrincipal AuthUserDetails principal) {
+        service.delete(id, principal.user());
     }
 
     @Override
