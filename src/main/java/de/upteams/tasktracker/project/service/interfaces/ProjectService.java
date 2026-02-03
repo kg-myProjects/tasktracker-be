@@ -35,7 +35,7 @@ public interface ProjectService {
     List<MarkerResponseDto> getMarkersByProjectId(UUID id);
 
 
-    void delete(String id);
+    void delete(String id, AppUser projectOwner);
 
     CollaboratorShortResponseDto inviteUser(InviteRequestDto inviteDto, UUID projectId);
 

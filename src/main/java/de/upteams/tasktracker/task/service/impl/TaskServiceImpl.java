@@ -171,6 +171,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public void delete(String id, AppUser changer) {
         Task existedTask = getOrThrow(id);
         boolean hasPermission = collaboratorService.hasUserPermission(
@@ -181,7 +182,8 @@ public class TaskServiceImpl implements TaskService {
         if (!hasPermission) {
             throw new RestApiException(HttpStatus.FORBIDDEN, "No delete permission");
         }
-        repository.delete(existedTask);
+        Project project = existedTask.getProject();
+        project.getTasks().remove(existedTask);
     }
 
 }

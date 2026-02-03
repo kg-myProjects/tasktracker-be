@@ -172,7 +172,10 @@ public interface ProjectApi {
     void deleteById(
             @PathVariable
             @Parameter(required = true, description = "Project ID to delete")
-            String id
+            String id,
+            @AuthenticationPrincipal
+            @Parameter(hidden = true)
+            AuthUserDetails principal
     );
 
     @Operation(summary = "Invite User to Project", description = "Add a new collaborator to the project by email and assign a role")

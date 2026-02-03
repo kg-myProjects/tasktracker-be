@@ -143,8 +143,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void delete(String id) {
-        repository.deleteById(UUID.fromString(id));
+    @Transactional
+    public void delete(String id, AppUser projectOwner) {
+        Project project = repository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new RestApiException(HttpStatus.NOT_FOUND, "Project not found"));
+
+        if (!project.getOwner().getId().equals(projectOwner.getId())) {
+            throw new RestApiException(HttpStatus.FORBIDDEN, "Only the owner can delete the project");
+        }
+
+        repository.delete(project);
     }
 
     @Override
