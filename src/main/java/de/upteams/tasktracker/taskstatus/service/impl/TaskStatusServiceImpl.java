@@ -1,5 +1,7 @@
 package de.upteams.tasktracker.taskstatus.service.impl;
 
+import de.upteams.tasktracker.audit.annotation.Auditable;
+import de.upteams.tasktracker.audit.utils.AuditLogAction;
 import de.upteams.tasktracker.project.entity.Project;
 import de.upteams.tasktracker.project.persistence.ProjectRepository;
 import de.upteams.tasktracker.taskstatus.dto.request.TaskStatusCreateDto;
@@ -16,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,6 +31,7 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     
     @Override
     @Transactional
+    @Auditable(entity = "Status", action = AuditLogAction.CREATE)
     public TaskStatusResponseDto save(TaskStatusCreateDto dto) {
         Project project = projectRepository.findByIdWithTeam(UUID.fromString(dto.getProjectId())
         ).orElseThrow(() ->
@@ -83,6 +85,12 @@ public class TaskStatusServiceImpl implements TaskStatusService {
 
     @Override
     @Transactional
+    @Auditable(
+            entity = "Status",
+            action = AuditLogAction.DELETE,
+            nameField = "name",
+            entityClass = TaskStatus.class
+    )
     public void delete(String id, AppUser changer) {
         TaskStatus status = repository.findById(UUID.fromString(id))
                 .orElseThrow(TaskStatusNotFoundException::new);
