@@ -13,6 +13,7 @@ import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.taskstatus.dto.response.TaskStatusResponseDto;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RestController;
+import de.upteams.tasktracker.project.dto.response.ProjectLogDto;
 
 import java.util.List;
 import java.util.UUID;
@@ -64,6 +65,11 @@ public class ProjectController implements ProjectApi {
     @Override
     public List<MarkerResponseDto> getMarkersByProjectId(UUID projectId) {
         return service.getMarkersByProjectId(projectId);
+    }
+
+    @Override
+    public List<ProjectLogDto> getProjectLogs(UUID id) {
+        return service.getProjectLogs(id);
     }
 
     @Override

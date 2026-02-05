@@ -7,6 +7,7 @@ import de.upteams.tasktracker.marker.dto.request.MarkerCreateDto;
 import de.upteams.tasktracker.marker.dto.response.MarkerResponseDto;
 import de.upteams.tasktracker.project.dto.request.InviteRequestDto;
 import de.upteams.tasktracker.project.dto.request.ProjectCreateDto;
+import de.upteams.tasktracker.project.dto.response.ProjectLogDto;
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
 import de.upteams.tasktracker.security.service.AuthUserDetails;
 import de.upteams.tasktracker.task.dto.request.TaskCreateDto;
@@ -211,6 +212,19 @@ public interface ProjectApi {
             @Parameter(required = true, description = "ID of the project to invite to")
             UUID id);
 
+
+    @Operation(summary = "Get Project logs", description = "Retrieve all audit logs for a project")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of project logs",
+                    content = @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ProjectLogDto.class))))
+    })
+    @GetMapping("/{id}/logs")
+    List<ProjectLogDto> getProjectLogs(
+            @PathVariable
+            @Parameter(required = true, description = "Project ID to get logs for")
+            UUID id
+    );
 
     @Operation(summary = "Create new marker for project")
     @PostMapping("/{projectId}/markers")

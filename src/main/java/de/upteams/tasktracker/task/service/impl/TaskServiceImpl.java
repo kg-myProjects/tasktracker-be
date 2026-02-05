@@ -1,5 +1,7 @@
 package de.upteams.tasktracker.task.service.impl;
 
+import de.upteams.tasktracker.audit.annotation.Auditable;
+import de.upteams.tasktracker.audit.utils.AuditLogAction;
 import de.upteams.tasktracker.collaborator.entity.Collaborator;
 import de.upteams.tasktracker.collaborator.entity.ProjectRoles;
 import de.upteams.tasktracker.collaborator.persistence.CollaboratorRepository;
@@ -45,6 +47,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
+    @Auditable(entity = "Task", action = AuditLogAction.CREATE)
     public TaskResponseDto save(TaskCreateDto dto, AppUser authUser) {
         TaskStatus status = taskStatusRepository.findById(UUID.fromString(dto.getStatusId()))
                 .orElseThrow(() -> new InvalidTaskPayloadException("TaskStatus not found"));
@@ -172,6 +175,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
+    @Auditable(
+            entity = "Task",
+            action = AuditLogAction.DELETE,
+            nameField = "title",
+            entityClass = Task.class
+    )
     public void delete(String id, AppUser changer) {
         Task existedTask = getOrThrow(id);
         boolean hasPermission = collaboratorService.hasUserPermission(

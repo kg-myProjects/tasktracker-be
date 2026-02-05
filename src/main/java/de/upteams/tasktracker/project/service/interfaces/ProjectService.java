@@ -5,9 +5,9 @@ import de.upteams.tasktracker.marker.dto.request.MarkerCreateDto;
 import de.upteams.tasktracker.marker.dto.response.MarkerResponseDto;
 import de.upteams.tasktracker.project.dto.request.InviteRequestDto;
 import de.upteams.tasktracker.project.dto.request.ProjectCreateDto;
+import de.upteams.tasktracker.project.dto.response.ProjectLogDto;
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
 import de.upteams.tasktracker.project.entity.Project;
-import de.upteams.tasktracker.security.service.AuthUserDetails;
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.taskstatus.dto.response.TaskStatusResponseDto;
 import de.upteams.tasktracker.user.entity.AppUser;
@@ -34,6 +34,7 @@ public interface ProjectService {
 
     List<MarkerResponseDto> getMarkersByProjectId(UUID id);
 
+    List<ProjectLogDto> getProjectLogs(UUID projectId);
 
     void delete(String id, AppUser projectOwner);
 

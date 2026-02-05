@@ -1,5 +1,6 @@
 package de.upteams.tasktracker.project.service.impl;
 
+import de.upteams.tasktracker.audit.persistence.AuditLogRepository;
 import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortResponseDto;
 import de.upteams.tasktracker.collaborator.entity.Collaborator;
 import de.upteams.tasktracker.collaborator.entity.ProjectRoles;
@@ -14,6 +15,7 @@ import de.upteams.tasktracker.marker.persistence.MarkerRepository;
 import de.upteams.tasktracker.marker.utils.MarkerMapper;
 import de.upteams.tasktracker.project.dto.request.InviteRequestDto;
 import de.upteams.tasktracker.project.dto.request.ProjectCreateDto;
+import de.upteams.tasktracker.project.dto.response.ProjectLogDto;
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
 import de.upteams.tasktracker.project.entity.Project;
 import de.upteams.tasktracker.project.exception.InvalidProjectPayloadException;
@@ -21,7 +23,6 @@ import de.upteams.tasktracker.project.exception.ProjectNotFoundException;
 import de.upteams.tasktracker.project.persistence.ProjectRepository;
 import de.upteams.tasktracker.project.service.interfaces.ProjectService;
 import de.upteams.tasktracker.project.utils.ProjectMapper;
-import de.upteams.tasktracker.security.service.AuthUserDetails;
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.task.persistence.TaskRepository;
 import de.upteams.tasktracker.task.utils.TaskMappingService;
@@ -34,7 +35,6 @@ import de.upteams.tasktracker.user.persistence.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -62,6 +62,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final CollaboratorMapper collaboratorMapper;
     private final MarkerRepository markerRepository;
     private final MarkerMapper markerMapper;
+    private final AuditLogRepository auditLogRepository;
 
     @Override
     @Transactional
@@ -143,6 +144,23 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public List<ProjectLogDto> getProjectLogs(UUID projectId) {
+        return auditLogRepository.findAllByProjectIdOrderByCreatedAtDesc(projectId.toString())
+                .stream()
+                .map(log -> new ProjectLogDto(
+                        log.getEntity(),
+                        log.getEntityName(),
+                        log.getAction(),
+                        log.getUserEmail(),
+                        log.getUserNickname(),
+                        log.getUserAvatar(),
+                        log.getDifference(),
+                        log.getCreatedAt()
+                ))
+                .toList();
+    }
+
+    @Override
     @Transactional
     public void delete(String id, AppUser projectOwner) {
         Project project = repository.findById(UUID.fromString(id))
@@ -152,6 +170,7 @@ public class ProjectServiceImpl implements ProjectService {
             throw new RestApiException(HttpStatus.FORBIDDEN, "Only the owner can delete the project");
         }
 
+        auditLogRepository.deleteAllByProjectId(project.getId().toString());
         repository.delete(project);
     }
 
