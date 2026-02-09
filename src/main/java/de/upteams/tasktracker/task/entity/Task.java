@@ -48,16 +48,16 @@ public class Task extends BaseEntity {
     @JoinColumn(name = "status_id", nullable = false)
     private TaskStatus status;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "task_user",
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private final Set<Collaborator> executors = new HashSet<>();
+    private Set<Collaborator> executors = new HashSet<>();
 
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "task_markers",
             joinColumns = @JoinColumn(name = "task_id"),
