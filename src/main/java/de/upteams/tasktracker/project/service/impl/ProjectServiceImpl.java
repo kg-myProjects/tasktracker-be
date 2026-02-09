@@ -32,6 +32,7 @@ import de.upteams.tasktracker.taskstatus.utils.TaskStatusMappingService;
 import de.upteams.tasktracker.user.entity.AppUser;
 import de.upteams.tasktracker.user.exception.UserNotFoundException;
 import de.upteams.tasktracker.user.persistence.UserRepository;
+import de.upteams.tasktracker.utils.BaseEntity;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -104,6 +105,14 @@ public class ProjectServiceImpl implements ProjectService {
     public List<ProjectResponseDto> getAll() {
         return repository
                 .findAllWithTeam()
+                .stream()
+                .map(mappingService::mapEntityToDto)
+                .toList();
+    }
+
+    @Override
+    public List<ProjectResponseDto> getMyProjects(AppUser authUser) {
+        return repository.findAllForUser(authUser.getId())
                 .stream()
                 .map(mappingService::mapEntityToDto)
                 .toList();

@@ -118,6 +118,28 @@ public interface ProjectApi {
     @GetMapping
     List<ProjectResponseDto> getAll();
 
+    @Operation(
+            summary = "Get all projects for authenticated user",
+            description = "Retrieves a list of all projects where the current authenticated user is an Owner or a Collaborator."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "List of projects successfully retrieved",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ProjectResponseDto.class))
+                    )
+            ),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - user not logged in", content = @Content)
+    })
+    @GetMapping("/my")
+    List<ProjectResponseDto> getMyProjects(
+            @AuthenticationPrincipal
+            @Parameter(hidden = true)
+            AuthUserDetails principal
+    );
+
     @Operation(summary = "Get all Tasks Status for Project", description = "Retrieves all tasks Status for Project")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List of tasks status for Project",

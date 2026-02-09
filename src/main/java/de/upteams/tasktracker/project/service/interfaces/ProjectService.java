@@ -28,6 +28,8 @@ public interface ProjectService {
 
     List<ProjectResponseDto> getAll();
 
+    List<ProjectResponseDto> getMyProjects(AppUser authUser);
+
     List<TaskStatusResponseDto> getAllStatusByProjectId(UUID id);
 
     List<TaskResponseDto> getAllTasksByProject(UUID id);

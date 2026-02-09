@@ -43,6 +43,11 @@ public class ProjectController implements ProjectApi {
     }
 
     @Override
+    public List<ProjectResponseDto> getMyProjects(@AuthenticationPrincipal AuthUserDetails principal) {
+        return service.getMyProjects(principal.user());
+    }
+
+    @Override
     public List<TaskStatusResponseDto> getAllStatusByProjectId(UUID id) {
         return service.getAllStatusByProjectId(id);
     }
