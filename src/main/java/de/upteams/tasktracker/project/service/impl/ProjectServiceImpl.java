@@ -178,8 +178,18 @@ public class ProjectServiceImpl implements ProjectService {
         if (!project.getOwner().getId().equals(projectOwner.getId())) {
             throw new RestApiException(HttpStatus.FORBIDDEN, "Only the owner can delete the project");
         }
+        project.getTasks().forEach(task -> {
+            task.getExecutors().clear();
+            task.getMarkers().clear();
+        });
+
+        project.getTaskStatuses().clear();
+        project.getTasks().clear();
+        project.getProjectTeam().clear();
+        project.getMarkers().clear();
 
         auditLogRepository.deleteAllByProjectId(project.getId().toString());
+        repository.saveAndFlush(project);
         repository.delete(project);
     }
 

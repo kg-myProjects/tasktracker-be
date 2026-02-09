@@ -30,11 +30,10 @@ public class TaskStatus extends BaseEntity {
     @Column
     private Integer position;
 
-    @OneToMany(mappedBy = "status")
+    @OneToMany(mappedBy = "status", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Task> tasks = new HashSet<>();
 
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;

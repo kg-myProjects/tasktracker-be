@@ -54,14 +54,14 @@ public class Project extends BaseEntity {
     private Set<Collaborator> projectTeam = new HashSet<>();
 
     @OneToMany(mappedBy = "project", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private final Set<TaskStatus> taskStatuses = new HashSet<>();
+    private  Set<TaskStatus> taskStatuses = new HashSet<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final Set<Task> tasks = new HashSet<>();
+    private  Set<Task> tasks = new HashSet<>();
 
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final Set<Marker> markers = new HashSet<>();
+    private Set<Marker> markers = new HashSet<>();
 
 
     public Project(String title, String description, AppUser owner) {
