@@ -4,6 +4,7 @@ import de.upteams.tasktracker.exception.handling.response.ErrorResponseDto;
 import de.upteams.tasktracker.exception.handling.response.ValidationErrorDto;
 import de.upteams.tasktracker.security.service.AuthUserDetails;
 import de.upteams.tasktracker.task.dto.request.TaskCreateDto;
+import de.upteams.tasktracker.task.dto.request.TaskUpdateDto;
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -124,7 +125,7 @@ public interface TaskApi {
             String id,
 
             @RequestBody
-            TaskCreateDto task,
+            TaskUpdateDto task,
 
             @AuthenticationPrincipal
             @Parameter(hidden = true)
