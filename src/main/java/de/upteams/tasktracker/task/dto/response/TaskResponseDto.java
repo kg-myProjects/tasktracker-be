@@ -5,7 +5,6 @@ import de.upteams.tasktracker.marker.dto.response.MarkerResponseDto;
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
 import de.upteams.tasktracker.task.dto.request.ChecklistItemDto;
 import de.upteams.tasktracker.taskstatus.dto.response.TaskStatusResponseDto;
-import de.upteams.tasktracker.user.dto.EmployeeDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Value;
@@ -65,4 +64,7 @@ public class TaskResponseDto {
             accessMode = Schema.AccessMode.READ_ONLY
     )
     List<ChecklistItemDto> checklist;
+
+    @Schema(description = "Date of the deadline Task")
+    String dueDate;
 }

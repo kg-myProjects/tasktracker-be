@@ -1,4 +1,4 @@
-package de.upteams.tasktracker.collaborator.service.impl;
+ package de.upteams.tasktracker.collaborator.service.impl;
 
 import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortResponseDto;
 import de.upteams.tasktracker.collaborator.entity.Collaborator;
@@ -6,10 +6,12 @@ import de.upteams.tasktracker.collaborator.entity.ProjectRoles;
 import de.upteams.tasktracker.collaborator.persistence.CollaboratorRepository;
 import de.upteams.tasktracker.collaborator.service.interfaces.CollaboratorService;
 import de.upteams.tasktracker.project.entity.Project;
+import de.upteams.tasktracker.task.entity.Task;
 import de.upteams.tasktracker.user.entity.AppUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -70,5 +72,19 @@ public class CollaboratorServiceImpl implements CollaboratorService {
                 ))
                 .toList();
     }
+
+    @Override
+    @Transactional
+    public void syncTaskExecutors(Task task, List<String> executorIds) {
+        List<UUID> newUuids = executorIds.stream()
+                .filter(Objects::nonNull)
+                .filter(id -> !id.isBlank())
+                .map(UUID::fromString)
+                .toList();
+        List<Collaborator> newExecutors = collaboratorRepository.findAllById(newUuids);
+        task.getExecutors().clear();
+        task.getExecutors().addAll(newExecutors);
+    }
+
 
 }

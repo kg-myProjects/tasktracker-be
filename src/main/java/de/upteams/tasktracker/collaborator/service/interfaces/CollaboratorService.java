@@ -4,6 +4,7 @@ import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortRespons
 import de.upteams.tasktracker.collaborator.entity.Collaborator;
 import de.upteams.tasktracker.collaborator.entity.ProjectRoles;
 import de.upteams.tasktracker.project.entity.Project;
+import de.upteams.tasktracker.task.entity.Task;
 import de.upteams.tasktracker.user.entity.AppUser;
 
 import java.util.Collection;
@@ -24,5 +25,7 @@ public interface CollaboratorService {
     Collaborator findById(UUID id);
 
     List<CollaboratorShortResponseDto> findByProjectId(String projectId, AppUser authUser);
+
+    void syncTaskExecutors(Task task, List<String> executorIds);
 
 }

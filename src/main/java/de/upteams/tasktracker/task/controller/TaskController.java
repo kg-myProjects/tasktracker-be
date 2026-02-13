@@ -3,6 +3,7 @@ package de.upteams.tasktracker.task.controller;
 import de.upteams.tasktracker.security.service.AuthUserDetails;
 import de.upteams.tasktracker.task.controller.api.TaskApi;
 import de.upteams.tasktracker.task.dto.request.TaskCreateDto;
+import de.upteams.tasktracker.task.dto.request.TaskUpdateDto;
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.task.service.interfaces.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class TaskController implements TaskApi {
     }
 
     @Override
-    public TaskResponseDto update(String id, TaskCreateDto task, AuthUserDetails principal) {
+    public TaskResponseDto update(String id, TaskUpdateDto task, AuthUserDetails principal) {
         return service.update(id, task, principal.user());
     }
 
