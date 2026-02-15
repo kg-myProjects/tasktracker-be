@@ -10,7 +10,9 @@ import de.upteams.tasktracker.project.entity.Project;
 import de.upteams.tasktracker.project.persistence.ProjectRepository;
 import de.upteams.tasktracker.task.dto.request.TaskCreateDto;
 import de.upteams.tasktracker.task.dto.request.TaskUpdateDto;
+import de.upteams.tasktracker.task.dto.response.AttachmentResponseDto;
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
+import de.upteams.tasktracker.task.entity.Attachment;
 import de.upteams.tasktracker.task.entity.Task;
 import de.upteams.tasktracker.task.service.interfaces.CheckList;
 import de.upteams.tasktracker.taskstatus.entity.TaskStatus;
@@ -63,8 +65,7 @@ public class TaskServiceImpl implements TaskService {
         if (!canCreate) {
             throw new RestApiException(HttpStatus.FORBIDDEN, "You don't have permission to create tasks in this project");
         }
-        Task task = new Task();
-        task.setTitle(dto.getTitle());
+        Task task = mappingService.mapDtoToEntity(dto);
         task.setDescription(dto.getDescription() == null ? "" : dto.getDescription());
         task.setStatus(status);
         task.setProject(project);
@@ -102,6 +103,10 @@ public class TaskServiceImpl implements TaskService {
         }
         if (dto.dueDate() != null) {
             updateDueDate(task, dto.dueDate(), authUser);
+        }
+
+        if (dto.attachments() != null) {
+            syncAttachments(task, dto.attachments());
         }
 
         Task savedTask = repository.saveAndFlush(task);
@@ -198,6 +203,19 @@ public class TaskServiceImpl implements TaskService {
             }
         } catch (DateTimeParseException e) {
             throw new InvalidTaskPayloadException("Invalid date format. Use ISO format (YYYY-MM-DDTHH:mm:ss)");
+        }
+    }
+
+    private void syncAttachments(Task task, List<AttachmentResponseDto> dtos) {
+        for (AttachmentResponseDto adto : dtos) {
+            if (adto.id() == null || adto.id().trim().isEmpty())  {
+                Attachment link = new Attachment();
+                link.setName(adto.name());
+                link.setUrl(adto.url());
+                link.setType("LINK");
+                link.setTask(task);
+                task.getAttachments().add(link);
+            }
         }
     }
 }

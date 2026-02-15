@@ -1,5 +1,6 @@
 package de.upteams.tasktracker.task.dto.request;
 
+import de.upteams.tasktracker.task.dto.response.AttachmentResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -50,4 +51,16 @@ public class TaskCreateDto {
     @Schema(
             description = "List of checklist of this task")
     List<ChecklistItemDto> checklist;
+
+    @Schema(
+            description = "Deadline of the task in ISO format",
+            example = "2026-12-31T23:59:59"
+    )
+    String dueDate;
+
+    @Schema(
+            description = "List of attachments (links or file metadata) for the task"
+    )
+    List<AttachmentResponseDto> attachments;
+
 }

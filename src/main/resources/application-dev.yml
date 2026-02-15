@@ -42,6 +42,8 @@ confirmation:
 
 app:
   base-url: ${BASE_URL:http://localhost:5173}
+  upload:
+    dir: ${UPLOAD_DIR:uploads/attachments}
 
 digitalocean:
   spaces:

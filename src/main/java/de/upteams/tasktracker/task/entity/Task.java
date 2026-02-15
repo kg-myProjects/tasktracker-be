@@ -73,6 +73,11 @@ public class Task extends BaseEntity {
     @Column(name = "due_date")
     private LocalDateTime dueDate;
 
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("createdAt ASC")
+    private List<Attachment> attachments = new ArrayList<>();
+
+
 
 
     public Task(String title, String description, Project project) {
@@ -90,10 +95,16 @@ public class Task extends BaseEntity {
     public String toString() {
         return "Task{" +
                 "id=" + id +
-                ", executorsIds=" + getIdsForToString(executors) +
-                ", projectId=" + getIdForToString(project) +
-                ", description='" + description + '\'' +
                 ", title='" + title + '\'' +
+                ", description='" + (description != null ? (description.length() > 20 ? description.substring(0, 20) + "..." : description) : "null") + '\'' +
+                ", projectId=" + getIdForToString(project) +
+                ", statusId=" + getIdForToString(status) +
+                ", executorsIds=" + getIdsForToString(executors) +
+                ", markersIds=" + getIdsForToString(markers) +
+                ", dueDate=" + (dueDate != null ? dueDate : "null") +
+                ", checklistSize=" + (checklist != null ? checklist.size() : 0) +
+                ", attachmentsCount=" + (attachments != null ? attachments.size() : 0) +
                 '}';
     }
+
 }
