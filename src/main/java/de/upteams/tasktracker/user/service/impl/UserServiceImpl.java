@@ -1,5 +1,7 @@
 package de.upteams.tasktracker.user.service.impl;
 
+import de.upteams.tasktracker.user.dto.request.UpdateUserDetailsDto;
+import de.upteams.tasktracker.user.dto.response.UserDetailsDto;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
 import de.upteams.tasktracker.user.entity.AppUser;
 import de.upteams.tasktracker.user.exception.UserNotFoundException;
@@ -69,19 +71,28 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
     @Transactional
-    public UserResponseDto getMe(){
+    public UserDetailsDto getUserDetails(){
         AppUser user = getCurrentUserOrThrow();
-        return mappingService.mapEntityToDto(user);
+        return mappingService.mapEntityToUserDetailsDto(user);
     }
     @Transactional
-    public UserResponseDto updateNickname(String nickname){
+    public UserDetailsDto updateUserDetails(UpdateUserDetailsDto dto){
+
         AppUser user = getCurrentUserOrThrow();
-        user.setNickname(nickname);
+
+        if (dto.getFirstName() != null) user.setFirstName(dto.getFirstName());
+        if (dto.getLastName() != null) user.setLastName(dto.getLastName());
+        if (dto.getBirthDate() != null) user.setBirthDate(dto.getBirthDate());
+        if (dto.getCity() != null) user.setCity(dto.getCity());
+        if (dto.getPhone() != null) user.setPhone(dto.getPhone());
+        if (dto.getAbout() != null) user.setAbout(dto.getAbout());
+
         AppUser saved = repository.save(user);
-        return mappingService.mapEntityToDto(saved);
+
+        return mappingService.mapEntityToUserDetailsDto(saved);
     }
     @Transactional
-    public UserResponseDto updateAvatar(MultipartFile file) {
+    public UserDetailsDto updateAvatar(MultipartFile file) {
         if(file==null || file.isEmpty()) {
             throw new IllegalArgumentException("File is empty");
         }
@@ -102,7 +113,7 @@ public class UserServiceImpl implements UserService {
             user.setAvatarUrl(avatarUrl);
             AppUser saved = repository.save(user);
 
-            return mappingService.mapEntityToDto(saved);
+            return mappingService.mapEntityToUserDetailsDto(saved);
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to save avatar", e);

@@ -34,10 +34,25 @@ public class AppUser extends BaseEntity {
     )
     private String email;
 
-    @Column(name = "nickname")
-    private String nickname;
+    @Column(name = "first_name")
+    private String firstName;
 
-    @Column (name = "avatar_url", length =512)
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "birth_date")
+    private String birthDate;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "phone", length = 50)
+    private String phone;
+
+    @Column(name = "about", length = 1024)
+    private String about;
+
+    @Column (name = "avatar_url", length = 512)
     private String avatarUrl;
 
     @NotNull(message = "{field.notNull}")
@@ -65,6 +80,12 @@ public class AppUser extends BaseEntity {
                 ", password='" + (StringUtils.isBlank(password) ? "null" : "*hidden*") + '\'' +
                 ", email='" + email + '\'' +
                 ", role=" + role +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", city='" + city + '\'' +
+                ", phone='" + phone + '\'' +
+                ", about='" + about + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
                 '}';
     }
 }

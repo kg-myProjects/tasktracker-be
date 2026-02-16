@@ -55,7 +55,7 @@ public class AuditLogAspect {
                 AuditLogAction.CREATE.name(),
                 user.getId().toString(),
                 user.getEmail(),
-                user.getNickname(),
+                null,
                 user.getAvatarUrl(),
                 ""
         );
@@ -99,7 +99,7 @@ public class AuditLogAspect {
                 AuditLogAction.DELETE.name(),
                 user.getId().toString(),
                 user.getEmail(),
-                user.getNickname(),
+                null,
                 user.getAvatarUrl(),
                 ""
         );
