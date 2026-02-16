@@ -1,5 +1,6 @@
 package de.upteams.tasktracker.user.util;
 
+import de.upteams.tasktracker.user.dto.response.UserDetailsDto;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
 import de.upteams.tasktracker.user.entity.AppUser;
 import org.mapstruct.Mapper;
@@ -25,4 +26,6 @@ public interface AppUserMapper {
     @Mapping(target = "name", source = "email")
     @Mapping(target = "email", source = "email")
     EmployeeDto mapEntityToEmployeeDto(AppUser entity);
+
+    UserDetailsDto mapEntityToUserDetailsDto(AppUser entity);
 }

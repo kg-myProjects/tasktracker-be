@@ -1,7 +1,8 @@
 package de.upteams.tasktracker.user.controller.impl;
 
 import de.upteams.tasktracker.user.controller.interfaces.UserApi;
-import de.upteams.tasktracker.user.dto.request.UpdateProfileRequest;
+import de.upteams.tasktracker.user.dto.request.UpdateUserDetailsDto;
+import de.upteams.tasktracker.user.dto.response.UserDetailsDto;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
 import de.upteams.tasktracker.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -30,17 +31,17 @@ public class UserControllerImpl implements UserApi {
 
 
     @Override
-    public UserResponseDto getMe() {
-        return service.getMe();
+    public UserDetailsDto getUserDetails() {
+        return service.getUserDetails();
     }
 
     @Override
-    public UserResponseDto updateMe(UpdateProfileRequest request) {
-        return service.updateNickname(request.nickname());
+    public UserDetailsDto updateUserDetails(UpdateUserDetailsDto request) {
+        return service.updateUserDetails(request);
     }
 
     @Override
-    public UserResponseDto uploadAvatar(MultipartFile file) {
+    public UserDetailsDto updateAvatar(MultipartFile file) {
         return service.updateAvatar(file);
     }
 }

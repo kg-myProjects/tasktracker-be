@@ -28,9 +28,6 @@ public record UserResponseDto(
         )
         ConfirmationStatus confirmationStatus,
 
-        @Schema(description = "User nickname", example="Nikita")
-        String nickname,
-
         @Schema(description = "Avatar url", example = "/uploads/avatars/uuid.png")
         String avatarUrl
 ) {}

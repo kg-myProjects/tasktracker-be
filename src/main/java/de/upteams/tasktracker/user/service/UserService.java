@@ -1,6 +1,7 @@
 package de.upteams.tasktracker.user.service;
 
-import de.upteams.tasktracker.user.dto.request.UpdateProfileRequest;
+import de.upteams.tasktracker.user.dto.request.UpdateUserDetailsDto;
+import de.upteams.tasktracker.user.dto.response.UserDetailsDto;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
 import de.upteams.tasktracker.user.entity.AppUser;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,9 +24,9 @@ public interface UserService {
 
     List<UserResponseDto> getAll();
 
-    UserResponseDto getMe();
+    UserDetailsDto getUserDetails();
 
-    UserResponseDto updateNickname(String nickname);
+    UserDetailsDto updateUserDetails(UpdateUserDetailsDto dto);
 
-    UserResponseDto updateAvatar(MultipartFile file);
+    UserDetailsDto updateAvatar(MultipartFile file);
 }

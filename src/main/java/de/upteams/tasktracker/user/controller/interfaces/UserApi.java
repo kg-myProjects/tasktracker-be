@@ -1,6 +1,7 @@
 package de.upteams.tasktracker.user.controller.interfaces;
 
-import de.upteams.tasktracker.user.dto.request.UpdateProfileRequest;
+import de.upteams.tasktracker.user.dto.request.UpdateUserDetailsDto;
+import de.upteams.tasktracker.user.dto.response.UserDetailsDto;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,12 +24,12 @@ public interface UserApi extends UserApiSwaggerDoc {
 
 
 
-    @GetMapping("/me")
-    UserResponseDto getMe();
+    @GetMapping("/me-details")
+    UserDetailsDto getUserDetails();
 
-    @PutMapping("/me")
-    UserResponseDto updateMe(@RequestBody UpdateProfileRequest request);
+    @PatchMapping("/update-user")
+    UserDetailsDto updateUserDetails(@RequestBody UpdateUserDetailsDto request);
 
-    @PostMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    UserResponseDto uploadAvatar(@RequestParam("file") MultipartFile file);
+    @PatchMapping(value = "/update-avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    UserDetailsDto updateAvatar(@RequestParam("file") MultipartFile file);
 }
