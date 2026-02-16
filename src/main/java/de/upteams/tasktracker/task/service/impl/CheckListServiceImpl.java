@@ -4,13 +4,17 @@ import de.upteams.tasktracker.task.dto.request.ChecklistItemDto;
 import de.upteams.tasktracker.task.entity.ChecklistItem;
 import de.upteams.tasktracker.task.entity.Task;
 import de.upteams.tasktracker.task.service.interfaces.CheckList;
+import de.upteams.tasktracker.task.utils.TaskMappingService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CheckListServiceImpl implements CheckList {
+    private final TaskMappingService mappingService;
 
     @Override
     @Transactional
@@ -24,13 +28,13 @@ public class CheckListServiceImpl implements CheckList {
                         item = currentChecklist.stream()
                                 .filter(existing -> existing.getId().toString().equals(itemDto.id()))
                                 .findFirst()
-                                .orElse(new ChecklistItem());
+                                .orElseGet(() -> mappingService.mapDtoToChecklistItem(itemDto));
+
+                        mappingService.updateChecklistEntityFromDto(itemDto, item);
                     } else {
-                        item = new ChecklistItem();
+                        item = mappingService.mapDtoToChecklistItem(itemDto);
                     }
 
-                    item.setText(itemDto.text());
-                    item.setCompleted(itemDto.completed());
                     item.setTask(task);
                     return item;
                 }).toList();

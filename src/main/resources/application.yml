@@ -32,6 +32,8 @@ confirmation:
 
 app:
   base-url: ${BASE_URL}
+  upload:
+    dir: ${UPLOAD_DIR}
 
 digitalocean:
   spaces:

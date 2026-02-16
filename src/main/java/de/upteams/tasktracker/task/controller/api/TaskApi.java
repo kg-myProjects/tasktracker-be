@@ -5,6 +5,7 @@ import de.upteams.tasktracker.exception.handling.response.ValidationErrorDto;
 import de.upteams.tasktracker.security.service.AuthUserDetails;
 import de.upteams.tasktracker.task.dto.request.TaskCreateDto;
 import de.upteams.tasktracker.task.dto.request.TaskUpdateDto;
+import de.upteams.tasktracker.task.dto.response.AttachmentResponseDto;
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -201,5 +202,44 @@ public interface TaskApi {
             @Parameter(hidden = true)
             AuthUserDetails principal
     );
+
+    @Operation(summary = "Upload attachment", description = "Uploads a file and associates it with a specific task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "File successfully uploaded",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AttachmentResponseDto.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "File is empty or invalid"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - user has no access to this task")
+    })
+    @PostMapping(value = "/{id}/attachments", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+    AttachmentResponseDto uploadAttachment(
+            @PathVariable
+            @Parameter(required = true, description = "Task ID to attach file to")
+            String id,
+
+            @RequestPart("file")
+            @Parameter(description = "The file to upload")
+            org.springframework.web.multipart.MultipartFile file,
+
+            @AuthenticationPrincipal
+            @Parameter(hidden = true)
+            AuthUserDetails principal
+    );
+
+    @Operation(summary = "Delete attachment", description = "Deletes an attachment by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Attachment successfully deleted"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - no permission to delete"),
+            @ApiResponse(responseCode = "404", description = "Attachment not found")
+    })
+    @DeleteMapping("/{id}/attachments/{attachmentId}")
+    @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
+    void deleteAttachment(
+            @PathVariable String id,
+            @PathVariable String attachmentId,
+            @AuthenticationPrincipal AuthUserDetails principal
+    );
+
 
 }

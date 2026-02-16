@@ -67,4 +67,7 @@ public class TaskResponseDto {
 
     @Schema(description = "Date of the deadline Task")
     String dueDate;
+
+    @Schema(description = "Attachments of the Task")
+    List<AttachmentResponseDto> attachments;
 }

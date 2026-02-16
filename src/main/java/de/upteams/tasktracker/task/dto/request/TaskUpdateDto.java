@@ -1,5 +1,6 @@
 package de.upteams.tasktracker.task.dto.request;
 
+import de.upteams.tasktracker.task.dto.response.AttachmentResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
@@ -24,5 +25,8 @@ public record TaskUpdateDto(
         String dueDate,
 
         @Schema(description = "List of checklist items for the task")
-        List<ChecklistItemDto> checklist
+        List<ChecklistItemDto> checklist,
+
+        @Schema(description = "Attachments of the Task")
+        List<AttachmentResponseDto> attachments
 ) {}
