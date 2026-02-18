@@ -8,6 +8,7 @@ import de.upteams.tasktracker.user.exception.UserNotFoundException;
 import de.upteams.tasktracker.user.persistence.UserRepository;
 import de.upteams.tasktracker.user.service.UserService;
 import de.upteams.tasktracker.user.util.AppUserMapper;
+import de.upteams.tasktracker.user.util.UserUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -70,18 +70,24 @@ public class UserServiceImpl implements UserService {
                 .map(mappingService::mapEntityToDto)
                 .toList();
     }
+
     @Transactional
     public UserDetailsDto getUserDetails(){
         AppUser user = getCurrentUserOrThrow();
         return mappingService.mapEntityToUserDetailsDto(user);
     }
+
     @Transactional
     public UserDetailsDto updateUserDetails(UpdateUserDetailsDto dto){
 
         AppUser user = getCurrentUserOrThrow();
 
-        if (dto.getFirstName() != null) user.setFirstName(dto.getFirstName());
-        if (dto.getLastName() != null) user.setLastName(dto.getLastName());
+        if (dto.getFirstName() != null) {
+            user.setFirstName(UserUtils.normalizeUserName(dto.getFirstName()));
+        }
+        if (dto.getLastName() != null) {
+            user.setLastName(UserUtils.normalizeUserName(dto.getLastName()));
+        }
         if (dto.getBirthDate() != null) user.setBirthDate(dto.getBirthDate());
         if (dto.getCity() != null) user.setCity(dto.getCity());
         if (dto.getPhone() != null) user.setPhone(dto.getPhone());
@@ -91,26 +97,24 @@ public class UserServiceImpl implements UserService {
 
         return mappingService.mapEntityToUserDetailsDto(saved);
     }
+
     @Transactional
     public UserDetailsDto updateAvatar(MultipartFile file) {
-        if(file==null || file.isEmpty()) {
+
+        if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("File is empty");
         }
+
         AppUser user = getCurrentUserOrThrow();
-        try{Files.createDirectories(AVATAR_DIR);
-            String originalName = file.getOriginalFilename();
-            String ext = (originalName != null && originalName.contains("."))
-                    ? originalName.substring(originalName.lastIndexOf("."))
-                    : ".png";
+        try {
+            String filename = UserUtils.generateUserAvatarFileName(user.getId(), file);
 
-            String filename = user.getId() + ext;
-            Path target = AVATAR_DIR.resolve(filename);
-
-            Files.write(target, file.getBytes());
+            Path savedPath = UserUtils.saveUserAvatar(file, AVATAR_DIR, filename);
+            System.out.println("Avatar saved to: " + savedPath);
 
             String avatarUrl = "/uploads/avatars/" + filename;
-
             user.setAvatarUrl(avatarUrl);
+
             AppUser saved = repository.save(user);
 
             return mappingService.mapEntityToUserDetailsDto(saved);
@@ -119,6 +123,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Failed to save avatar", e);
         }
     }
+
     private AppUser getCurrentUserOrThrow() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || auth.getName() == null) {

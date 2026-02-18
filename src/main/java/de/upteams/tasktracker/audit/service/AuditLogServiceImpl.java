@@ -22,7 +22,8 @@ public class AuditLogServiceImpl implements AuditLogService {
             String action,
             String userId,
             String userEmail,
-            String userNickname,
+            String userFirstName,
+            String userLastName,
             String userAvatar,
             String difference
     ) {
@@ -34,7 +35,8 @@ public class AuditLogServiceImpl implements AuditLogService {
         audit.setAction(action);
         audit.setUserId(userId);
         audit.setUserEmail(userEmail);
-        audit.setUserNickname(userNickname);
+        audit.setUserFirstName(userFirstName);
+        audit.setUserLastName(userLastName);
         audit.setUserAvatar(userAvatar);
         audit.setDifference(difference);
         audit.setCreatedAt(Instant.now());
