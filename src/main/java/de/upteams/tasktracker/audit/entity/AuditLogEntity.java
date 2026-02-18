@@ -38,8 +38,11 @@ public class AuditLogEntity extends BaseEntity {
     @Column(name = "user_email", nullable = false)
     private String userEmail;
 
-    @Column(name = "user_nickname")
-    private String userNickname;
+    @Column(name = "user_first_name")
+    private String userFirstName;
+
+    @Column(name = "user_last_name")
+    private String userLastName;
 
     @Column(name = "user_avatar")
     private String userAvatar;
@@ -55,12 +58,15 @@ public class AuditLogEntity extends BaseEntity {
         return "AuditLogEntity{" +
                 "entity='" + entity + '\'' +
                 ", entityId='" + entityId + '\'' +
+                ", entityName='" + entityName + '\'' +
                 ", projectId='" + projectId + '\'' +
                 ", action='" + action + '\'' +
                 ", userId='" + userId + '\'' +
                 ", userEmail='" + userEmail + '\'' +
-                ", userNickname='" + userNickname + '\'' +
+                ", userFirstName='" + userFirstName + '\'' +
+                ", userLastName='" + userLastName + '\'' +
                 ", userAvatar='" + userAvatar + '\'' +
+                ", difference='" + difference + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
     }

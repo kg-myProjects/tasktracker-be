@@ -17,7 +17,8 @@ public class ProjectLogDto {
     private String entityName;
     private String action;
     private String userEmail;
-    private String userNickname;
+    private String userFirstName;
+    private String userLastName;
     private String userAvatar;
     private String difference;
     private Instant createdAt;

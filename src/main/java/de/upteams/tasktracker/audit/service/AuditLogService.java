@@ -10,7 +10,8 @@ public interface AuditLogService {
             String action,
             String userId,
             String userEmail,
-            String userNickname,
+            String userFirstName,
+            String userLastName,
             String userAvatar,
             String difference
     );

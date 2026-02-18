@@ -32,7 +32,6 @@ import de.upteams.tasktracker.taskstatus.utils.TaskStatusMappingService;
 import de.upteams.tasktracker.user.entity.AppUser;
 import de.upteams.tasktracker.user.exception.UserNotFoundException;
 import de.upteams.tasktracker.user.persistence.UserRepository;
-import de.upteams.tasktracker.utils.BaseEntity;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -161,7 +160,8 @@ public class ProjectServiceImpl implements ProjectService {
                         log.getEntityName(),
                         log.getAction(),
                         log.getUserEmail(),
-                        log.getUserNickname(),
+                        log.getUserFirstName(),
+                        log.getUserLastName(),
                         log.getUserAvatar(),
                         log.getDifference(),
                         log.getCreatedAt()
