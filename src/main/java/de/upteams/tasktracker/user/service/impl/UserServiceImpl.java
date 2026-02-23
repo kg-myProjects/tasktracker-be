@@ -1,5 +1,7 @@
 package de.upteams.tasktracker.user.service.impl;
 
+import de.upteams.tasktracker.exception.handling.exceptions.avatar.AvatarProcessingException;
+import de.upteams.tasktracker.exception.handling.exceptions.avatar.InvalidAvatarFileException;
 import de.upteams.tasktracker.user.dto.request.UpdateUserDetailsDto;
 import de.upteams.tasktracker.user.dto.response.UserDetailsDto;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
@@ -17,13 +19,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static de.upteams.tasktracker.user.util.UserUtils.AVATAR_DIR;
+import static de.upteams.tasktracker.user.util.UserUtils.MAX_AVATAR_SIZE;
 
 /**
  * Service for various operations with Employees
@@ -34,7 +38,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
     private final AppUserMapper mappingService;
-    private static final Path AVATAR_DIR = Paths.get("uploads", "avatars");
 
     @Override
     public AppUser saveOrUpdate(final AppUser user) {
@@ -83,15 +86,16 @@ public class UserServiceImpl implements UserService {
         AppUser user = getCurrentUserOrThrow();
 
         if (dto.getFirstName() != null) {
-            user.setFirstName(UserUtils.normalizeUserName(dto.getFirstName()));
+            user.setFirstName(UserUtils.emptyFieldToNull(UserUtils.normalizeUserName(dto.getFirstName())));
         }
+
         if (dto.getLastName() != null) {
-            user.setLastName(UserUtils.normalizeUserName(dto.getLastName()));
+            user.setLastName(UserUtils.emptyFieldToNull(UserUtils.normalizeUserName(dto.getLastName())));
         }
-        if (dto.getBirthDate() != null) user.setBirthDate(dto.getBirthDate());
-        if (dto.getCity() != null) user.setCity(dto.getCity());
-        if (dto.getPhone() != null) user.setPhone(dto.getPhone());
-        if (dto.getAbout() != null) user.setAbout(dto.getAbout());
+        if (dto.getBirthDate() != null) user.setBirthDate(UserUtils.emptyFieldToNull(dto.getBirthDate()));
+        if (dto.getCity() != null) user.setCity(UserUtils.emptyFieldToNull(dto.getCity()));
+        if (dto.getPhone() != null) user.setPhone(UserUtils.emptyFieldToNull(dto.getPhone()));
+        if (dto.getAbout() != null) user.setAbout(UserUtils.emptyFieldToNull(dto.getAbout()));
 
         AppUser saved = repository.save(user);
 
@@ -101,26 +105,28 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDetailsDto updateAvatar(MultipartFile file) {
 
-        if (file == null || file.isEmpty()) {
-            throw new IllegalArgumentException("File is empty");
+        AppUser user = getCurrentUserOrThrow();
+
+        if (file == null || file.isEmpty() ||
+                file.getContentType() == null ||
+                (!file.getContentType().equals("image/png") && !file.getContentType().equals("image/jpeg")) ||
+                file.getSize() > MAX_AVATAR_SIZE) {
+            throw new InvalidAvatarFileException("Invalid avatar file: must be PNG or JPEG and <= 5MB");
         }
 
-        AppUser user = getCurrentUserOrThrow();
         try {
-            String filename = UserUtils.generateUserAvatarFileName(user.getId(), file);
+            BufferedImage processedImage = UserUtils.resizeAvatarAndConvertToPng(file, 400);
 
-            Path savedPath = UserUtils.saveUserAvatar(file, AVATAR_DIR, filename);
-            System.out.println("Avatar saved to: " + savedPath);
+            String filename = UserUtils.generateUserAvatarFileName(user.getId());
+            UserUtils.saveUserAvatar(processedImage, AVATAR_DIR, filename);
 
-            String avatarUrl = "/uploads/avatars/" + filename;
-            user.setAvatarUrl(avatarUrl);
-
+            user.setAvatarUrl("/uploads/avatars/" + filename);
             AppUser saved = repository.save(user);
 
             return mappingService.mapEntityToUserDetailsDto(saved);
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to save avatar", e);
+            throw new AvatarProcessingException("Failed to process avatar file on server", e);
         }
     }
 
