@@ -39,7 +39,7 @@ import java.util.UUID;
 @PreAuthorize("isAuthenticated()")
 public interface ProjectApi {
 
-    @Operation(summary = "Save/create Project", description = "Save new Project to the Database")
+     @Operation(summary = "Save/create Project", description = "Save new Project to the Database")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Project successfully created",
                     content = @Content(mediaType = "application/json",
@@ -74,6 +74,54 @@ public interface ProjectApi {
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     description = "Instance of Project to save"
+            )
+            @Valid
+            ProjectCreateDto newProjectDto,
+
+            @AuthenticationPrincipal
+            @Parameter(hidden = true)
+            AuthUserDetails principal
+    );
+
+    @Operation(summary = "Update Project", description = "Update Project to the Database")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Project successfully updated",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ProjectResponseDto.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "id": "7",
+                                      "title": "New Website Development",
+                                      "description": "A Project to develop a new company website",
+                                      "owner": {
+                                        "id": "42",
+                                        "email": "tes_dev@upteams.de",
+                                        "firstName": "Test",
+                                        "lastName": "Dev"
+                                      }
+                                    }
+                                    """))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid project payload",
+                    content = @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class)),
+                            examples = @ExampleObject(value = """
+                                    [
+                                      { "field": "title", "messages": ["must not be blank"] }
+                                    ]
+                                    """))
+            )
+    })
+    @PatchMapping("/{id}")
+    ProjectResponseDto update(
+            @PathVariable
+            @Parameter(required = true, description = "Project ID to search")
+            UUID id,
+
+            @RequestBody
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    description = "Instance of Project to update"
             )
             @Valid
             ProjectCreateDto newProjectDto,

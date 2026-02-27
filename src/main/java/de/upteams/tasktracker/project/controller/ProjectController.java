@@ -33,6 +33,11 @@ public class ProjectController implements ProjectApi {
     }
 
     @Override
+    public ProjectResponseDto update(UUID id,ProjectCreateDto dto, AuthUserDetails principal){
+        return service.update(id, dto, principal.user());
+    }
+
+    @Override
     public ProjectResponseDto getById(UUID id) {
         return service.getById(id);
     }
