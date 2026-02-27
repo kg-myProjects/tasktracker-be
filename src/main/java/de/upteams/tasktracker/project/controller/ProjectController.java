@@ -11,7 +11,6 @@ import de.upteams.tasktracker.project.service.interfaces.ProjectService;
 import de.upteams.tasktracker.security.service.AuthUserDetails;
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.taskstatus.dto.response.TaskStatusResponseDto;
-import de.upteams.tasktracker.user.entity.AppUser;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RestController;
 import de.upteams.tasktracker.project.dto.response.ProjectLogDto;
