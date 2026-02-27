@@ -21,6 +21,7 @@ import java.util.UUID;
 public interface ProjectService {
 
     ProjectResponseDto save(ProjectCreateDto newProjectDto, AppUser projectOwner);
+    ProjectResponseDto update(UUID id, ProjectCreateDto newProjectDto, AppUser authUser);
 
     ProjectResponseDto getById(UUID id);
 

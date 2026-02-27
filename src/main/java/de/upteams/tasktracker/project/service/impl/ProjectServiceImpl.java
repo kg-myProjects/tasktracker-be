@@ -43,9 +43,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Service for various operations with Projects
- */
 @Service
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
@@ -89,6 +86,24 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
+    public ProjectResponseDto update(UUID id,ProjectCreateDto dto, AppUser authUser) {
+        Project project = getOrTrow(id);
+        boolean hasPermission = collaboratorService.hasUserPermission(
+                authUser,
+                project,
+                List.of(ProjectRoles.OWNER)
+        );
+
+        if (!hasPermission) {
+            throw new RestApiException(HttpStatus.FORBIDDEN, "You don't have permission to modify tasks in this project");
+        }
+        if (dto.title() != null) updateTitle(project, dto.title());
+        if (dto.description() != null) updateDescription(project, dto.description());
+        return mappingService.mapEntityToDto(repository.save(project));
+    }
+
+    @Override
     public ProjectResponseDto getById(UUID id) {
         return mappingService.mapEntityToDto(getOrTrow(id));
     }
@@ -129,10 +144,6 @@ public class ProjectServiceImpl implements ProjectService {
     public List<TaskResponseDto> getAllTasksByProject(UUID id) {
 
         final Project project = getOrTrow(id);
-        //       boolean userInProject = collaboratorService.isUserInProject(authUser, project);
-//        if (!userInProject) {
-//            throw new RestApiException(HttpStatus.FORBIDDEN, "User has no access to this project");
-//        }
         return taskRepository
                 .findByProject(project)
                 .stream()
@@ -143,8 +154,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<MarkerResponseDto> getMarkersByProjectId(UUID id) {
-        final Project project = getOrTrow(id);
-        return markerRepository
+         return markerRepository
                 .findAllByProjectId(id)
                 .stream()
                 .map(markerMapper::mapEntityToDto)
@@ -239,5 +249,18 @@ public class ProjectServiceImpl implements ProjectService {
         Marker savedMarker = markerRepository.save(marker);
         return markerMapper.mapEntityToDto(savedMarker);
     }
+
+    private void updateTitle(Project project, String newTitle) {
+        if (newTitle != null && !newTitle.equals(project.getTitle())) {
+            project.setTitle(newTitle);
+        }
+    }
+
+    private void updateDescription(Project project, String newDesc) {
+        if (newDesc != null && !newDesc.equals(project.getDescription())) {
+            project.setDescription(newDesc);
+        }
+    }
+
 
 }
