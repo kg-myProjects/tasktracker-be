@@ -11,9 +11,16 @@ public class TaskStatusUpdateDto {
     @NotNull
     String id;
 
+    @Schema(description = "Name of the TaskStatus", example = "To Do")
+    String name;
+
     @Schema(description = "Position", example = "1")
     @NotNull
     Integer position;
+
+    @Schema(description = "Id of the project", example = "06753a51-51de-4a04-8d75-2b96cc5a7f92")
+    @NotNull
+    String  projectId;
 
 
 }

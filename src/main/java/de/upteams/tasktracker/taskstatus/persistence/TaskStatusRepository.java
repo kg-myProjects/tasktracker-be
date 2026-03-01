@@ -10,7 +10,11 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TaskStatusRepository extends JpaRepository<TaskStatus, UUID> {
+
     List<TaskStatus> findByProjectId(UUID id);
+
+    List<TaskStatus> findByProjectIdOrderByPositionAsc(UUID projectId);
+
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE TaskStatus s SET s.position = s.position + 1 " +
             "WHERE s.project.id = :projectId AND s.position >= :position")

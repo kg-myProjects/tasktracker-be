@@ -10,10 +10,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TaskStatusService {
+
     TaskStatusResponseDto save(TaskStatusCreateDto newTaskStatusCreateDto);
+
     TaskStatusResponseDto update(TaskStatusUpdateDto dto);
 
-    TaskStatusResponseDto getById(String id);
+    List<TaskStatusResponseDto> updateTaskStatusesOrder(List<TaskStatusUpdateDto> dtos);
 
     TaskStatus getOrThrow(String id);
 

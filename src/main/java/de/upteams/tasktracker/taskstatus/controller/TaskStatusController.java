@@ -26,7 +26,10 @@ public class TaskStatusController implements TaskStatusApi {
         return service.update(dto);
     }
 
-
+    @Override
+    public List<TaskStatusResponseDto> updateTaskStatusesOrder(List<TaskStatusUpdateDto> dtos) {
+        return service.updateTaskStatusesOrder(dtos);
+    }
 
     @Override
     public void deleteById(String id, AuthUserDetails principal) {
