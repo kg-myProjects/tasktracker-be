@@ -5,10 +5,10 @@ import de.upteams.tasktracker.task.entity.Task;
 import de.upteams.tasktracker.utils.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -19,9 +19,12 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(
         name = "task_status",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"project_id", "name"})
-)
-public class TaskStatus extends BaseEntity {
+        uniqueConstraints = @UniqueConstraint(columnNames = {"project_id", "name"}),
+        indexes = {
+                @Index(name = "idx_taskstatus_project", columnList = "project_id"),
+                @Index(name = "idx_taskstatus_project_position", columnList = "project_id, position")
+        }
+)public class TaskStatus extends BaseEntity {
 
     @NotBlank
     @Column(nullable = false)
@@ -30,6 +33,7 @@ public class TaskStatus extends BaseEntity {
     @Column
     private Integer position;
 
+    @BatchSize(size = 50)
     @OneToMany(mappedBy = "status", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Task> tasks = new HashSet<>();
 

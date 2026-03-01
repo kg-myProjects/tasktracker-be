@@ -2,6 +2,7 @@ package de.upteams.tasktracker.taskstatus.service.impl;
 
 import de.upteams.tasktracker.audit.annotation.Auditable;
 import de.upteams.tasktracker.audit.utils.AuditLogAction;
+import de.upteams.tasktracker.exception.handling.exceptions.common.RestApiException;
 import de.upteams.tasktracker.project.entity.Project;
 import de.upteams.tasktracker.project.persistence.ProjectRepository;
 import de.upteams.tasktracker.taskstatus.dto.request.TaskStatusCreateDto;
@@ -15,11 +16,12 @@ import de.upteams.tasktracker.taskstatus.service.interfaces.TaskStatusService;
 import de.upteams.tasktracker.taskstatus.utils.TaskStatusMappingService;
 import de.upteams.tasktracker.user.entity.AppUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,23 +56,49 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     @Override
     @Transactional
     public TaskStatusResponseDto update(TaskStatusUpdateDto dto) {
-        String id = dto.getId();
-        TaskStatus taskStatus= findById(id).orElseThrow(TaskStatusNotFoundException::new);
-        if (dto.getPosition() != null){
-            Integer oldPosition = taskStatus.getPosition();
-            Integer newPosition = dto.getPosition();
-
-            if (!oldPosition.equals(newPosition)) {
-                repository.shiftPositionsForward(taskStatus.getProject().getId(), newPosition);
-                taskStatus.setPosition(newPosition);
-            }
+        TaskStatus taskStatus = findById(dto.getId())
+                .orElseThrow(TaskStatusNotFoundException::new);
+        if (dto.getName() != null && dto.getName().isBlank()) {
+            throw new RestApiException(HttpStatus.BAD_REQUEST, "Status name cannot be empty");
         }
+        mappingService.updateEntityFromDto(dto, taskStatus);
         return mappingService.mapEntityToStatusDto(repository.save(taskStatus));
     }
 
     @Override
-    public TaskStatusResponseDto getById(String id) {
-        return mappingService.mapEntityToStatusDto(getOrThrow(id));
+    @Transactional
+    public List<TaskStatusResponseDto> updateTaskStatusesOrder(List<TaskStatusUpdateDto> dtos) {
+        if (dtos.isEmpty()) return Collections.emptyList();
+
+        List<UUID> ids = dtos.stream()
+                .map(TaskStatusUpdateDto::getId)
+                .map(UUID::fromString)
+                .toList();
+
+        List<TaskStatus> statuses = repository.findAllById(ids);
+
+        if (statuses.isEmpty()) return Collections.emptyList();
+
+        Map<String, Integer> idToNewPosition = dtos.stream()
+                .collect(Collectors.toMap(TaskStatusUpdateDto::getId, TaskStatusUpdateDto::getPosition));
+
+        statuses.forEach(status -> {
+            Integer newPosition = idToNewPosition.get(status.getId().toString());
+            if (newPosition != null && !newPosition.equals(status.getPosition())) {
+                status.setPosition(newPosition);
+            }
+        });
+
+        repository.saveAll(statuses);
+
+        UUID projectId = statuses.stream()
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No task statuses found"))
+                .getProject()
+                .getId();
+        return repository.findByProjectIdOrderByPositionAsc(projectId).stream()
+                .map(mappingService::mapEntityToStatusDto)
+                .toList();
     }
 
     @Override

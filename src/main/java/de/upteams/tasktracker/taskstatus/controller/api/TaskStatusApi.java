@@ -103,6 +103,15 @@ public interface TaskStatusApi {
 
 
 
+    @Operation(summary = "Update order of TaskStatuses", description = "Update order of TaskStatuses")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of tasks status for Project",
+                    content = @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = TaskStatusResponseDto.class))))
+    })
+    @PatchMapping("/order")
+    List<TaskStatusResponseDto> updateTaskStatusesOrder(@RequestBody List<TaskStatusUpdateDto> dtos);
+
     @Operation(summary = "Delete tasks Status", description = "Deletes a tasks status by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Tasks Status deleted successfully"),
