@@ -57,6 +57,9 @@ public class TaskStatusServiceImplTest {
         ReflectionTestUtils.setField(status, "id", id);
         status.setName(name);
         status.setPosition(position);
+        if (project.getId() == null) {
+            ReflectionTestUtils.setField(project, "id", UUID.randomUUID());
+        }
         status.setProject(project);
         return status;
     }
@@ -129,6 +132,9 @@ public class TaskStatusServiceImplTest {
 
         TaskStatusUpdateDto updateDto = new TaskStatusUpdateDto(statusId, "In Progress", 2, projectId);
         Project project = new Project();
+
+        ReflectionTestUtils.setField(project, "id", UUID.fromString(projectId));
+
         TaskStatus existingStatus = createMockStatus(UUID.fromString(statusId), "To do", 1, project);
 
 
@@ -161,6 +167,8 @@ public class TaskStatusServiceImplTest {
 
         TaskStatus existingStatus = new TaskStatus();
         Project project = new Project();
+        ReflectionTestUtils.setField(project, "id", UUID.fromString(projectId));
+        existingStatus.setProject(project);
 
         when(repository.findById(UUID.fromString(statusId))).thenReturn(Optional.of(existingStatus));
 
