@@ -9,6 +9,8 @@ import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.task.service.interfaces.AttachmentService;
 import de.upteams.tasktracker.task.service.interfaces.TaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +22,7 @@ public class TaskController implements TaskApi {
     private final AttachmentService attachmentService;
 
     @Override
+    @ResponseStatus(HttpStatus.CREATED)
     public TaskResponseDto save(TaskCreateDto task, AuthUserDetails principal) {
         return service.save(task, principal.user());
     }
@@ -35,11 +38,13 @@ public class TaskController implements TaskApi {
     }
 
     @Override
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(String id, AuthUserDetails principal) {
         service.delete(id, principal.user());
     }
 
     @Override
+    @ResponseStatus(HttpStatus.CREATED)
     public AttachmentResponseDto uploadAttachment(String id, MultipartFile file, AuthUserDetails principal) {
         return attachmentService.upload(id, file, principal.user());
     }

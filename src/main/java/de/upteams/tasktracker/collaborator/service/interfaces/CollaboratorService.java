@@ -22,6 +22,8 @@ public interface CollaboratorService {
 
     boolean hasUserPermission(AppUser user, Project project, Collection<ProjectRoles> requiredRoles);
 
+    Project checkAccessAndGetProject(AppUser user, String projectId, Collection<ProjectRoles> requiredRoles);
+
     Collaborator findById(UUID id);
 
     List<CollaboratorShortResponseDto> findByProjectId(String projectId, AppUser authUser);

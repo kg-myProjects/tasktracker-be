@@ -88,16 +88,12 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public ProjectResponseDto update(UUID id,ProjectCreateDto dto, AppUser authUser) {
-        Project project = getOrTrow(id);
-        boolean hasPermission = collaboratorService.hasUserPermission(
+        Project project = collaboratorService.checkAccessAndGetProject(
                 authUser,
-                project,
+                id.toString(),
                 List.of(ProjectRoles.OWNER)
         );
 
-        if (!hasPermission) {
-            throw new RestApiException(HttpStatus.FORBIDDEN, "You don't have permission to modify tasks in this project");
-        }
         if (dto.title() != null) updateTitle(project, dto.title());
         if (dto.description() != null) updateDescription(project, dto.description());
         return mappingService.mapEntityToDto(repository.save(project));
@@ -181,13 +177,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
-    public void delete(String id, AppUser projectOwner) {
-        Project project = repository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new RestApiException(HttpStatus.NOT_FOUND, "Project not found"));
+    public void delete(UUID id, AppUser projectOwner) {
+        Project project = collaboratorService.checkAccessAndGetProject(
+                projectOwner,
+                id.toString(),
+                List.of(ProjectRoles.OWNER)
+        );
 
-        if (!project.getOwner().getId().equals(projectOwner.getId())) {
-            throw new RestApiException(HttpStatus.FORBIDDEN, "Only the owner can delete the project");
-        }
         project.getTasks().forEach(task -> {
             task.getExecutors().clear();
             task.getMarkers().clear();
@@ -204,19 +200,21 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public CollaboratorShortResponseDto inviteUser(InviteRequestDto inviteDto, UUID projectId) {
+    public CollaboratorShortResponseDto inviteUser(InviteRequestDto inviteDto, UUID projectId, AppUser inviter) {
         if (inviteDto.role() == ProjectRoles.OWNER) {
-            throw new IllegalArgumentException("Cannot invite another OWNER");
+            throw new RestApiException(HttpStatus.BAD_REQUEST, "Cannot invite another OWNER");
         }
-        Project project = repository.findById(projectId)
-                .orElseThrow(ProjectNotFoundException::new);
-
+        Project project = collaboratorService.checkAccessAndGetProject(
+                inviter,
+                projectId.toString(),
+                List.of(ProjectRoles.OWNER, ProjectRoles.ADMIN)
+        );
         AppUser userToInvite = userRepository.findByEmailIgnoreCase(inviteDto.email())
                 .orElseThrow(UserNotFoundException::new);
 
         boolean alreadyMember = collaboratorRepository.existsByProjectAndAppUser(project, userToInvite);
         if (alreadyMember) {
-            throw new IllegalStateException("User is already a collaborator in this project");
+            throw new RestApiException(HttpStatus.CONFLICT, "User is already a collaborator in this project");
         }
 
         Collaborator collaborator = new Collaborator();
@@ -232,17 +230,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public MarkerResponseDto createMarker(MarkerCreateDto dto, UUID projectId, AppUser authUser) {
-        Project project = getOrTrow(projectId);
-
-        boolean canView = collaboratorService.hasUserPermission(
+        Project project = collaboratorService.checkAccessAndGetProject(
                 authUser,
-                project,
+                projectId.toString(),
                 List.of(ProjectRoles.OWNER, ProjectRoles.ADMIN, ProjectRoles.MEMBER, ProjectRoles.VIEWER)
         );
-
-        if (!canView) {
-            throw new RestApiException(HttpStatus.FORBIDDEN, "You don't have access to view this task");
-        }
 
         Marker marker = markerMapper.mapDtoToEntity(dto);
         marker.setProject(project);

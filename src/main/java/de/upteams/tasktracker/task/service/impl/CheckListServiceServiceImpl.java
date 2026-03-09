@@ -3,7 +3,7 @@ package de.upteams.tasktracker.task.service.impl;
 import de.upteams.tasktracker.task.dto.request.ChecklistItemDto;
 import de.upteams.tasktracker.task.entity.ChecklistItem;
 import de.upteams.tasktracker.task.entity.Task;
-import de.upteams.tasktracker.task.service.interfaces.CheckList;
+import de.upteams.tasktracker.task.service.interfaces.CheckListService;
 import de.upteams.tasktracker.task.utils.TaskMappingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CheckListServiceImpl implements CheckList {
+public class CheckListServiceServiceImpl implements CheckListService {
     private final TaskMappingService mappingService;
 
     @Override

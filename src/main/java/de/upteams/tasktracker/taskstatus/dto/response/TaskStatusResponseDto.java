@@ -1,6 +1,5 @@
 package de.upteams.tasktracker.taskstatus.dto.response;
 
-import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Value;
 
@@ -21,8 +20,6 @@ public class TaskStatusResponseDto {
     Integer position;
 
     @Schema(description = "Id of the project", example = "06753a51-51de-4a04-8d75-2b96cc5a7f92")
-    ProjectResponseDto project;
-
-
+    String  projectId;
 }
 
