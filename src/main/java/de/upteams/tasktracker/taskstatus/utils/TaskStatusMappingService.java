@@ -21,7 +21,7 @@ public interface TaskStatusMappingService {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "project", ignore = true)
-    @Mapping(target = "tasks", ignore = true) // якщо у вас є зв'язок зі списком тасок
+    @Mapping(target = "tasks", ignore = true)
     TaskStatus mapDtoToEntity(TaskStatusCreateDto dto);
 
     @Mapping(target = "projectId",  source = "project.id")
