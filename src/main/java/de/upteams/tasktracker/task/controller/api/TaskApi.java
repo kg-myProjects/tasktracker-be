@@ -82,7 +82,7 @@ public interface TaskApi {
 
     @Operation(summary = "Update Tasks ", description = "Update Status of task")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Tasks Status successfully updated",
+            @ApiResponse(responseCode = "200", description = "Tasks Status successfully updated",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = TaskCreateDto.class),
                             examples = @ExampleObject(value = """

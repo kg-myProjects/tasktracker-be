@@ -1,6 +1,7 @@
 package de.upteams.tasktracker.taskstatus.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Value;
 
@@ -15,6 +16,7 @@ public class TaskStatusCreateDto {
     String id;
 
     @Schema(description = "Name of the TaskStatus", example = "To Do")
+    @NotBlank(message = "must not be blank")
     String name;
 
     @Schema(description = "Position", example = "1")

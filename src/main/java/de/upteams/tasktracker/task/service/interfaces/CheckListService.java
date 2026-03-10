@@ -5,6 +5,6 @@ import de.upteams.tasktracker.task.entity.Task;
 
 import java.util.List;
 
-public interface CheckList {
+public interface CheckListService {
     void syncChecklist(Task task, List<ChecklistItemDto> dto);
 }

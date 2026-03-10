@@ -21,8 +21,9 @@ import org.mapstruct.MappingTarget;
 )
 public interface TaskMappingService {
 
-    //     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "project.owner", ignore = true)
+
+    @Mapping(target = "projectId", source = "entity.project.id")
+    @Mapping(target = "statusId", source = "entity.status.id")
     @Mapping(target = "dueDate", source = "dueDate")
     TaskResponseDto mapEntityToDto(Task entity);
 
@@ -45,6 +46,8 @@ public interface TaskMappingService {
     @Mapping(target = "checklist", ignore = true)
     @Mapping(target = "dueDate", ignore = true)
     @Mapping(target = "attachments", ignore = true)
+    @Mapping(target = "project", ignore = true)
+    @Mapping(target = "status", ignore = true)
     Task mapDtoToEntity(TaskCreateDto dto);
 
     @Mapping(target = "id", ignore = true)

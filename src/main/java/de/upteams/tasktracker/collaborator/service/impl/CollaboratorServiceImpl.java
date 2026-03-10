@@ -6,6 +6,8 @@ import de.upteams.tasktracker.collaborator.entity.ProjectRoles;
 import de.upteams.tasktracker.collaborator.persistence.CollaboratorRepository;
 import de.upteams.tasktracker.collaborator.service.interfaces.CollaboratorService;
 import de.upteams.tasktracker.project.entity.Project;
+import de.upteams.tasktracker.project.exception.ProjectNotFoundException;
+import de.upteams.tasktracker.project.persistence.ProjectRepository;
 import de.upteams.tasktracker.task.entity.Task;
 import de.upteams.tasktracker.user.entity.AppUser;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import java.util.*;
 public class CollaboratorServiceImpl implements CollaboratorService {
 
     private final CollaboratorRepository collaboratorRepository;
+    private final ProjectRepository projectRepository;
 
     @Override
     public boolean isUserInProject(AppUser user, Project project) {
@@ -43,6 +46,23 @@ public class CollaboratorServiceImpl implements CollaboratorService {
                 .map(collaborator -> hasAnyRequiredRole(collaborator, requiredRoles))
                 .orElse(false);
     }
+
+    @Override
+    public Project checkAccessAndGetProject(AppUser user, String projectId, Collection<ProjectRoles> requiredRoles) {
+        Project project = projectRepository.findByIdWithTeam(UUID.fromString(projectId))
+                .orElseThrow(ProjectNotFoundException::new);
+
+        boolean hasPermission = hasUserPermission(user, project, requiredRoles);
+
+        if (!hasPermission) {
+            throw new de.upteams.tasktracker.exception.handling.exceptions.common.RestApiException(
+                    org.springframework.http.HttpStatus.FORBIDDEN,
+                    "You don't have permission to perform this action in project: " + project.getTitle());
+        }
+
+        return project;
+    }
+
 
     @Override
     public Collaborator findById(UUID id) {

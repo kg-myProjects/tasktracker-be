@@ -11,11 +11,11 @@ import java.util.Optional;
 
 public interface TaskStatusService {
 
-    TaskStatusResponseDto save(TaskStatusCreateDto newTaskStatusCreateDto);
+    TaskStatusResponseDto save(TaskStatusCreateDto newTaskStatusCreateDto, AppUser authUser);
 
-    TaskStatusResponseDto update(TaskStatusUpdateDto dto);
+    TaskStatusResponseDto update(TaskStatusUpdateDto dto, AppUser authUser);
 
-    List<TaskStatusResponseDto> updateTaskStatusesOrder(List<TaskStatusUpdateDto> dtos);
+    List<TaskStatusResponseDto> updateTaskStatusesOrder(List<TaskStatusUpdateDto> dtos, AppUser authUser);
 
     TaskStatus getOrThrow(String id);
 

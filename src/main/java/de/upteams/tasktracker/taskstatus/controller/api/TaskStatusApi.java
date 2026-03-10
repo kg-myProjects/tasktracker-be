@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -71,6 +72,7 @@ public interface TaskStatusApi {
                     required = true,
                     description = "Instance of tasks status to save"
             )
+            @Valid
             TaskStatusCreateDto task,
 
             @AuthenticationPrincipal
@@ -80,9 +82,9 @@ public interface TaskStatusApi {
 
 
 
-    @Operation(summary = "Update position of TaskStatus", description = "Update position of TaskStatus")
+    @Operation(summary = "Update name of TaskStatus", description = "Update name of TaskStatus")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Position of the tasks status successfully updated",
+            @ApiResponse(responseCode = "200", description = "Name of the tasks status successfully updated",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = TaskStatusResponseDto.class),
                             examples = @ExampleObject(value = """
@@ -98,7 +100,11 @@ public interface TaskStatusApi {
     @PatchMapping
     TaskStatusResponseDto update(
             @RequestBody
-            TaskStatusUpdateDto task
+            TaskStatusUpdateDto task,
+
+            @AuthenticationPrincipal
+            @Parameter(hidden = true)
+            AuthUserDetails principal
             );
 
 
@@ -110,7 +116,10 @@ public interface TaskStatusApi {
                             array = @ArraySchema(schema = @Schema(implementation = TaskStatusResponseDto.class))))
     })
     @PatchMapping("/order")
-    List<TaskStatusResponseDto> updateTaskStatusesOrder(@RequestBody List<TaskStatusUpdateDto> dtos);
+    List<TaskStatusResponseDto> updateTaskStatusesOrder(@RequestBody List<TaskStatusUpdateDto> dtos,
+                                                        @AuthenticationPrincipal
+                                                        @Parameter(hidden = true)
+                                                        AuthUserDetails principal);
 
     @Operation(summary = "Delete tasks Status", description = "Deletes a tasks status by its ID")
     @ApiResponses(value = {

@@ -39,9 +39,9 @@ public interface ProjectService {
 
     List<ProjectLogDto> getProjectLogs(UUID projectId);
 
-    void delete(String id, AppUser projectOwner);
+    void delete(UUID id, AppUser projectOwner);
 
-    CollaboratorShortResponseDto inviteUser(InviteRequestDto inviteDto, UUID projectId);
+    CollaboratorShortResponseDto inviteUser(InviteRequestDto inviteDto, UUID projectId, AppUser inviter);
 
     MarkerResponseDto createMarker(MarkerCreateDto dto, UUID projectId, AppUser authUser);
 

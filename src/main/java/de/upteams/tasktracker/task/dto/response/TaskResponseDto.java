@@ -2,10 +2,9 @@ package de.upteams.tasktracker.task.dto.response;
 
 import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortResponseDto;
 import de.upteams.tasktracker.marker.dto.response.MarkerResponseDto;
-import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
 import de.upteams.tasktracker.task.dto.request.ChecklistItemDto;
-import de.upteams.tasktracker.taskstatus.dto.response.TaskStatusResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Value;
 
@@ -19,6 +18,7 @@ import java.util.Set;
 @Schema(description = "Data Transfer Object for Task entity")
 @Getter
 @Value
+@Builder
 public class TaskResponseDto {
 
     @Schema(
@@ -37,20 +37,21 @@ public class TaskResponseDto {
     )
     String description;
 
-    @Schema(description = "Name of the TaskStatus", example = "To Do")
-    TaskStatusResponseDto status;
+    @Schema(description = "Id of the TaskStatus", example = "To Do")
+    String statusId;
 
    // @JsonIgnore
     @Schema(
             description = "The ProjectId whit which this Task is associated",
             accessMode = Schema.AccessMode.READ_ONLY
     )
-   ProjectResponseDto  project;
+   String  projectId;
 
     @Schema(
             description = "List of Users assigned to this Task",
             accessMode = Schema.AccessMode.READ_ONLY
     )
+    @Builder.Default
     Set<CollaboratorShortResponseDto> executors = new HashSet<>();
 
     @Schema(

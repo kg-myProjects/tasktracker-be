@@ -10,7 +10,6 @@ import de.upteams.tasktracker.project.dto.request.ProjectCreateDto;
 import de.upteams.tasktracker.project.dto.response.ProjectLogDto;
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
 import de.upteams.tasktracker.security.service.AuthUserDetails;
-import de.upteams.tasktracker.task.dto.request.TaskCreateDto;
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.taskstatus.dto.request.TaskStatusCreateDto;
 import de.upteams.tasktracker.taskstatus.dto.response.TaskStatusResponseDto;
@@ -85,7 +84,7 @@ public interface ProjectApi {
 
     @Operation(summary = "Update Project", description = "Update Project to the Database")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Project successfully updated",
+            @ApiResponse(responseCode = "200", description = "Project successfully updated",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ProjectResponseDto.class),
                             examples = @ExampleObject(value = """
@@ -137,6 +136,10 @@ public interface ProjectApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ProjectResponseDto.class)))
             ,
+            @ApiResponse(responseCode = "403", description = "Forbidden - user has no access to the project",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class))
+            ),
             @ApiResponse(responseCode = "404", description = "Project not found",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class),
@@ -204,7 +207,7 @@ public interface ProjectApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List of tasks",
                     content = @Content(mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = TaskCreateDto.class))))
+                            array = @ArraySchema(schema = @Schema(implementation = TaskResponseDto.class))))
             ,
             @ApiResponse(responseCode = "403", description = "Forbidden - user has no access to the project",
                     content = @Content(mediaType = "application/json",
@@ -215,10 +218,6 @@ public interface ProjectApi {
     List<TaskResponseDto> getAllTasksByProject(
             @PathVariable
             UUID id
-
-//            @AuthenticationPrincipal
-//            @Parameter(hidden = true)
-//            AuthUserDetails principal
     );
 
 
@@ -243,7 +242,7 @@ public interface ProjectApi {
     void deleteById(
             @PathVariable
             @Parameter(required = true, description = "Project ID to delete")
-            String id,
+            UUID id,
             @AuthenticationPrincipal
             @Parameter(hidden = true)
             AuthUserDetails principal
