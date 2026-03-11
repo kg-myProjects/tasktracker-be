@@ -84,6 +84,24 @@ public class Task extends BaseEntity {
     @OrderBy("createdAt DESC")
     private List<Comment> comments = new ArrayList<>();
 
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+
 
 
     public Task(String title, String description, Project project) {
@@ -110,6 +128,7 @@ public class Task extends BaseEntity {
                 ", dueDate=" + (dueDate != null ? dueDate : "null") +
                 ", checklistSize=" + (checklist != null ? checklist.size() : 0) +
                 ", attachmentsCount=" + (attachments != null ? attachments.size() : 0) +
+                ", updatedAt=" + (updatedAt != null ? updatedAt : "null") +
                 '}';
     }
 

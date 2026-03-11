@@ -26,6 +26,8 @@ public interface TaskMappingService {
     @Mapping(target = "projectId", source = "entity.project.id")
     @Mapping(target = "statusId", source = "entity.status.id")
     @Mapping(target = "dueDate", source = "dueDate")
+    @Mapping(target = "updatedAt", source = "entity.updatedAt")
+    @Mapping(target = "createdAt", source = "entity.createdAt")
     TaskResponseDto mapEntityToDto(Task entity);
 
     @Mapping(target = "id", expression = "java(item.getId() != null ? item.getId().toString() : null)")
