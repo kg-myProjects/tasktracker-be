@@ -1,10 +1,12 @@
 package de.upteams.tasktracker.task.entity;
 
 import de.upteams.tasktracker.collaborator.entity.Collaborator;
+import de.upteams.tasktracker.comment.entity.Comment;
 import de.upteams.tasktracker.project.entity.Project;
 import de.upteams.tasktracker.taskstatus.entity.TaskStatus;
 import de.upteams.tasktracker.marker.entity.Marker;
 import de.upteams.tasktracker.utils.BaseEntity;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -77,6 +79,10 @@ public class Task extends BaseEntity {
     @OrderBy("createdAt ASC")
     private List<Attachment> attachments = new ArrayList<>();
 
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("createdAt DESC")
+    private List<Comment> comments = new ArrayList<>();
 
 
 

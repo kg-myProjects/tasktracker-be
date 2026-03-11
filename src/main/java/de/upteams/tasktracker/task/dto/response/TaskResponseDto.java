@@ -37,7 +37,7 @@ public class TaskResponseDto {
     )
     String description;
 
-    @Schema(description = "Id of the TaskStatus", example = "To Do")
+    @Schema(description = "Id of the TaskStatus", example = "7")
     String statusId;
 
    // @JsonIgnore

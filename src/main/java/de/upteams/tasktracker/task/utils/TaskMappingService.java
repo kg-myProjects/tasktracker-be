@@ -1,6 +1,7 @@
 package de.upteams.tasktracker.task.utils;
 
 import de.upteams.tasktracker.collaborator.utils.CollaboratorMapper;
+import de.upteams.tasktracker.comment.utils.CommentMapper;
 import de.upteams.tasktracker.marker.utils.MarkerMapper;
 import de.upteams.tasktracker.task.dto.request.ChecklistItemDto;
 import de.upteams.tasktracker.task.dto.request.TaskCreateDto;
@@ -17,7 +18,7 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,
-        uses = {AppUserMapper.class, CollaboratorMapper.class, MarkerMapper.class}
+        uses = {AppUserMapper.class, CollaboratorMapper.class, MarkerMapper.class, CommentMapper.class}
 )
 public interface TaskMappingService {
 
@@ -48,6 +49,7 @@ public interface TaskMappingService {
     @Mapping(target = "attachments", ignore = true)
     @Mapping(target = "project", ignore = true)
     @Mapping(target = "status", ignore = true)
+    @Mapping(target = "comments", ignore = true)
     Task mapDtoToEntity(TaskCreateDto dto);
 
     @Mapping(target = "id", ignore = true)
