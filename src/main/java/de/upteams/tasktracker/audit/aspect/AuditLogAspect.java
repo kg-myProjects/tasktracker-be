@@ -140,14 +140,11 @@ public class AuditLogAspect {
 
     private String extractProjectIdFromDto(Object dto) {
         try {
-            Object project = dto.getClass()
-                    .getMethod("getProject")
+            Object projectId = dto.getClass()
+                    .getMethod("getProjectId")
                     .invoke(dto);
 
-            return project.getClass()
-                    .getMethod("id")
-                    .invoke(project)
-                    .toString();
+            return projectId != null ? projectId.toString() : null;
         } catch (Exception e) {
             return null;
         }
