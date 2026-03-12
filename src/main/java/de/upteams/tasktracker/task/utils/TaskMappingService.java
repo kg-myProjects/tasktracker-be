@@ -52,6 +52,8 @@ public interface TaskMappingService {
     @Mapping(target = "project", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "comments", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     Task mapDtoToEntity(TaskCreateDto dto);
 
     @Mapping(target = "id", ignore = true)
