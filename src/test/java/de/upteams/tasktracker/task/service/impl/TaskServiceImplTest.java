@@ -30,7 +30,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -347,7 +350,10 @@ class TaskServiceImplTest {
         UUID taskId = task.getId();
         String projectId = task.getProject().getId().toString();
 
-        String newDueDate = LocalDateTime.now().plusDays(1).toString();
+        String newDueDate = Instant.now()
+                .plus(Duration.ofDays(1))
+                .truncatedTo(ChronoUnit.SECONDS)
+                .toString();
 
         TaskUpdateDto dto = new TaskUpdateDto(
                 null, null, null, null, null, newDueDate, null, null

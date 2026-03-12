@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -73,7 +73,7 @@ public class Task extends BaseEntity {
     private List<ChecklistItem> checklist = new ArrayList<>();
 
     @Column(name = "due_date")
-    private LocalDateTime dueDate;
+    private Instant dueDate;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("createdAt ASC")
@@ -83,6 +83,24 @@ public class Task extends BaseEntity {
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("createdAt DESC")
     private List<Comment> comments = new ArrayList<>();
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @Column(name = "updated_at")
+    private Instant  updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = Instant .now();
+        updatedAt = Instant .now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = Instant .now();
+    }
+
 
 
 
@@ -110,6 +128,7 @@ public class Task extends BaseEntity {
                 ", dueDate=" + (dueDate != null ? dueDate : "null") +
                 ", checklistSize=" + (checklist != null ? checklist.size() : 0) +
                 ", attachmentsCount=" + (attachments != null ? attachments.size() : 0) +
+                ", updatedAt=" + (updatedAt != null ? updatedAt : "null") +
                 '}';
     }
 

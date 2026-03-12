@@ -26,6 +26,8 @@ public interface TaskMappingService {
     @Mapping(target = "projectId", source = "entity.project.id")
     @Mapping(target = "statusId", source = "entity.status.id")
     @Mapping(target = "dueDate", source = "dueDate")
+    @Mapping(target = "updatedAt", source = "entity.updatedAt")
+    @Mapping(target = "createdAt", source = "entity.createdAt")
     TaskResponseDto mapEntityToDto(Task entity);
 
     @Mapping(target = "id", expression = "java(item.getId() != null ? item.getId().toString() : null)")
@@ -50,6 +52,8 @@ public interface TaskMappingService {
     @Mapping(target = "project", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "comments", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     Task mapDtoToEntity(TaskCreateDto dto);
 
     @Mapping(target = "id", ignore = true)

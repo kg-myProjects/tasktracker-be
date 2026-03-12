@@ -26,7 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.time.LocalDateTime;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
@@ -173,9 +174,9 @@ public class TaskServiceImpl implements TaskService {
         }
 
         try {
-           LocalDateTime newDate = LocalDateTime.parse(dueDateStr);
+            Instant newDate = Instant .parse(dueDateStr);
 
-            if (newDate.isBefore(LocalDateTime.now().minusMinutes(1))) {
+            if (newDate.isBefore(Instant .now().minus(Duration.ofMinutes(1)))) {
                 throw new InvalidTaskPayloadException("Deadline cannot be in the past!");
             }
             if (!newDate.equals(task.getDueDate())) {

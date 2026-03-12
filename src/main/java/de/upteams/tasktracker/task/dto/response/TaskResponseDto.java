@@ -69,6 +69,17 @@ public class TaskResponseDto {
     @Schema(description = "Date of the deadline Task")
     String dueDate;
 
+    @Schema(description = "Creation date of the task")
+    String createdAt;
+
+
+    @Schema(
+            description = "The last time the task was modified",
+            accessMode = Schema.AccessMode.READ_ONLY,
+            example = "2024-03-11T15:30:00"
+    )
+    String updatedAt;
+
     @Schema(description = "Attachments of the Task")
     List<AttachmentResponseDto> attachments;
 }
