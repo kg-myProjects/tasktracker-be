@@ -31,6 +31,9 @@ public class TaskResponseDto {
     @Schema(description = "Title of the Task", example = "Implement repository layer")
     String title;
 
+    @Schema(description = "Number of the Task", example = "3")
+    Long taskNumber;
+
     @Schema(
             description = "Detailed description of the Task",
             example = "Create JPA repositories for all entities"
