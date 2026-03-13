@@ -38,6 +38,10 @@ public class Task extends BaseEntity {
     @Column(name = "title", nullable = false)
     private String title;
 
+    @Column(name = "task_number", nullable = false)
+    private Long taskNumber;
+
+
     @Column(name = "description")
     private String description;
 

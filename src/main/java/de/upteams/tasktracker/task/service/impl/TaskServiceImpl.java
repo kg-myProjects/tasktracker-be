@@ -65,6 +65,10 @@ public class TaskServiceImpl implements TaskService {
         task.setStatus(status);
         task.setProject(project);
 
+        Long lastNumber = repository.findMaxTaskNumberByProjectId(project.getId())
+                .orElse(0L);
+        task.setTaskNumber(lastNumber + 1);
+
         return mappingService.mapEntityToDto(repository.save(task));
     }
 
