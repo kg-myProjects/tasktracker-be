@@ -84,4 +84,60 @@ public interface CommentApi {
             @Parameter(description = "ID of the task to get comments for")
             String taskId
     );
+
+    @Operation(summary = "Delete comment from Task", description = "Deletes a specific comment if the user is the author")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Comment successfully deleted"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - user is not the author of the comment",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Comment or Task not found",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class)))
+    })
+    @DeleteMapping("/{commentId}")
+    @org.springframework.web.bind.annotation.ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
+    void deleteComment(
+            @PathVariable
+            @Parameter(description = "ID of the task")
+            String taskId,
+
+            @PathVariable
+            @Parameter(description = "ID of the comment to delete")
+            String commentId,
+
+            @AuthenticationPrincipal
+            @Parameter(hidden = true)
+            AuthUserDetails principal
+    );
+
+    @Operation(summary = "Update comment", description = "Updates the text of an existing comment. Only the author can perform this action.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Comment successfully updated",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CommentResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid payload"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - user is not the author"),
+            @ApiResponse(responseCode = "404", description = "Comment not found")
+    })
+    @PatchMapping("/{commentId}")
+    CommentResponseDto updateComment(
+            @PathVariable
+            @Parameter(description = "ID of the task")
+            String taskId,
+
+            @PathVariable
+            @Parameter(description = "ID of the comment to update")
+            String commentId,
+
+            @RequestBody
+            @Valid
+            CommentRequestDto dto,
+
+            @AuthenticationPrincipal
+            @Parameter(hidden = true)
+            AuthUserDetails principal
+    );
+
+
 }

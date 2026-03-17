@@ -28,4 +28,16 @@ public class CommentController implements CommentApi {
     public List<CommentResponseDto> getComments(String taskId) {
         return service.getCommentsByTaskId(taskId);
     }
+
+    @Override
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteComment(String taskId, String commentId, AuthUserDetails principal) {
+        service.deleteComment(taskId, commentId, principal.user());
+    }
+
+    @Override
+    public CommentResponseDto updateComment(String taskId, String commentId, CommentRequestDto dto,
+                                            AuthUserDetails principal){
+      return   service.updateComment(taskId, commentId, dto, principal.user());
+    }
 }
