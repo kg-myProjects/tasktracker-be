@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface MarkerService {
     void syncTaskMarkers(Task task, List<String> markerIds);
+    void deleteTaskMarkers(String markerId);
 }

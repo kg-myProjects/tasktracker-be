@@ -38,7 +38,7 @@ import java.util.UUID;
 @PreAuthorize("isAuthenticated()")
 public interface ProjectApi {
 
-     @Operation(summary = "Save/create Project", description = "Save new Project to the Database")
+    @Operation(summary = "Save/create Project", description = "Save new Project to the Database")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Project successfully created",
                     content = @Content(mediaType = "application/json",
@@ -298,13 +298,13 @@ public interface ProjectApi {
     @Operation(summary = "Create new marker for project")
     @PostMapping("/{projectId}/markers")
     MarkerResponseDto createMarker(
-               @RequestBody
-               @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                       required = true,
-                       description = "Instance of Project to save"
-               )
+            @RequestBody
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    description = "Instance of Project to save"
+            )
 
-               @Valid MarkerCreateDto dto,
+            @Valid MarkerCreateDto dto,
 
             @PathVariable
             @Parameter(required = true, description = "ID of the project to invite to")
@@ -313,5 +313,26 @@ public interface ProjectApi {
             @AuthenticationPrincipal
             @Parameter(hidden = true)
             AuthUserDetails principal);
+
+    @Operation(summary = "Delete marker from project", description = "Permanently removes a marker from the project and unbinds it from all tasks")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Marker successfully deleted"),
+            @ApiResponse(responseCode = "403", description = "Forbidden: Only OWNER or ADMIN can delete markers"),
+            @ApiResponse(responseCode = "404", description = "Marker or Project not found")
+    })
+    @DeleteMapping("/{projectId}/markers/{markerId}")
+    void deleteMarker(
+            @PathVariable
+            @Parameter(required = true, description = "ID of the project")
+            UUID projectId,
+
+            @PathVariable
+            @Parameter(required = true, description = "ID of the marker to delete")
+            UUID markerId,
+
+            @AuthenticationPrincipal
+            @Parameter(hidden = true)
+            AuthUserDetails principal);
+
 
 }

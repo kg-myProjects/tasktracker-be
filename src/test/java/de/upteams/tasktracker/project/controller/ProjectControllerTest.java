@@ -386,6 +386,32 @@ class ProjectControllerTest extends BaseControllerTest {
     }
 
     @Test
+    @DisplayName("DELETE /api/v1/projects/{projectId}/markers/{markerId} - Success")
+    void deleteMarkerSuccess() throws Exception {
+        UUID projId = UUID.fromString(projectId);
+        UUID markerId = UUID.randomUUID();
+
+        doNothing().when(projectService).deleteMarker(eq(projId), eq(markerId), any());
+
+        performDelete("/api/v1/projects/" + projectId + "/markers/" + markerId, mockUserPrincipal)
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("DELETE /api/v1/projects/{projectId}/markers/{markerId} - Not Found")
+    void deleteMarkerNotFound() throws Exception {
+        UUID projId = UUID.fromString(projectId);
+        UUID markerId = UUID.randomUUID();
+
+        doThrow(new ProjectNotFoundException())
+                .when(projectService).deleteMarker(eq(projId), eq(markerId), any());
+
+        performDelete("/api/v1/projects/" + projectId + "/markers/" + markerId, mockUserPrincipal)
+                .andExpect(status().isNotFound());
+    }
+
+
+    @Test
     @DisplayName("GET /api/v1/projects/{id}/logs - Success")
     void getProjectLogsSuccess() throws Exception {
         UUID projId = UUID.fromString(projectId);
