@@ -29,4 +29,19 @@ public class MarkerServiceImpl implements MarkerService {
         task.getMarkers().addAll(markers);
     }
 
+    @Override
+    @Transactional
+    public void deleteTaskMarkers(String markerId) {
+        UUID id = UUID.fromString(markerId);
+        Marker marker = markerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Marker not found"));
+
+        for (Task task : marker.getTasks()) {
+            task.getMarkers().remove(marker);
+        }
+
+        markerRepository.delete(marker);
+    }
+
+
 }

@@ -44,5 +44,6 @@ public interface ProjectService {
     CollaboratorShortResponseDto inviteUser(InviteRequestDto inviteDto, UUID projectId, AppUser inviter);
 
     MarkerResponseDto createMarker(MarkerCreateDto dto, UUID projectId, AppUser authUser);
+    void deleteMarker(UUID projectId, UUID markerId, AppUser authUser);
 
 }

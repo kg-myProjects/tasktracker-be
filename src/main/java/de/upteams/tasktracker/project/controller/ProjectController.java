@@ -73,7 +73,7 @@ public class ProjectController implements ProjectApi {
 
     @Override
     public CollaboratorShortResponseDto inviteUser(InviteRequestDto inviteDto, UUID id, AuthUserDetails principal) {
-     return    service.inviteUser(inviteDto, id, principal.user());
+        return    service.inviteUser(inviteDto, id, principal.user());
     }
 
     @Override
@@ -89,6 +89,12 @@ public class ProjectController implements ProjectApi {
     @Override
     public MarkerResponseDto createMarker(MarkerCreateDto dto, UUID projectId, @AuthenticationPrincipal AuthUserDetails principal) {
         return service.createMarker(dto, projectId, principal.user());
+    }
+
+    @Override
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMarker(UUID projectId, UUID markerId, @AuthenticationPrincipal AuthUserDetails principal) {
+        service.deleteMarker(projectId, markerId, principal.user());
     }
 
 

@@ -150,7 +150,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<MarkerResponseDto> getMarkersByProjectId(UUID id) {
-         return markerRepository
+        return markerRepository
                 .findAllByProjectId(id)
                 .stream()
                 .map(markerMapper::mapEntityToDto)
@@ -241,6 +241,27 @@ public class ProjectServiceImpl implements ProjectService {
         Marker savedMarker = markerRepository.save(marker);
         return markerMapper.mapEntityToDto(savedMarker);
     }
+
+    @Override
+    @Transactional
+    public void deleteMarker(UUID projectId, UUID markerId, AppUser authUser) {
+        collaboratorService.checkAccessAndGetProject(
+                authUser,
+                projectId.toString(),
+                List.of(ProjectRoles.OWNER, ProjectRoles.ADMIN)
+        );
+        Marker marker = markerRepository.findById(markerId)
+                .orElseThrow(() -> new RestApiException(HttpStatus.NOT_FOUND, "Marker not found"));
+
+        if (!marker.getProject().getId().equals(projectId)) {
+            throw new RestApiException(HttpStatus.FORBIDDEN, "Marker does not belong to this project");
+        }
+        if (marker.getTasks() != null) {
+            marker.getTasks().forEach(task -> task.getMarkers().remove(marker));
+        }
+        markerRepository.delete(marker);
+    }
+
 
     private void updateTitle(Project project, String newTitle) {
         if (newTitle != null && !newTitle.equals(project.getTitle())) {

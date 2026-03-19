@@ -105,6 +105,7 @@ class ProjectServiceImplTest {
         userId = UUID.randomUUID();
         project = new Project();
         projectId = UUID.randomUUID();
+        ReflectionTestUtils.setField(project, "id", projectId);
         project.setOwner(user);
         project.setProjectTeam(new HashSet<>());
     }
@@ -531,6 +532,68 @@ class ProjectServiceImplTest {
         verify(markerRepository).findAllByProjectId(projectId);
         verifyNoInteractions(markerMapper);
     }
+
+
+    @Test
+    @DisplayName("deleteMarker() - Success: should delete marker and unbind from tasks")
+    void deleteMarker_Success() {
+        UUID markerId = UUID.randomUUID();
+        Marker marker = new Marker();
+
+        ReflectionTestUtils.setField(marker, "id", markerId);
+
+        marker.setProject(project);
+
+        Task task = new Task();
+        task.getMarkers().add(marker);
+        marker.getTasks().add(task);
+
+        when(markerRepository.findById(markerId)).thenReturn(Optional.of(marker));
+        when(collaboratorService.checkAccessAndGetProject(eq(user), eq(projectId.toString()), anyCollection()))
+                .thenReturn(project);
+
+        service.deleteMarker(projectId, markerId, user);
+
+        assertFalse(task.getMarkers().contains(marker), "Marker should be removed from task's set");
+        verify(markerRepository).delete(marker);
+        verify(collaboratorService).checkAccessAndGetProject(eq(user), eq(projectId.toString()), anyCollection());
+    }
+
+    @Test
+    @DisplayName("deleteMarker() - Forbidden: should throw exception when marker belongs to another project")
+    void deleteMarker_WrongProject() {
+        UUID markerId = UUID.randomUUID();
+        Project anotherProject = new Project();
+        ReflectionTestUtils.setField(anotherProject, "id", UUID.randomUUID());
+
+        Marker marker = new Marker();
+        ReflectionTestUtils.setField(marker, "id", markerId);
+        marker.setProject(anotherProject);
+
+        when(markerRepository.findById(markerId)).thenReturn(Optional.of(marker));
+        when(collaboratorService.checkAccessAndGetProject(eq(user), eq(projectId.toString()), anyCollection()))
+                .thenReturn(project);
+
+        RestApiException exception = assertThrows(RestApiException.class,
+                () -> service.deleteMarker(projectId, markerId, user));
+
+        assertEquals(HttpStatus.FORBIDDEN, exception.getHttpStatus());
+        verify(markerRepository, never()).delete(any());
+    }
+
+    @Test
+    @DisplayName("deleteMarker() - Not Found: should throw exception when marker does not exist")
+    void deleteMarker_NotFound() {
+        UUID markerId = UUID.randomUUID();
+        when(markerRepository.findById(markerId)).thenReturn(Optional.empty());
+
+        RestApiException exception = assertThrows(RestApiException.class,
+                () -> service.deleteMarker(projectId, markerId, user));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+        verify(markerRepository, never()).delete(any());
+    }
+
 
     @Test
     @DisplayName("getProjectLogs() should return list of project logs")
