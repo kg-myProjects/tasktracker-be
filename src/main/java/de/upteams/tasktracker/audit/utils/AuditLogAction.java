@@ -4,5 +4,10 @@ public enum AuditLogAction {
     CREATE,
     UPDATE,
     DELETE,
-    MOVE
+    MOVE,
+    MARKERS,
+    TITLE,
+    DESCRIPTION,
+    DUE_DATE
+
 }

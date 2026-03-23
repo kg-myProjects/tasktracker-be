@@ -75,6 +75,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
+    @Auditable(entity = "Task", action = AuditLogAction.UPDATE, entityClass = Task.class, nameField = "title")
     public TaskResponseDto update(String id, TaskUpdateDto dto, AppUser authUser) {
         Task task = getOrThrow(id);
 
@@ -104,7 +105,6 @@ public class TaskServiceImpl implements TaskService {
 
         Task savedTask = repository.saveAndFlush(task);
         return mappingService.mapEntityToDto(savedTask);
-
     }
 
     @Override
