@@ -1,4 +1,4 @@
-package de.upteams.tasktracker.security.handler;
+package de.upteams.tasktracker.security.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

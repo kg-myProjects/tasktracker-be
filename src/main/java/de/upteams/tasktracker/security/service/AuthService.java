@@ -2,9 +2,9 @@ package de.upteams.tasktracker.security.service;
 
 import de.upteams.tasktracker.exception.handling.exceptions.common.RestApiException;
 import de.upteams.tasktracker.mail.EmailService;
-import de.upteams.tasktracker.security.dto.LoginRequest;
+import de.upteams.tasktracker.security.dto.request.LoginRequestDto;
 import de.upteams.tasktracker.security.entities.PasswordResetToken;
-import de.upteams.tasktracker.security.entities.TokenResponseDto;
+import de.upteams.tasktracker.security.dto.response.TokenResponseDto;
 import de.upteams.tasktracker.security.persistence.PasswordResetTokenRepository;
 import de.upteams.tasktracker.user.entity.AppUser;
 import de.upteams.tasktracker.user.persistence.UserRepository;
@@ -34,7 +34,7 @@ public class AuthService {
     private final PasswordResetService passwordResetService;
     private final PasswordEncoder passwordEncoder;
 
-    public TokenResponseDto login(LoginRequest loginRequest) {
+    public TokenResponseDto login(LoginRequestDto loginRequest) {
         String userEmail = loginRequest.email();
         UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 

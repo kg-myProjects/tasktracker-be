@@ -3,7 +3,7 @@ package de.upteams.tasktracker;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.upteams.tasktracker.exception.handling.GlobalExceptionHandler;
 import de.upteams.tasktracker.security.config.SecurityConfig;
-import de.upteams.tasktracker.security.service.AuthUserDetails;
+import de.upteams.tasktracker.security.dto.AuthUserDetails;
 import de.upteams.tasktracker.security.service.CustomUserDetailsService;
 import de.upteams.tasktracker.security.service.JwtTokenService;
 import de.upteams.tasktracker.user.entity.AppUser;

@@ -206,7 +206,7 @@ public class AuditLogAspect {
 
         Set<MarkerResponseDto> newMarkersDto = new HashSet<>();
         try {
-            if (taskDto.getMarkers() != null) newMarkersDto.addAll(taskDto.getMarkers());
+            if (taskDto.markers() != null) newMarkersDto.addAll(taskDto.markers());
         } catch (Exception ignored) {
         }
 
@@ -230,8 +230,8 @@ public class AuditLogAspect {
         //===== TITLE =====
         String oldTitle = oldTitleHolder.get();
         oldTitleHolder.remove();
-        if (oldTitle != null && !oldTitle.equals(taskDto.getTitle())) {
-            String titleDiff = String.format("oldTitle=%s,newTitle=%s", oldTitle, taskDto.getTitle());
+        if (oldTitle != null && !oldTitle.equals(taskDto.title())) {
+            String titleDiff = String.format("oldTitle=%s,newTitle=%s", oldTitle, taskDto.title());
             auditLogService.logAction(
                     auditable.entity(),
                     entityId,
@@ -250,8 +250,8 @@ public class AuditLogAspect {
         //===== DESCRIPTION =====
         String oldDescription = oldDescriptionHolder.get();
         oldDescriptionHolder.remove();
-        if (oldDescription != null && !oldDescription.equals(taskDto.getDescription())) {
-            String descriptionDiff = String.format("oldDescription=%s,newDescription=%s", oldDescription, taskDto.getDescription());
+        if (oldDescription != null && !oldDescription.equals(taskDto.description())) {
+            String descriptionDiff = String.format("oldDescription=%s,newDescription=%s", oldDescription, taskDto.description());
             auditLogService.logAction(
                     auditable.entity(),
                     entityId,
@@ -273,7 +273,7 @@ public class AuditLogAspect {
 
         Instant newDueDate = null;
         try {
-            if (taskDto.getDueDate() != null) newDueDate = Instant.parse(taskDto.getDueDate());
+            if (taskDto.dueDate() != null) newDueDate = Instant.parse(taskDto.dueDate());
         } catch (Exception ignored) {
         }
 

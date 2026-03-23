@@ -20,14 +20,15 @@ public class Attachment extends BaseEntity {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String name;
 
     @Column(nullable = false, length = 1024)
     private String url;
 
     @Column(nullable = false)
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private AttachmentType  type;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id", nullable = false)

@@ -1,11 +1,11 @@
-package de.upteams.tasktracker.security.controller;
+package de.upteams.tasktracker.security.controller.api;
 
 import de.upteams.tasktracker.exception.handling.response.ErrorResponseDto;
-import de.upteams.tasktracker.security.dto.LoginRequest;
+import de.upteams.tasktracker.security.dto.request.LoginRequestDto;
 import de.upteams.tasktracker.security.dto.request.ForgotPasswordRequestDto;
 import de.upteams.tasktracker.security.dto.request.ResetPasswordRequestDto;
-import de.upteams.tasktracker.security.entities.TokenResponseDto;
-import de.upteams.tasktracker.security.service.AuthUserDetails;
+import de.upteams.tasktracker.security.dto.response.TokenResponseDto;
+import de.upteams.tasktracker.security.dto.AuthUserDetails;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -63,7 +63,7 @@ public interface AuthApi {
                     description = "Instance of User with name and password"
             )
             @Valid
-            LoginRequest loginRequest,
+            LoginRequestDto loginRequest,
             HttpServletResponse response
     );
 

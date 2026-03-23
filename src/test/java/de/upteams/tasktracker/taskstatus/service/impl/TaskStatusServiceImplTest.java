@@ -68,7 +68,7 @@ public class TaskStatusServiceImplTest {
     @DisplayName("save() should create taskStatus using mapper")
     void saveShouldCreateTaskStatusUsingMapper() {
         String projectId = UUID.randomUUID().toString();
-        TaskStatusCreateDto dto = new TaskStatusCreateDto(null, "To do", 1, projectId);
+        TaskStatusCreateDto dto = new TaskStatusCreateDto( "To do", 1, projectId);
         Project project = new Project();
 
         TaskStatus mappedStatus = new TaskStatus();
@@ -95,7 +95,7 @@ public class TaskStatusServiceImplTest {
     @DisplayName("save() should throw 400 Exception when name is blank")
     void save_shouldThrowException_whenNameIsBlank() {
         String projectId = UUID.randomUUID().toString();
-        TaskStatusCreateDto dto = new TaskStatusCreateDto(null, "  ", 0, projectId);
+        TaskStatusCreateDto dto = new TaskStatusCreateDto( "  ", 0, projectId);
         Project project = new Project();
 
         when(collaboratorService.checkAccessAndGetProject(eq(user), eq(projectId), anyCollection()))
@@ -110,7 +110,7 @@ public class TaskStatusServiceImplTest {
     @DisplayName("save() should throw 403 Forbidden when user has no permission")
     void save_shouldThrowForbidden_whenNoPermission() {
         String projectId = UUID.randomUUID().toString();
-        TaskStatusCreateDto dto = new TaskStatusCreateDto(null, "To Do", 0, projectId);
+        TaskStatusCreateDto dto = new TaskStatusCreateDto( "To Do", 0, projectId);
 
         when(collaboratorService.checkAccessAndGetProject(eq(user), eq(projectId), anyCollection()))
                 .thenThrow(new de.upteams.tasktracker.exception.handling.exceptions.common.RestApiException(
@@ -229,8 +229,8 @@ public class TaskStatusServiceImplTest {
         doAnswer(invocation -> {
             TaskStatusUpdateDto d = invocation.getArgument(0);
             TaskStatus s = invocation.getArgument(1);
-            if (d.getName() != null) s.setName(d.getName());
-            if (d.getPosition() != null) s.setPosition(d.getPosition());
+            if (d.name() != null) s.setName(d.name());
+            if (d.position() != null) s.setPosition(d.position());
             return null;
         }).when(mappingService).updateEntityFromDto(any(), any());
 

@@ -2,8 +2,7 @@ package de.upteams.tasktracker.collaborator.controller.api;
 
 import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortResponseDto;
 import de.upteams.tasktracker.exception.handling.response.ErrorResponseDto;
-import de.upteams.tasktracker.security.service.AuthUserDetails;
-import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
+import de.upteams.tasktracker.security.dto.AuthUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

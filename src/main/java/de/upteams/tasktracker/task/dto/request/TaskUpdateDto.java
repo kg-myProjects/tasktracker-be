@@ -2,9 +2,12 @@ package de.upteams.tasktracker.task.dto.request;
 
 import de.upteams.tasktracker.task.dto.response.AttachmentResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
+
 import java.util.List;
 
 @Schema(description = "Data Transfer Object for partial Task update")
+@Builder
 public record TaskUpdateDto(
         @Schema(description = "Updated title of the Task", example = "Refactor Service Layer")
         String title,

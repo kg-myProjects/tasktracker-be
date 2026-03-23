@@ -5,6 +5,7 @@ import de.upteams.tasktracker.task.dto.request.TaskCreateDto;
 import de.upteams.tasktracker.task.dto.request.TaskUpdateDto;
 import de.upteams.tasktracker.task.dto.response.AttachmentResponseDto;
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
+import de.upteams.tasktracker.task.entity.AttachmentType;
 import de.upteams.tasktracker.task.service.interfaces.AttachmentService;
 import de.upteams.tasktracker.task.service.interfaces.TaskService;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +15,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -44,10 +44,13 @@ class TaskControllerTest extends BaseControllerTest {
         String projectId = UUID.randomUUID().toString();
         String statusId = UUID.randomUUID().toString();
 
-        TaskCreateDto request = new TaskCreateDto(
-                null, "New Task", "Description", statusId, projectId,
-                List.of(), List.of(), List.of(), "2026-12-31T23:59:59", List.of()
-        );
+        TaskCreateDto request = TaskCreateDto.builder()
+                .title("New Task")
+                .description("Description")
+                .statusId(statusId)
+                .projectId(projectId)
+                .dueDate(java.time.Instant.parse("2026-12-31T23:59:59Z"))
+                .build();
 
         TaskResponseDto response = TaskResponseDto.builder()
                 .id(UUID.randomUUID().toString())
@@ -59,7 +62,7 @@ class TaskControllerTest extends BaseControllerTest {
         when(taskService.save(any(TaskCreateDto.class), any())).thenReturn(response);
 
         performPost("/api/v1/tasks", request, mockUserPrincipal)
-                .andExpect(status().isCreated()) // 201 як у Swagger
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value("New Task"))
                 .andExpect(jsonPath("$.projectId").value(projectId));
     }
@@ -69,9 +72,10 @@ class TaskControllerTest extends BaseControllerTest {
     void updateTaskSuccess() throws Exception {
         String taskId = UUID.randomUUID().toString();
 
-        TaskUpdateDto updateRequest = new TaskUpdateDto(
-                "Updated Title", "New Desc", null, null, null, null, null, null
-        );
+        TaskUpdateDto updateRequest = TaskUpdateDto.builder()
+                .title("Updated Title")
+                .description("New Desc")
+                .build();
 
         TaskResponseDto response = TaskResponseDto.builder()
                 .id(taskId)
@@ -89,11 +93,12 @@ class TaskControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("POST /api/v1/tasks - Bad Request (Blank Title)")
     void saveTaskBadRequest() throws Exception {
-
-        TaskCreateDto invalidRequest = new TaskCreateDto(
-                null, "", "Desc", "statusId", "projectId",
-                null, null, null, null, null
-        );
+        TaskCreateDto invalidRequest = TaskCreateDto.builder()
+                .title("")
+                .description("Desc")
+                .statusId("statusId")
+                .projectId("projectId")
+                .build();
 
         performPost("/api/v1/tasks", invalidRequest, mockUserPrincipal)
                 .andExpect(status().isBadRequest());
@@ -103,10 +108,14 @@ class TaskControllerTest extends BaseControllerTest {
     @DisplayName("POST /api/v1/tasks - Forbidden (No Access to Project)")
     void saveTaskForbidden() throws Exception {
         String projectId = UUID.randomUUID().toString();
-        TaskCreateDto request = new TaskCreateDto(
-                null, "New Task", "Desc", "statusId", projectId,
-                List.of(), List.of(), List.of(), null, List.of()
-        );
+
+
+        TaskCreateDto request = TaskCreateDto.builder()
+                .title("New Task")
+                .description("Desc")
+                .statusId("statusId")
+                .projectId(projectId)
+                .build();
 
         when(taskService.save(any(TaskCreateDto.class), any()))
                 .thenThrow(new de.upteams.tasktracker.exception.handling.exceptions.common.RestApiException(
@@ -121,9 +130,11 @@ class TaskControllerTest extends BaseControllerTest {
     @DisplayName("PATCH /api/v1/tasks/{id} - Forbidden (No Access)")
     void updateTaskForbidden() throws Exception {
         String taskId = UUID.randomUUID().toString();
-        TaskUpdateDto updateRequest = new TaskUpdateDto(
-                "Title", null, null, null, null, null, null, null
-        );
+
+        TaskUpdateDto updateRequest = TaskUpdateDto.builder()
+                .title("Title")
+                .build();
+
 
         when(taskService.update(eq(taskId), any(TaskUpdateDto.class), any()))
                 .thenThrow(new de.upteams.tasktracker.exception.handling.exceptions.common.RestApiException(
@@ -205,7 +216,7 @@ class TaskControllerTest extends BaseControllerTest {
                 attachmentId,
                 "test.txt",
                 "https://storage.com",
-                "TEXT",
+                AttachmentType.TEXT,
                 LocalDateTime.now()
         );
 

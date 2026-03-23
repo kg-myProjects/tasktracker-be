@@ -4,7 +4,7 @@ import de.upteams.tasktracker.comment.controller.api.CommentApi;
 import de.upteams.tasktracker.comment.dto.request.CommentRequestDto;
 import de.upteams.tasktracker.comment.dto.response.CommentResponseDto;
 import de.upteams.tasktracker.comment.service.interfaces.CommentService;
-import de.upteams.tasktracker.security.service.AuthUserDetails;
+import de.upteams.tasktracker.security.dto.AuthUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

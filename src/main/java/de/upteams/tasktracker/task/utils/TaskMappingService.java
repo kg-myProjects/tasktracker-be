@@ -37,6 +37,7 @@ public interface TaskMappingService {
     @Mapping(target = "id", expression = "java(attachment.getId() != null ? attachment.getId().toString() : null)")
     AttachmentResponseDto mapAttachmentToDto(Attachment attachment);
 
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "task", ignore = true)
     @Mapping(target = "createdAt", ignore = true)

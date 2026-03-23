@@ -8,7 +8,7 @@ import de.upteams.tasktracker.user.dto.response.UserResponseDto;
 import de.upteams.tasktracker.user.entity.AppUser;
 import de.upteams.tasktracker.user.exception.UserNotFoundException;
 import de.upteams.tasktracker.user.persistence.UserRepository;
-import de.upteams.tasktracker.user.service.UserService;
+import de.upteams.tasktracker.user.service.interfaces.UserService;
 import de.upteams.tasktracker.user.util.AppUserMapper;
 import de.upteams.tasktracker.user.util.UserUtils;
 import jakarta.transaction.Transactional;

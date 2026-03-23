@@ -19,7 +19,6 @@ nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrateg
 )
 public interface TaskStatusMappingService {
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "project", ignore = true)
     @Mapping(target = "tasks", ignore = true)
     TaskStatus mapDtoToEntity(TaskStatusCreateDto dto);

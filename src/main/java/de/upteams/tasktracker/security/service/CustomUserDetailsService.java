@@ -1,5 +1,6 @@
 package de.upteams.tasktracker.security.service;
 
+import de.upteams.tasktracker.security.dto.AuthUserDetails;
 import de.upteams.tasktracker.user.entity.AppUser;
 import de.upteams.tasktracker.user.persistence.UserRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package de.upteams.tasktracker.task.controller;
 
-import de.upteams.tasktracker.security.service.AuthUserDetails;
+import de.upteams.tasktracker.security.dto.AuthUserDetails;
 import de.upteams.tasktracker.task.controller.api.TaskApi;
 import de.upteams.tasktracker.task.dto.request.TaskCreateDto;
 import de.upteams.tasktracker.task.dto.request.TaskUpdateDto;

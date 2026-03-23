@@ -1,4 +1,4 @@
-package de.upteams.tasktracker.user.service;
+package de.upteams.tasktracker.user.service.interfaces;
 
 import de.upteams.tasktracker.user.dto.request.UpdateUserDetailsDto;
 import de.upteams.tasktracker.user.dto.response.UserDetailsDto;

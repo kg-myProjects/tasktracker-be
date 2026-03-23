@@ -10,6 +10,7 @@ import de.upteams.tasktracker.task.dto.request.TaskUpdateDto;
 import de.upteams.tasktracker.task.dto.response.AttachmentResponseDto;
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.task.entity.Attachment;
+import de.upteams.tasktracker.task.entity.AttachmentType;
 import de.upteams.tasktracker.task.entity.Task;
 import de.upteams.tasktracker.task.exception.InvalidTaskPayloadException;
 import de.upteams.tasktracker.task.exception.TaskNotFoundException;
@@ -95,10 +96,12 @@ class TaskServiceImplTest {
         String projectId = UUID.randomUUID().toString();
         String statusId = UUID.randomUUID().toString();
 
-        TaskCreateDto dto = new TaskCreateDto(
-                null, "Task", "Description", statusId, projectId,
-                null, null, null, null, null
-        );
+        TaskCreateDto dto = TaskCreateDto.builder()
+                .title("Task")
+                .description("Description")
+                .statusId(statusId)
+                .projectId(projectId)
+                .build();
 
         Project project = new Project();
         TaskStatus status = new TaskStatus();
@@ -113,7 +116,7 @@ class TaskServiceImplTest {
         when(repository.save(task)).thenReturn(task);
         when(mappingService.mapEntityToDto(task)).thenReturn(mock(TaskResponseDto.class));
 
-         service.save(dto, authUser);
+        service.save(dto, authUser);
 
         ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
         verify(repository).save(taskCaptor.capture());
@@ -143,7 +146,7 @@ class TaskServiceImplTest {
         TaskResponseDto result = service.getById(taskId, authUser);
 
         assertNotNull(result);
-        assertEquals(taskId, result.getId());
+        assertEquals(taskId, result.id());
 
         verify(repository).findById(task.getId());
         verify(mappingService).mapEntityToDto(task);
@@ -295,9 +298,9 @@ class TaskServiceImplTest {
         UUID taskId = task.getId();
         String projectId = task.getProject().getId().toString();
 
-        TaskUpdateDto dto = new TaskUpdateDto(
-                null, "new description", null, null, null, null, null, null
-        );
+        TaskUpdateDto dto = TaskUpdateDto.builder()
+                .description("new description")
+                .build();
 
         when(repository.findById(taskId)).thenReturn(Optional.of(task));
 
@@ -325,9 +328,9 @@ class TaskServiceImplTest {
         TaskStatus newStatus = new TaskStatus();
         ReflectionTestUtils.setField(newStatus, "id", newStatusId);
 
-        TaskUpdateDto dto = new TaskUpdateDto(
-                null, null, newStatusId.toString(), null, null, null, null, null
-        );
+        TaskUpdateDto dto = TaskUpdateDto.builder()
+                .statusId(newStatusId.toString())
+                .build();
 
         when(repository.findById(taskId)).thenReturn(Optional.of(task));
         when(taskStatusRepository.findById(newStatusId)).thenReturn(Optional.of(newStatus));
@@ -355,9 +358,10 @@ class TaskServiceImplTest {
                 .truncatedTo(ChronoUnit.SECONDS)
                 .toString();
 
-        TaskUpdateDto dto = new TaskUpdateDto(
-                null, null, null, null, null, newDueDate, null, null
-        );
+        TaskUpdateDto dto = TaskUpdateDto.builder()
+                .dueDate(newDueDate)
+                .build();
+
 
         when(repository.findById(taskId)).thenReturn(Optional.of(task));
 
@@ -378,9 +382,9 @@ class TaskServiceImplTest {
     @DisplayName("update() should ThrowException when InvalidDate()")
     void updateShouldThrowExceptionShenInvalidDate() {
         Task task = createTask();
-        TaskUpdateDto dto = new TaskUpdateDto(
-                null, null, null, null, null, "invalid-date", null, null
-        );
+        TaskUpdateDto dto = TaskUpdateDto.builder()
+                .dueDate("invalid-date")
+                .build();
 
         when(repository.findById(any())).thenReturn(Optional.of(task));
 
@@ -402,12 +406,12 @@ class TaskServiceImplTest {
         String projectId = task.getProject().getId().toString();
 
         AttachmentResponseDto attachmentDto = new AttachmentResponseDto(
-                null, "Google", "https://google.com", "LINK", LocalDateTime.now()
+                null, "Google", "https://google.com", AttachmentType.LINK, LocalDateTime.now()
         );
 
-        TaskUpdateDto dto = new TaskUpdateDto(
-                null, null, null, null, null, null, null, List.of(attachmentDto)
-        );
+        TaskUpdateDto dto = TaskUpdateDto.builder()
+                .attachments(List.of(attachmentDto))
+                .build();
 
         when(repository.findById(taskId)).thenReturn(Optional.of(task));
 
@@ -424,7 +428,7 @@ class TaskServiceImplTest {
 
         Attachment added = savedTask.getAttachments().iterator().next();
         assertEquals("Google", added.getName());
-        assertEquals("LINK", added.getType());
+        assertEquals(AttachmentType.LINK, added.getType());
         assertEquals(savedTask, added.getTask(), "Attachment must be linked back to the task");
     }
 
@@ -437,9 +441,9 @@ class TaskServiceImplTest {
 
         List<String> markerIds = List.of(UUID.randomUUID().toString());
 
-        TaskUpdateDto dto = new TaskUpdateDto(
-                null, null, null, null, markerIds, null, null, null
-        );
+        TaskUpdateDto dto = TaskUpdateDto.builder()
+                .markerIds(markerIds)
+                .build();
 
         when(repository.findById(taskId)).thenReturn(Optional.of(task));
         when(collaboratorService.checkAccessAndGetProject(eq(authUser), eq(projectId), anyCollection()))
@@ -462,9 +466,10 @@ class TaskServiceImplTest {
         ChecklistItemDto itemDto = new ChecklistItemDto(null, "New Task Item", false);
         List<ChecklistItemDto> checklist = List.of(itemDto);
 
-        TaskUpdateDto dto = new TaskUpdateDto(
-                null, null, null, null, null, null, checklist, null
-        );
+        TaskUpdateDto dto = TaskUpdateDto.builder()
+                .checklist(checklist)
+                .build();
+
 
         when(repository.findById(taskId)).thenReturn(Optional.of(task));
         when(collaboratorService.checkAccessAndGetProject(eq(authUser), eq(projectId), anyCollection()))

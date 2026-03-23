@@ -11,6 +11,7 @@ import de.upteams.tasktracker.task.dto.request.TaskUpdateDto;
 import de.upteams.tasktracker.task.dto.response.AttachmentResponseDto;
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.task.entity.Attachment;
+import de.upteams.tasktracker.task.entity.AttachmentType;
 import de.upteams.tasktracker.task.entity.Task;
 import de.upteams.tasktracker.task.service.interfaces.CheckListService;
 import de.upteams.tasktracker.taskstatus.entity.TaskStatus;
@@ -48,20 +49,20 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     @Auditable(entity = "Task", action = AuditLogAction.CREATE)
     public TaskResponseDto save(TaskCreateDto dto, AppUser authUser) {
-        TaskStatus status = taskStatusRepository.findById(UUID.fromString(dto.getStatusId()))
+        TaskStatus status = taskStatusRepository.findById(UUID.fromString(dto.statusId()))
                 .orElseThrow(() -> new InvalidTaskPayloadException("TaskStatus not found"));
 
         Project project = collaboratorService.checkAccessAndGetProject(
                 authUser,
-                dto.getProjectId(),
+                dto.projectId(),
                 List.of(ProjectRoles.OWNER, ProjectRoles.ADMIN, ProjectRoles.MEMBER)
         );
 
-        if (dto.getTitle() == null || dto.getTitle().isBlank()) {
+        if (dto.title() == null || dto.title().isBlank()) {
             throw new InvalidTaskPayloadException("Title must not be blank");
         }
         Task task = mappingService.mapDtoToEntity(dto);
-        task.setDescription(dto.getDescription() == null ? "" : dto.getDescription());
+        task.setDescription(dto.description() == null ? "" : dto.description());
         task.setStatus(status);
         task.setProject(project);
 
@@ -85,9 +86,9 @@ public class TaskServiceImpl implements TaskService {
                 List.of(ProjectRoles.OWNER, ProjectRoles.ADMIN, ProjectRoles.MEMBER)
         );
 
-        if (dto.title() != null) updateTitle(task, dto.title(), authUser);
-        if (dto.description() != null) updateDescription(task, dto.description(), authUser);
-        if (dto.statusId() != null) updateStatus(task, dto.statusId(), authUser);
+        if (dto.title() != null) updateTitle(task, dto.title());
+        if (dto.description() != null) updateDescription(task, dto.description());
+        if (dto.statusId() != null) updateStatus(task, dto.statusId());
         if (dto.executorIds() != null) collaboratorService.syncTaskExecutors(task, dto.executorIds());
 
         if (dto.markerIds() != null) markerService.syncTaskMarkers(task, dto.markerIds());
@@ -96,7 +97,7 @@ public class TaskServiceImpl implements TaskService {
             checklistService.syncChecklist(task, dto.checklist());
         }
         if (dto.dueDate() != null) {
-            updateDueDate(task, dto.dueDate(), authUser);
+            updateDueDate(task, dto.dueDate());
         }
 
         if (dto.attachments() != null) {
@@ -146,19 +147,19 @@ public class TaskServiceImpl implements TaskService {
         project.getTasks().remove(existedTask);
     }
 
-    private void updateTitle(Task task, String newTitle, AppUser user) {
+    private void updateTitle(Task task, String newTitle) {
         if (newTitle != null && !newTitle.equals(task.getTitle())) {
             task.setTitle(newTitle);
         }
     }
 
-    private void updateDescription(Task task, String newDesc, AppUser user) {
+    private void updateDescription(Task task, String newDesc) {
         if (newDesc != null && !newDesc.equals(task.getDescription())) {
             task.setDescription(newDesc);
         }
     }
 
-    private void updateStatus(Task task, String statusId, AppUser user) {
+    private void updateStatus(Task task, String statusId) {
         if (statusId != null) {
             UUID newStatusId = UUID.fromString(statusId);
 
@@ -171,7 +172,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    private void updateDueDate(Task task, String dueDateStr, AppUser user) {
+    private void updateDueDate(Task task, String dueDateStr) {
         if (dueDateStr.isBlank()) {
             task.setDueDate(null);
             return;
@@ -197,7 +198,7 @@ public class TaskServiceImpl implements TaskService {
                 Attachment link = new Attachment();
                 link.setName(adto.name());
                 link.setUrl(adto.url());
-                link.setType("LINK");
+                link.setType(AttachmentType.LINK);
                 link.setTask(task);
                 task.getAttachments().add(link);
             }

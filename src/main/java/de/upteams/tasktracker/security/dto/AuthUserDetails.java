@@ -1,4 +1,4 @@
-package de.upteams.tasktracker.security.service;
+package de.upteams.tasktracker.security.dto;
 
 import de.upteams.tasktracker.user.entity.AppUser;
 import de.upteams.tasktracker.user.entity.ConfirmationStatus;
