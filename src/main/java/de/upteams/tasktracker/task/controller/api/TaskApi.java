@@ -2,7 +2,7 @@ package de.upteams.tasktracker.task.controller.api;
 
 import de.upteams.tasktracker.exception.handling.response.ErrorResponseDto;
 import de.upteams.tasktracker.exception.handling.response.ValidationErrorDto;
-import de.upteams.tasktracker.security.service.AuthUserDetails;
+import de.upteams.tasktracker.security.dto.AuthUserDetails;
 import de.upteams.tasktracker.task.dto.request.TaskCreateDto;
 import de.upteams.tasktracker.task.dto.request.TaskUpdateDto;
 import de.upteams.tasktracker.task.dto.response.AttachmentResponseDto;

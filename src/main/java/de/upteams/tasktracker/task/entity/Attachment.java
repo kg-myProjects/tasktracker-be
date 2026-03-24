@@ -27,7 +27,8 @@ public class Attachment extends BaseEntity {
     private String url;
 
     @Column(nullable = false)
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private AttachmentType  type;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id", nullable = false)

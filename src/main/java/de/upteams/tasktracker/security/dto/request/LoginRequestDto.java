@@ -1,4 +1,4 @@
-package de.upteams.tasktracker.security.dto;
+package de.upteams.tasktracker.security.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 
 @Schema(name = "NewUser", description = "Registration details")
-public record LoginRequest(
+public record LoginRequestDto(
         @NotBlank
         @Schema(description = "User's email address", example = "tes_dev@upteams.de")
         String email,

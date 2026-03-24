@@ -1,6 +1,7 @@
 package de.upteams.tasktracker.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.upteams.tasktracker.security.dto.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 

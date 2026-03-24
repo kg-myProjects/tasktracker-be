@@ -30,7 +30,7 @@ class TaskStatusControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("POST /api/v1/status - Success")
     void saveStatusSuccess() throws Exception {
-        TaskStatusCreateDto request = new TaskStatusCreateDto(statusId,"To Do", 1, projectId);
+        TaskStatusCreateDto request = new TaskStatusCreateDto("To Do", 1, projectId);
 
         TaskStatusResponseDto response = new TaskStatusResponseDto(
                 UUID.randomUUID().toString(),
@@ -91,7 +91,7 @@ class TaskStatusControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("POST /api/v1/status - Forbidden")
     void saveStatusForbidden() throws Exception {
-        TaskStatusCreateDto request = new TaskStatusCreateDto(statusId,"To Do", 1, projectId);
+        TaskStatusCreateDto request = new TaskStatusCreateDto("To Do", 1, projectId);
 
         when(taskStatusService.save(any(), any()))
                 .thenThrow(new de.upteams.tasktracker.exception.handling.exceptions.common.RestApiException(
@@ -105,7 +105,7 @@ class TaskStatusControllerTest extends BaseControllerTest {
     @DisplayName("POST /api/v1/status - Bad Request (Invalid Payload)")
     void saveStatusBadRequest() throws Exception {
         TaskStatusCreateDto invalidRequest = new TaskStatusCreateDto(
-                null,
+
                 "",
                 1,
                 null

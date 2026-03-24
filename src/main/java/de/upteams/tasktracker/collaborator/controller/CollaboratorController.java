@@ -3,9 +3,7 @@ package de.upteams.tasktracker.collaborator.controller;
 import de.upteams.tasktracker.collaborator.controller.api.CollaboratorApi;
 import de.upteams.tasktracker.collaborator.dto.response.CollaboratorShortResponseDto;
 import de.upteams.tasktracker.collaborator.service.interfaces.CollaboratorService;
-import de.upteams.tasktracker.security.service.AuthUserDetails;
-import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
-import de.upteams.tasktracker.task.service.interfaces.TaskService;
+import de.upteams.tasktracker.security.dto.AuthUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,7 +13,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CollaboratorController implements CollaboratorApi {
 
-    private final TaskService taskService;
     private final CollaboratorService collaboratorService;
 
     @Override

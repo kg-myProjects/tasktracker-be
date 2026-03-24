@@ -1,6 +1,6 @@
 package de.upteams.tasktracker.security.controller;
 
-import de.upteams.tasktracker.security.service.AuthUserDetails;
+import de.upteams.tasktracker.security.dto.AuthUserDetails;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
 import de.upteams.tasktracker.user.util.AppUserMapper;
 import io.swagger.v3.oas.annotations.Parameter;

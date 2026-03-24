@@ -1,4 +1,4 @@
-package de.upteams.tasktracker.user.controller.interfaces;
+package de.upteams.tasktracker.user.controller.api;
 
 import de.upteams.tasktracker.exception.handling.response.ErrorResponseDto;
 import de.upteams.tasktracker.exception.handling.response.ValidationErrorDto;

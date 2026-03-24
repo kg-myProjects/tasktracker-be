@@ -1,24 +1,23 @@
-package de.upteams.tasktracker.user.controller.impl;
+package de.upteams.tasktracker.user.controller;
 
-import de.upteams.tasktracker.user.controller.interfaces.RegisterControllerApi;
+import de.upteams.tasktracker.user.controller.api.RegisterControllerApi;
 import de.upteams.tasktracker.user.dto.request.UserCreateDto;
 import de.upteams.tasktracker.user.dto.response.UserCreateResponseDto;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
-import de.upteams.tasktracker.user.service.impl.UserRegisterService;
+import de.upteams.tasktracker.user.service.impl.UserRegisterServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
-public class RegisterControllerImpl implements RegisterControllerApi {
+public class RegisterController implements RegisterControllerApi {
 
-    private final UserRegisterService service;
+    private final UserRegisterServiceImpl service;
 
     @Override
     public UserResponseDto confirmRegistration(String code) {

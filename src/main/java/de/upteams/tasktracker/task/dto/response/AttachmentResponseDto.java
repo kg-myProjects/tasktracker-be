@@ -1,5 +1,6 @@
 package de.upteams.tasktracker.task.dto.response;
 
+import de.upteams.tasktracker.task.entity.AttachmentType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
@@ -15,7 +16,7 @@ public record AttachmentResponseDto(
         String url,
 
         @Schema(description = "Type of attachment (e.g., LINK, PDF, IMAGE)", example = "PDF")
-        String type,
+        AttachmentType type,
 
         @Schema(description = "Creation date of the attachment")
         LocalDateTime createdAt

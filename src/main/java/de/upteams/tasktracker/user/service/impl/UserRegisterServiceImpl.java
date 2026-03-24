@@ -8,7 +8,7 @@ import de.upteams.tasktracker.user.dto.response.UserCreateResponseDto;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
 import de.upteams.tasktracker.user.entity.AppUser;
 import de.upteams.tasktracker.user.exception.UserAlreadyExistException;
-import de.upteams.tasktracker.user.service.UserService;
+import de.upteams.tasktracker.user.service.interfaces.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,7 +21,7 @@ import static de.upteams.tasktracker.user.entity.ConfirmationStatus.UNCONFIRMED;
 
 @Service
 @RequiredArgsConstructor
-public class UserRegisterService {
+public class UserRegisterServiceImpl {
 
     private final EmailService emailService;
     private final BCryptPasswordEncoder passwordEncoder;

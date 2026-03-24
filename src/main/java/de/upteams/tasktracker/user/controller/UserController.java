@@ -1,10 +1,10 @@
-package de.upteams.tasktracker.user.controller.impl;
+package de.upteams.tasktracker.user.controller;
 
-import de.upteams.tasktracker.user.controller.interfaces.UserApi;
+import de.upteams.tasktracker.user.controller.api.UserApi;
 import de.upteams.tasktracker.user.dto.request.UpdateUserDetailsDto;
 import de.upteams.tasktracker.user.dto.response.UserDetailsDto;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
-import de.upteams.tasktracker.user.service.UserService;
+import de.upteams.tasktracker.user.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +17,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-public class UserControllerImpl implements UserApi {
+public class UserController implements UserApi {
 
     /**
      * Service for various operations with Employees

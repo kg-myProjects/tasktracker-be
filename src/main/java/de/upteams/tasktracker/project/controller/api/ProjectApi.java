@@ -9,7 +9,7 @@ import de.upteams.tasktracker.project.dto.request.InviteRequestDto;
 import de.upteams.tasktracker.project.dto.request.ProjectCreateDto;
 import de.upteams.tasktracker.project.dto.response.ProjectLogDto;
 import de.upteams.tasktracker.project.dto.response.ProjectResponseDto;
-import de.upteams.tasktracker.security.service.AuthUserDetails;
+import de.upteams.tasktracker.security.dto.AuthUserDetails;
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.taskstatus.dto.request.TaskStatusCreateDto;
 import de.upteams.tasktracker.taskstatus.dto.response.TaskStatusResponseDto;

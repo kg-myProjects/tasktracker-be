@@ -1,12 +1,13 @@
 package de.upteams.tasktracker.security.controller;
 
 import de.upteams.tasktracker.exception.handling.exceptions.common.RestApiException;
-import de.upteams.tasktracker.security.dto.LoginRequest;
+import de.upteams.tasktracker.security.controller.api.AuthApi;
+import de.upteams.tasktracker.security.dto.request.LoginRequestDto;
 import de.upteams.tasktracker.security.dto.request.ForgotPasswordRequestDto;
 import de.upteams.tasktracker.security.dto.request.ResetPasswordRequestDto;
-import de.upteams.tasktracker.security.entities.TokenResponseDto;
+import de.upteams.tasktracker.security.dto.response.TokenResponseDto;
 import de.upteams.tasktracker.security.service.AuthService;
-import de.upteams.tasktracker.security.service.AuthUserDetails;
+import de.upteams.tasktracker.security.dto.AuthUserDetails;
 import de.upteams.tasktracker.security.service.CookieService;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
 import jakarta.servlet.http.Cookie;
@@ -35,7 +36,7 @@ public class AuthController implements AuthApi {
     private final CookieService cookieService;
 
     @Override
-    public TokenResponseDto login(LoginRequest loginRequest, HttpServletResponse response) {
+    public TokenResponseDto login(LoginRequestDto loginRequest, HttpServletResponse response) {
         final TokenResponseDto tokens = service.login(loginRequest);
 
         final Cookie accessCookie = cookieService.generateAccessTokenCookie(tokens.getAccessToken());

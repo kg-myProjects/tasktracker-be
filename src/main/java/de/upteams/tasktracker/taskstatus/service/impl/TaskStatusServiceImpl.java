@@ -37,12 +37,12 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     @Auditable(entity = "Status", action = AuditLogAction.CREATE)
     public TaskStatusResponseDto save(TaskStatusCreateDto dto, AppUser authUser) {
         Project project = collaboratorService.checkAccessAndGetProject(
-                authUser, dto.getProjectId(), List.of(ProjectRoles.OWNER, ProjectRoles.ADMIN));
+                authUser, dto.projectId(), List.of(ProjectRoles.OWNER, ProjectRoles.ADMIN));
 
-        if (dto.getName() == null || dto.getName().isBlank()) {
+        if (dto.name() == null || dto.name().isBlank()) {
             throw new InvalidTaskStatusPayloadEsception("Invalid tasks status payload");
         }
-        repository.shiftPositionsForward(project.getId(), dto.getPosition());
+        repository.shiftPositionsForward(project.getId(), dto.position());
         repository.flush();
 
         TaskStatus taskStatus = mappingService.mapDtoToEntity(dto);
@@ -56,14 +56,14 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     @Override
     @Transactional
     public TaskStatusResponseDto update(TaskStatusUpdateDto dto, AppUser authUser) {
-        TaskStatus taskStatus = findById(dto.getId())
+        TaskStatus taskStatus = findById(dto.id())
                 .orElseThrow(TaskStatusNotFoundException::new);
         String projectId = taskStatus.getProject().getId().toString();
 
          collaboratorService.checkAccessAndGetProject(
                 authUser, projectId, List.of(ProjectRoles.OWNER, ProjectRoles.ADMIN));
 
-        if (dto.getName() != null && dto.getName().isBlank()) {
+        if (dto.name() != null && dto.name().isBlank()) {
             throw new RestApiException(HttpStatus.BAD_REQUEST, "Status name cannot be empty");
         }
         mappingService.updateEntityFromDto(dto, taskStatus);
@@ -76,7 +76,7 @@ public class TaskStatusServiceImpl implements TaskStatusService {
         if (dtos.isEmpty()) return Collections.emptyList();
 
         List<UUID> ids = dtos.stream()
-                .map(TaskStatusUpdateDto::getId)
+                .map(TaskStatusUpdateDto::id)
                 .map(UUID::fromString)
                 .toList();
 
@@ -85,7 +85,7 @@ public class TaskStatusServiceImpl implements TaskStatusService {
         if (statuses.isEmpty()) return Collections.emptyList();
 
         Map<String, Integer> idToNewPosition = dtos.stream()
-                .collect(Collectors.toMap(TaskStatusUpdateDto::getId, TaskStatusUpdateDto::getPosition));
+                .collect(Collectors.toMap(TaskStatusUpdateDto::id, TaskStatusUpdateDto::position));
 
         statuses.forEach(status -> {
             Integer newPosition = idToNewPosition.get(status.getId().toString());

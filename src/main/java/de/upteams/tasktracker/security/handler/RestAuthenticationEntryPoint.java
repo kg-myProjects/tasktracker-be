@@ -1,5 +1,6 @@
 package de.upteams.tasktracker.security.handler;
 
+import de.upteams.tasktracker.security.dto.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.web.AuthenticationEntryPoint;

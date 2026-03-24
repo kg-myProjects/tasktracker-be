@@ -4,7 +4,7 @@ import de.upteams.tasktracker.comment.dto.request.CommentRequestDto;
 import de.upteams.tasktracker.comment.dto.response.CommentResponseDto;
 import de.upteams.tasktracker.exception.handling.response.ErrorResponseDto;
 import de.upteams.tasktracker.exception.handling.response.ValidationErrorDto;
-import de.upteams.tasktracker.security.service.AuthUserDetails;
+import de.upteams.tasktracker.security.dto.AuthUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
