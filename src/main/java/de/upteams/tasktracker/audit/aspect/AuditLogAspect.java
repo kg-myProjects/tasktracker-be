@@ -9,6 +9,7 @@ import de.upteams.tasktracker.marker.entity.Marker;
 import de.upteams.tasktracker.task.dto.response.TaskResponseDto;
 import de.upteams.tasktracker.task.entity.Task;
 import de.upteams.tasktracker.taskstatus.entity.TaskStatus;
+import de.upteams.tasktracker.taskstatus.persistence.TaskStatusRepository;
 import de.upteams.tasktracker.user.entity.AppUser;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class AuditLogAspect {
     private final AuditLogService auditLogService;
     private final CurrentUserResolver currentUserResolver;
     private final EntityManager entityManager;
+    private final TaskStatusRepository taskStatusRepository;
 
     private final ThreadLocal<Object> oldStatusHolder = new ThreadLocal<>();
     private final ThreadLocal<Set<Marker>> oldMarkerHolder = new ThreadLocal<>();
@@ -59,6 +61,18 @@ public class AuditLogAspect {
         String entityName = extractNameFromDto(result);
         String projectId = extractProjectIdFromDto(result);
 
+        String diff = "";
+
+        if (result instanceof TaskResponseDto dto && dto.statusId() != null) {
+            try {
+                UUID statusId = UUID.fromString(dto.statusId());
+                var statusOpt = taskStatusRepository.findById(statusId);
+                if (statusOpt.isPresent()) {
+                    diff = "createdIn=" + statusOpt.get().getName();
+                }
+            } catch (Exception ignored) {}
+        }
+
         auditLogService.logAction(
                 auditable.entity(),
                 entityId,
@@ -70,7 +84,7 @@ public class AuditLogAspect {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getAvatarUrl(),
-                ""
+                diff
         );
     }
 
@@ -115,6 +129,13 @@ public class AuditLogAspect {
 
         String entityName = readField(entity, auditable.nameField());
         String projectId = readProjectId(entity);
+        String diff = "";
+
+        if (entity instanceof Task task) {
+            if (task.getStatus() != null) {
+                diff = "deletedFrom=" + task.getStatus().getName();
+            }
+        }
 
         auditLogService.logAction(
                 auditable.entity(),
@@ -127,7 +148,7 @@ public class AuditLogAspect {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getAvatarUrl(),
-                ""
+                diff
         );
     }
 
@@ -326,18 +347,18 @@ public class AuditLogAspect {
     private String extractId(Object dto) {
         try {
             return dto.getClass()
-                    .getMethod("getId")
+                    .getMethod("id")
                     .invoke(dto)
                     .toString();
         } catch (Exception e) {
-            return "UNKNOWN";
+            return "UNKNOWN ID";
         }
     }
 
     private String extractNameFromDto(Object dto) {
         try {
             return dto.getClass()
-                    .getMethod("getTitle")
+                    .getMethod("title")
                     .invoke(dto)
                     .toString();
         } catch (Exception ignored) {
@@ -345,19 +366,19 @@ public class AuditLogAspect {
 
         try {
             return dto.getClass()
-                    .getMethod("getName")
+                    .getMethod("name")
                     .invoke(dto)
                     .toString();
         } catch (Exception ignored) {
         }
 
-        return "UNKNOWN";
+        return "UNKNOWN NAME";
     }
 
     private String extractProjectIdFromDto(Object dto) {
         try {
             Object projectId = dto.getClass()
-                    .getMethod("getProjectId")
+                    .getMethod("projectId")
                     .invoke(dto);
 
             return projectId != null ? projectId.toString() : null;
@@ -398,7 +419,7 @@ public class AuditLogAspect {
 
     private String extractStatusIdFromDto(Object dto) {
         try {
-            Object statusId = dto.getClass().getMethod("getStatusId").invoke(dto); // <-- изменила здесь
+            Object statusId = dto.getClass().getMethod("statusId").invoke(dto);
             return statusId != null ? statusId.toString() : null;
         } catch (Exception e) {
             return null;
