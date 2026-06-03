@@ -36,11 +36,11 @@ LABEL stage=runtime
 
 WORKDIR /app
 
-# 2.1) Copy единственный jar из builder
+# 2.1) Copy the only jar from the builder stage
 COPY --from=builder /workspace/app/app.jar ./app.jar
 
-# 2.2) Открываем порт, если нужно
+# 2.2) Expose application port
 EXPOSE 8080
 
-# 2.3) Запускаем приложение
+# 2.3) Start the application
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
