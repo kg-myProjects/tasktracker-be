@@ -14,7 +14,6 @@ import java.util.UUID;
 
 public class UserUtils {
 
-    public static final Path AVATAR_DIR = Paths.get("uploads", "avatars");
     public static final long MAX_AVATAR_SIZE = 5 * 1024 * 1024;
 
     public static String normalizeUserName(String name) {

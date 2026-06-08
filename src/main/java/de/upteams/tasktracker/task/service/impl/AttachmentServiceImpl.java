@@ -63,7 +63,8 @@ public class AttachmentServiceImpl implements AttachmentService {
                 originalFilename = "unknown-file";
             }
             String safeFileName = Paths.get(originalFilename).getFileName().toString();
-            String fileName = UUID.randomUUID() + "_" + safeFileName;            Path path = Paths.get(uploadDir).toAbsolutePath().normalize();
+            String fileName = UUID.randomUUID() + "_" + safeFileName;
+            Path path = Paths.get(uploadDir).toAbsolutePath().normalize();
 
             if (!Files.exists(path)) {
                 Files.createDirectories(path);
@@ -126,10 +127,16 @@ public class AttachmentServiceImpl implements AttachmentService {
         if (attachment.getType() != AttachmentType.LINK) {
             try {
                 String url = attachment.getUrl();
-                String fileName = Paths.get(url).getFileName().toString();
-                Path filePath = Paths.get(uploadDir).toAbsolutePath().normalize().resolve(fileName);
+
+                String cleanUrl = url.startsWith("/") ? url.substring(1) : url;
+
+                Path filePath = Paths.get(uploadDir)
+                        .toAbsolutePath()
+                        .normalize()
+                        .resolve(cleanUrl);
 
                 Files.deleteIfExists(filePath);
+
             } catch (Exception e) {
                 log.warn("Could not delete physical file: {}", e.getMessage());
             }

@@ -13,6 +13,7 @@ import de.upteams.tasktracker.user.util.AppUserMapper;
 import de.upteams.tasktracker.user.util.UserUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import org.springframework.security.core.Authentication;
@@ -25,8 +26,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import static de.upteams.tasktracker.user.util.UserUtils.AVATAR_DIR;
 import static de.upteams.tasktracker.user.util.UserUtils.MAX_AVATAR_SIZE;
 
 /**
@@ -38,6 +40,9 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
     private final AppUserMapper mappingService;
+
+    @Value("${app.upload.avatar-dir}")
+    private String avatarDir;
 
     @Override
     public AppUser saveOrUpdate(final AppUser user) {
@@ -118,7 +123,8 @@ public class UserServiceImpl implements UserService {
             BufferedImage processedImage = UserUtils.resizeAvatarAndConvertToPng(file, 400);
 
             String filename = UserUtils.generateUserAvatarFileName(user.getId());
-            UserUtils.saveUserAvatar(processedImage, AVATAR_DIR, filename);
+            Path dir = Paths.get(avatarDir);
+            UserUtils.saveUserAvatar(processedImage, dir, filename);
 
             user.setAvatarUrl("/uploads/avatars/" + filename);
             AppUser saved = repository.save(user);
