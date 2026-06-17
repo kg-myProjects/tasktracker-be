@@ -1,7 +1,7 @@
 package de.upteams.tasktracker.project.entity;
 
 import de.upteams.tasktracker.collaborator.entity.Collaborator;
-import de.upteams.tasktracker.project.constants.ProjectValidationConstats;
+import de.upteams.tasktracker.project.constants.ProjectValidationConstants;
 import de.upteams.tasktracker.task.entity.Task;
 import de.upteams.tasktracker.marker.entity.Marker;
 import de.upteams.tasktracker.taskstatus.entity.TaskStatus;
@@ -10,11 +10,9 @@ import de.upteams.tasktracker.utils.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,16 +30,11 @@ import static de.upteams.tasktracker.utils.EntityUtil.getIdsForToString;
 @Setter
 public class Project extends BaseEntity {
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title", nullable = false, length = ProjectValidationConstants.TITLE_MAX_LENGTH)
     @NotBlank
-    @Length(min = ProjectValidationConstats.NAME_MIN_LENGTH, max = ProjectValidationConstats.NAME_MAX_LENGTH)
-    @Pattern(
-            regexp = ProjectValidationConstats.NAME_REGEX,
-            message = "Project title should be at least 3 character length and start with capital letter"
-    )
     private String title;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = false, length = ProjectValidationConstants.DESC_MAX_LENGTH)
     @NotBlank
     private String description;
 
@@ -54,10 +47,10 @@ public class Project extends BaseEntity {
     private Set<Collaborator> projectTeam = new HashSet<>();
 
     @OneToMany(mappedBy = "project", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private  Set<TaskStatus> taskStatuses = new HashSet<>();
+    private Set<TaskStatus> taskStatuses = new HashSet<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private  Set<Task> tasks = new HashSet<>();
+    private Set<Task> tasks = new HashSet<>();
 
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
