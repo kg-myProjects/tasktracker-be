@@ -1,12 +1,13 @@
 package de.upteams.tasktracker.project.dto.request;
 
+import de.upteams.tasktracker.project.constants.ProjectValidationConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import org.hibernate.validator.constraints.Length;
+import jakarta.validation.constraints.Size;
 
 /**
- * Project DTO
+ * Project create DTO
  */
 @Schema(description = "Data Transfer Object for Project entity")
 public record ProjectCreateDto(
@@ -15,11 +16,13 @@ public record ProjectCreateDto(
                 example = "New Website Development"
         )
 
-        @NotBlank(message = "must not be blank" )
-        @Length(min = 3, max = 50)
+        @NotBlank(message = "Must not be blank")
+        @Size(
+                min = ProjectValidationConstants.TITLE_MIN_LENGTH,
+                max = ProjectValidationConstants.TITLE_MAX_LENGTH)
         @Pattern(
-                regexp = "[A-Z][a-zA-Z0-9 ]{2,49}",
-                message = "Project title should be at least 3 characters and start with capital letter"
+                regexp = ProjectValidationConstants.TITLE_REGEX,
+                message = "Project title contains invalid characters"
         )
         String title,
 
@@ -28,17 +31,9 @@ public record ProjectCreateDto(
                 description = "Detailed description of the Project",
                 example = "A Project to develop a new company website"
         )
-        @NotBlank(message = "must not be blank" )
-
+        @NotBlank(message = "Must not be blank")
+        @Size(
+                min = ProjectValidationConstants.DESC_MIN_LENGTH,
+                max = ProjectValidationConstants.DESC_MAX_LENGTH)
         String description) {
-
-        @Override
-        public String title() {
-                return title;
-        }
-
-        @Override
-        public String description() {
-                return description;
-        }
 }
