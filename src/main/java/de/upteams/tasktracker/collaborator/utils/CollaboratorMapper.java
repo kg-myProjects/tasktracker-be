@@ -13,6 +13,7 @@ public interface CollaboratorMapper {
 
     @Mapping(target = "id", expression = "java(entity.getId().toString())")
     @Mapping(target = "email", source = "appUser.email")
+    @Mapping(target = "avatarUrl", source = "appUser.avatarUrl")
     @Mapping(target = "roles", source = "projectRolesSet")
     CollaboratorShortResponseDto mapEntityToShortDto(Collaborator entity);
 }

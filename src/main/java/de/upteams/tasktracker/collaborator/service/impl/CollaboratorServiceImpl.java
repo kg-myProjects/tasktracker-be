@@ -88,6 +88,7 @@ public class CollaboratorServiceImpl implements CollaboratorService {
                 .map(c -> new CollaboratorShortResponseDto(
                         c.getId().toString(),
                         c.getAppUser().getEmail(),
+                        c.getAppUser().getAvatarUrl(),
                         c.getProjectRolesSet()
                 ))
                 .toList();
