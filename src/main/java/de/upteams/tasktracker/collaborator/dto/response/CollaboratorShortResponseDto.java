@@ -9,5 +9,4 @@ public record CollaboratorShortResponseDto(
         String email,
         String avatarUrl,
         Set<ProjectRoles> roles
-) {
-}
+) {}
