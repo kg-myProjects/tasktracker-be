@@ -275,6 +275,7 @@ class ProjectControllerTest extends BaseControllerTest {
         CollaboratorShortResponseDto response = new CollaboratorShortResponseDto(
                 UUID.randomUUID().toString(),
                 "new-user@example.com",
+                null,
                 Set.of(ProjectRoles.MEMBER)
         );
 
