@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Task Tracker
+    name: TrackerApp
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?rewriteBatchedStatements=true
     username: ${DB_USERNAME}
@@ -11,6 +11,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
         format_sql: true
@@ -18,16 +19,13 @@ spring:
           batch_size: 50
           order_inserts: true
           order_updates: true
-  servlet:
-      multipart:
-        max-file-size: 15MB
-        max-request-size: 15MB
 
   mail:
+    host: smtp-relay.brevo.com
+    port: 587
     username: ${EMAIL_USERNAME}
     password: ${EMAIL_PASSWORD}
-    host: smtp.gmail.com
-    port: 587
+
     properties:
       mail:
         smtp:
@@ -36,31 +34,44 @@ spring:
             enable: true
           ssl:
             protocols: TLSv1.2
-            trust: smtp.gmail.com
+
+logging:
+  level:
+    #    root: debug
+    org.hibernate.SQL: DEBUG
+
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 15MB
+
 confirmation:
   expiration:
-    days: ${CONFIRMATION_EXPIRATION_DAYS}
+    days: ${CONFIRMATION_EXPIRATION_DAYS:5}
 
 app:
-  base-url: ${BASE_URL}
+  base-url: ${BASE_URL:http://localhost:5173}
   upload:
-    dir: ${UPLOAD_DIR}
+    dir: ${UPLOAD_DIR:uploads/attachments}
+    avatar-dir: ${AVATAR_DIR:uploads/avatars}
 
 digitalocean:
   spaces:
-    access-key: ${DO_SPACES_ACCESS_KEY}
-    secret-key: ${DO_SPACES_SECRET_KEY}
-    endpoint: ${DO_SPACES_ENDPOINT}
-    region: ${DO_SPACES_REGION}
-    bucket-name: ${DO_SPACES_BUCKET}
+    access-key: ${DO_SPACES_ACCESS_KEY:fake}
+    secret-key: ${DO_SPACES_SECRET_KEY:fake}
+    endpoint: ${DO_SPACES_ENDPOINT:https://fra1.digitaloceanspaces.com}
+    region: ${DO_SPACES_REGION:fra1}
+    bucket-name: ${DO_SPACES_BUCKET:test-bucket}
 
+#1 day = 1440min
+#7 day = 10080min
 jwt:
   at:
-    live-in-min: ${JWT_AT_LIVE_IN_MIN}
-    secret: ${JWT_AT_SECRET}
+    live-in-min: ${JWT_AT_LIVE_IN_MIN:10}
+    secret: ${JWT_AT_SECRET:eW91ci0yNTYtYml0LXNlY3JldC1mb3ItYWNjZXNzLXRva2VuLTAxMjM0NTY3ODlhYmNkZWY=}
   rt:
-    live-in-min: ${JWT_RT_LIVE_IN_MIN}
-    secret: ${JWT_RT_SECRET}
+    live-in-min: ${JWT_RT_LIVE_IN_MIN:1440}
+    secret: ${JWT_RT_SECRET:eW91ci0yNTYtYml0LXNlY3JldC1mb3ItcmVmcmVzaC10b2tlbi1hYmNkZWYwMTIzNDU2Nzg5}
 
 springdoc:
   swagger-ui:
