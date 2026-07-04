@@ -4,7 +4,6 @@ import de.upteams.tasktracker.mail.exception.EmailSendingException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -14,15 +13,12 @@ import org.springframework.stereotype.Component;
 public class EmailSender {
     private final JavaMailSender mailSender;
 
-    @Value("${spring.mail.username}")
-    private String senderEmail;
-
     public void sendEmail(String to, String subject, String htmlContent) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
 
-            helper.setFrom(senderEmail);
+            helper.setFrom("TRACKER APP <no-reply@tracker-app.online>");
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(htmlContent, true);
