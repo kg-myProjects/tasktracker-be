@@ -35,8 +35,16 @@ public class RegisterController implements RegisterControllerApi {
 
     @GetMapping("/confirm-redirect/{code}")
     public ResponseEntity<Void> confirmEmailRedirect(@PathVariable String code) {
-        service.confirmRegistration(code);
-        URI redirectUri = URI.create(baseUrl + "/login?confirmed=true");
-        return ResponseEntity.status(HttpStatus.FOUND).location(redirectUri).build();
+
+        UserResponseDto user = service.confirmRegistration(code);
+
+        URI redirectUri = URI.create(
+                baseUrl + "/login?confirmed=true&email=" + user.email()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.FOUND)
+                .location(redirectUri)
+                .build();
     }
 }
