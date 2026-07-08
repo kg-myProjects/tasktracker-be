@@ -415,10 +415,12 @@ class ProjectControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("GET /api/v1/projects/{id}/logs - Success")
     void getProjectLogsSuccess() throws Exception {
+        UUID logId = UUID.randomUUID();
         UUID projId = UUID.fromString(projectId);
         Instant now = Instant.now();
 
         ProjectLogDto log = new ProjectLogDto(
+                logId,
                 "Project",
                 "Project Alpha",
                 "UPDATE",
@@ -443,5 +445,4 @@ class ProjectControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("$[0].difference").value("Changed title from A to B"))
                 .andExpect(jsonPath("$[0].createdAt").exists());
     }
-
 }

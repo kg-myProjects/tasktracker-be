@@ -162,6 +162,7 @@ public class ProjectServiceImpl implements ProjectService {
         return auditLogRepository.findAllByProjectIdOrderByCreatedAtDesc(projectId.toString())
                 .stream()
                 .map(log -> new ProjectLogDto(
+                        log.getId(),
                         log.getEntity(),
                         log.getEntityName(),
                         log.getAction(),

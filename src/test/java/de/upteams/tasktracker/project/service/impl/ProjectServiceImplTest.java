@@ -599,10 +599,12 @@ class ProjectServiceImplTest {
     @DisplayName("getProjectLogs() should return list of project logs")
     void getProjectLogs_shouldReturnLogs() {
 
+        UUID logId = UUID.randomUUID();
         UUID projectId = UUID.randomUUID();
 
         AuditLogEntity log = mock(AuditLogEntity.class);
 
+        when(log.getId()).thenReturn(logId);
         when(log.getEntity()).thenReturn("Task");
         when(log.getEntityName()).thenReturn("Test Task");
         when(log.getAction()).thenReturn("CREATE");
@@ -619,15 +621,19 @@ class ProjectServiceImplTest {
         List<ProjectLogDto> result = service.getProjectLogs(projectId);
 
         assertEquals(1, result.size());
-        assertEquals("Task", result.get(0).getEntity());
-        assertEquals("Test Task", result.get(0).getEntityName());
-        assertEquals("CREATE", result.get(0).getAction());
-        assertEquals("test@mail.com", result.get(0).getUserEmail());
-        assertEquals("John", result.get(0).getUserFirstName());
-        assertEquals("Doe", result.get(0).getUserLastName());
-        assertEquals("avatar.png", result.get(0).getUserAvatar());
-        assertEquals("status changed", result.get(0).getDifference());
-        assertNotNull(result.get(0).getCreatedAt());
+
+        ProjectLogDto resultLog = result.get(0);
+
+        assertEquals(logId, resultLog.getId());
+        assertEquals("Task", resultLog.getEntity());
+        assertEquals("Test Task", resultLog.getEntityName());
+        assertEquals("CREATE", resultLog.getAction());
+        assertEquals("test@mail.com", resultLog.getUserEmail());
+        assertEquals("John", resultLog.getUserFirstName());
+        assertEquals("Doe", resultLog.getUserLastName());
+        assertEquals("avatar.png", resultLog.getUserAvatar());
+        assertEquals("status changed", resultLog.getDifference());
+        assertNotNull(resultLog.getCreatedAt());
 
         verify(auditLogRepository)
                 .findAllByProjectIdOrderByCreatedAtDesc(projectId.toString());
