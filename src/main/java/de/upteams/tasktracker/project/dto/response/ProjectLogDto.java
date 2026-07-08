@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.UUID;
 
 import java.time.Instant;
 
@@ -13,6 +14,7 @@ import java.time.Instant;
 @AllArgsConstructor
 public class ProjectLogDto {
 
+    private UUID id;
     private String entity;
     private String entityName;
     private String action;
