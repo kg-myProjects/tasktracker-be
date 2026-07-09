@@ -13,6 +13,7 @@ public interface AuditLogService {
             String userFirstName,
             String userLastName,
             String userAvatar,
+            Long userAvatarUpdatedAt,
             String difference
     );
 }

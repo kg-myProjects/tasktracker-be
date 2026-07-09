@@ -428,6 +428,7 @@ class ProjectControllerTest extends BaseControllerTest {
                 "John",
                 "Doe",
                 "avatar-url",
+                null,
                 "Changed title from A to B",
                 now
         );

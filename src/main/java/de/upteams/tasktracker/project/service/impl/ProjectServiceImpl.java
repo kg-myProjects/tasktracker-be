@@ -170,6 +170,7 @@ public class ProjectServiceImpl implements ProjectService {
                         log.getUserFirstName(),
                         log.getUserLastName(),
                         log.getUserAvatar(),
+                        log.getUserAvatarUpdatedAt(),
                         log.getDifference(),
                         log.getCreatedAt()
                 ))

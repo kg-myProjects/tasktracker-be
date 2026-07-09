@@ -25,6 +25,7 @@ public class AuditLogServiceImpl implements AuditLogService {
             String userFirstName,
             String userLastName,
             String userAvatar,
+            Long userAvatarUpdatedAt,
             String difference
     ) {
         AuditLogEntity audit = new AuditLogEntity();
@@ -38,6 +39,7 @@ public class AuditLogServiceImpl implements AuditLogService {
         audit.setUserFirstName(userFirstName);
         audit.setUserLastName(userLastName);
         audit.setUserAvatar(userAvatar);
+        audit.setUserAvatarUpdatedAt(userAvatarUpdatedAt);
         audit.setDifference(difference);
         audit.setCreatedAt(Instant.now());
 

@@ -100,7 +100,8 @@ public class AuthController implements AuthApi {
                         .next()
                         .getAuthority(),
                 user.user().getConfirmationStatus(),
-                user.user().getAvatarUrl()
+                user.user().getAvatarUrl(),
+                user.user().getAvatarUpdatedAt()
         );
     }
 
