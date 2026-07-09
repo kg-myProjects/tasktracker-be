@@ -84,6 +84,7 @@ public class AuditLogAspect {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getAvatarUrl(),
+                user.getAvatarUpdatedAt(),
                 diff
         );
     }
@@ -148,6 +149,7 @@ public class AuditLogAspect {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getAvatarUrl(),
+                user.getAvatarUpdatedAt(),
                 diff
         );
     }
@@ -217,6 +219,7 @@ public class AuditLogAspect {
                     user.getFirstName(),
                     user.getLastName(),
                     user.getAvatarUrl(),
+                    user.getAvatarUpdatedAt(),
                     diff
             );
         }
@@ -244,6 +247,7 @@ public class AuditLogAspect {
                     user.getFirstName(),
                     user.getLastName(),
                     user.getAvatarUrl(),
+                    user.getAvatarUpdatedAt(),
                     markerDiff
             );
         }
@@ -264,6 +268,7 @@ public class AuditLogAspect {
                     user.getFirstName(),
                     user.getLastName(),
                     user.getAvatarUrl(),
+                    user.getAvatarUpdatedAt(),
                     titleDiff
             );
         }
@@ -284,6 +289,7 @@ public class AuditLogAspect {
                     user.getFirstName(),
                     user.getLastName(),
                     user.getAvatarUrl(),
+                    user.getAvatarUpdatedAt(),
                     descriptionDiff
             );
         }
@@ -310,6 +316,7 @@ public class AuditLogAspect {
                     user.getFirstName(),
                     user.getLastName(),
                     user.getAvatarUrl(),
+                    user.getAvatarUpdatedAt(),
                     "dueDateAdded=" + newDueDate
             );
         } else if (oldDueDate != null && newDueDate == null) {
@@ -324,6 +331,7 @@ public class AuditLogAspect {
                     user.getFirstName(),
                     user.getLastName(),
                     user.getAvatarUrl(),
+                    user.getAvatarUpdatedAt(),
                     "dueDateRemoved=" + oldDueDate
             );
         } else if (oldDueDate != null && !oldDueDate.equals(newDueDate)) {
@@ -338,6 +346,7 @@ public class AuditLogAspect {
                     user.getFirstName(),
                     user.getLastName(),
                     user.getAvatarUrl(),
+                    user.getAvatarUpdatedAt(),
                     "dueDateChanged=" + oldDueDate + "->" + newDueDate
             );
         }

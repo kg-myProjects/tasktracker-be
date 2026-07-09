@@ -80,7 +80,8 @@ public class UserRegisterServiceImpl {
                 registeredUser.getEmail(),
                 registeredUser.getRole().name(),
                 registeredUser.getConfirmationStatus(),
-                registeredUser.getAvatarUrl()
+                registeredUser.getAvatarUrl(),
+                registeredUser.getAvatarUpdatedAt()
         );
     }
 }

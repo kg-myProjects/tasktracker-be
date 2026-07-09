@@ -25,4 +25,5 @@ public class UserDetailsDto {
     private String about;
 
     private String avatarUrl;
+    private Long avatarUpdatedAt;
 }

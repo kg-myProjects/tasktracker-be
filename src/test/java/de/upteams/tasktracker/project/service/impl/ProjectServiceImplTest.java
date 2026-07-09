@@ -612,6 +612,7 @@ class ProjectServiceImplTest {
         when(log.getUserFirstName()).thenReturn("John");
         when(log.getUserLastName()).thenReturn("Doe");
         when(log.getUserAvatar()).thenReturn("avatar.png");
+        when(log.getUserAvatarUpdatedAt()).thenReturn(1719140000000L);
         when(log.getDifference()).thenReturn("status changed");
         when(log.getCreatedAt()).thenReturn(Instant.now());
 
@@ -632,6 +633,7 @@ class ProjectServiceImplTest {
         assertEquals("John", resultLog.getUserFirstName());
         assertEquals("Doe", resultLog.getUserLastName());
         assertEquals("avatar.png", resultLog.getUserAvatar());
+        assertEquals(1719140000000L, resultLog.getUserAvatarUpdatedAt());
         assertEquals("status changed", resultLog.getDifference());
         assertNotNull(resultLog.getCreatedAt());
 

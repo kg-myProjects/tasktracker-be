@@ -55,6 +55,9 @@ public class AppUser extends BaseEntity {
     @Column (name = "avatar_url", length = 512)
     private String avatarUrl;
 
+    @Column(name = "avatar_updated_at")
+    private Long avatarUpdatedAt;
+
     @NotNull(message = "{field.notNull}")
     @Column(name = "confirm_status", nullable = false)
     @ColumnDefault("'UNCONFIRMED'")
@@ -86,6 +89,7 @@ public class AppUser extends BaseEntity {
                 ", phone='" + phone + '\'' +
                 ", about='" + about + '\'' +
                 ", avatarUrl='" + avatarUrl + '\'' +
+                ", avatarUpdatedAt=" + avatarUpdatedAt +
                 '}';
     }
 }

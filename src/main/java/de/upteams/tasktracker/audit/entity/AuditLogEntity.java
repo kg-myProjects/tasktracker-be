@@ -47,6 +47,9 @@ public class AuditLogEntity extends BaseEntity {
     @Column(name = "user_avatar")
     private String userAvatar;
 
+    @Column(name = "user_avatar_updated_at")
+    private Long userAvatarUpdatedAt;
+
     @Column(name = "diff", columnDefinition = "TEXT")
     private String difference;
 
@@ -66,6 +69,7 @@ public class AuditLogEntity extends BaseEntity {
                 ", userFirstName='" + userFirstName + '\'' +
                 ", userLastName='" + userLastName + '\'' +
                 ", userAvatar='" + userAvatar + '\'' +
+                ", userAvatarUpdatedAt=" + userAvatarUpdatedAt +
                 ", difference='" + difference + '\'' +
                 ", createdAt=" + createdAt +
                 '}';

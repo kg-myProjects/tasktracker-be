@@ -127,6 +127,7 @@ public class UserServiceImpl implements UserService {
             UserUtils.saveUserAvatar(processedImage, dir, filename);
 
             user.setAvatarUrl("/uploads/avatars/" + filename);
+            user.setAvatarUpdatedAt(System.currentTimeMillis());
             AppUser saved = repository.save(user);
 
             return mappingService.mapEntityToUserDetailsDto(saved);

@@ -22,6 +22,7 @@ public class ProjectLogDto {
     private String userFirstName;
     private String userLastName;
     private String userAvatar;
+    private Long userAvatarUpdatedAt;
     private String difference;
     private Instant createdAt;
 }

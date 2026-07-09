@@ -33,6 +33,8 @@ class AppUserMapperTest {
             appUser.setEmail("homer@simpsons.com");
             appUser.setRole(Role.ROLE_USER);
             appUser.setConfirmationStatus(ConfirmationStatus.UNCONFIRMED);
+            appUser.setAvatarUrl("/uploads/avatars/test.png");
+            appUser.setAvatarUpdatedAt(1719140000000L);
 
             // Act
             UserResponseDto result = underTest.mapEntityToDto(appUser);
@@ -42,6 +44,8 @@ class AppUserMapperTest {
             assertThat(result.email()).isEqualTo(appUser.getEmail());
             assertThat(result.role()).isEqualTo(appUser.getRole().name());
             assertThat(result.confirmationStatus()).isEqualTo(appUser.getConfirmationStatus());
+            assertThat(result.avatarUrl()).isEqualTo(appUser.getAvatarUrl());
+            assertThat(result.avatarUpdatedAt()).isEqualTo(appUser.getAvatarUpdatedAt());
         }
 
         @ParameterizedTest(name = "Should map AppUser with role {1} and confirmationStatus {2} correctly")
@@ -108,6 +112,8 @@ class AppUserMapperTest {
             assertThat(result.email()).isNull();
             assertThat(result.role()).isNull();
             assertThat(result.confirmationStatus()).isNull();
+            assertThat(result.avatarUrl()).isNull();
+            assertThat(result.avatarUpdatedAt()).isNull();
         }
 
         @Test
