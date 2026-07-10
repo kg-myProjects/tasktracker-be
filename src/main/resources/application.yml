@@ -35,15 +35,15 @@ spring:
           ssl:
             protocols: TLSv1.2
 
-logging:
-  level:
-    #    root: debug
-    org.hibernate.SQL: DEBUG
-
   servlet:
     multipart:
       max-file-size: 15MB
       max-request-size: 15MB
+
+logging:
+  level:
+    #    root: debug
+    org.hibernate.SQL: DEBUG
 
 confirmation:
   expiration:
