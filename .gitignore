@@ -68,3 +68,4 @@ build/
 out/
 db_data/
 uploads/
+/.run/
