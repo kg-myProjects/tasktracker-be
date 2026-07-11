@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TrackerApp | Email Confirmation</title>
+    <title>TrackerApp | Password Reset</title>
     <style>
         body {
             margin: 0;
@@ -123,16 +123,16 @@
                     <tr>
                         <td class="header">
                             <span class="logo">Tracker<span class="logo-accent">App</span></span>
-                            <h1>E-mail Confirmation</h1>
+                            <h1>Password Reset</h1>
                         </td>
                     </tr>
                     <tr>
                         <td class="content">
                             <h2>Dear User,</h2>
-                            <p>thank you for registering!</p>
-                            <p>Please confirm your registration by clicking the button below:</p>
+                            <p>you requested a password reset!</p>
+                            <p>Please, click the button below to set a new password:</p>
                             <p class="button-wrapper">
-                                <a href="${link}" class="button">Confirm Registration</a>
+                                <a href="${link}" class="button">Password Reset</a>
                             </p>
                             <p>If the button above doesn't work, please copy and paste the following link into your browser:</p>
                             <p><a href="${link}">${link}</a></p>
