@@ -8,5 +8,6 @@ public record CollaboratorShortResponseDto(
         String id,
         String email,
         String avatarUrl,
+        Long avatarUpdatedAt,
         Set<ProjectRoles> roles
 ) {}

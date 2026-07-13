@@ -89,6 +89,7 @@ public class CollaboratorServiceImpl implements CollaboratorService {
                         c.getId().toString(),
                         c.getAppUser().getEmail(),
                         c.getAppUser().getAvatarUrl(),
+                        c.getAppUser().getAvatarUpdatedAt(),
                         c.getProjectRolesSet()
                 ))
                 .toList();

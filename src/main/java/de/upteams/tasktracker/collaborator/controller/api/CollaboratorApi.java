@@ -32,6 +32,8 @@ public interface CollaboratorApi {
                                       {
                                         "id": "uuid-1",
                                         "email": "user@example.com",
+                                        "avatarUrl": "/uploads/avatars/uuid.png",
+                                        "avatarUpdatedAt": 1719140000000,
                                         "roles": ["MEMBER"]
                                       }
                                     ]
