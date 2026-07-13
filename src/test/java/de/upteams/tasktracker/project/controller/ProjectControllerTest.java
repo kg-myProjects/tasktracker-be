@@ -276,6 +276,7 @@ class ProjectControllerTest extends BaseControllerTest {
                 UUID.randomUUID().toString(),
                 "new-user@example.com",
                 null,
+                null,
                 Set.of(ProjectRoles.MEMBER)
         );
 
