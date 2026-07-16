@@ -18,16 +18,10 @@ import org.mapstruct.*;
         uses = {AppUserMapper.class, TaskMappingService.class, CollaboratorMapper.class, MarkerMapper.class},
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
         collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE
-
-)
+        )
 public interface ProjectMapper {
 
-    //@Mapping(target = "id", ignore = true)
-    //@Mapping(target = "owner", ignore = true)
-    @Mapping(
-            target = "id",
-            expression = "java(entity.getId() != null ? entity.getId().toString() : null)"
-    )
+    @Mapping(target = "id", expression = "java(entity.getId() != null ? entity.getId().toString() : null)")
     ProjectResponseDto mapEntityToDto(Project entity);
 
     @Mapping(target = "id", ignore = true)
