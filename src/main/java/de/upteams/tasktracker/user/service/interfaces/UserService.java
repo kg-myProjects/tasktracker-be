@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Service for various operations with Employees
+ * Service for various operations with users
  */
 public interface UserService {
 

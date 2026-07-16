@@ -45,7 +45,7 @@ class ProjectControllerTest extends BaseControllerTest {
     @DisplayName("POST /api/v1/projects - Success (Created)")
     void saveProjectSuccess() throws Exception {
         ProjectCreateDto request = new ProjectCreateDto("New Project", "Description");
-        ProjectResponseDto response = new ProjectResponseDto(projectId, "New Project", "Description", null, null, null);
+        ProjectResponseDto response = new ProjectResponseDto(projectId, "New Project", "Description", null, null);
 
         when(projectService.save(any(), any())).thenReturn(response);
 
@@ -68,7 +68,7 @@ class ProjectControllerTest extends BaseControllerTest {
     void updateProjectSuccess() throws Exception {
         UUID id = UUID.fromString(projectId);
         ProjectCreateDto request = new ProjectCreateDto("Updated Title", "Updated Desc");
-        ProjectResponseDto response = new ProjectResponseDto(projectId, "Updated Title", "Updated Desc", null, null, null);
+        ProjectResponseDto response = new ProjectResponseDto(projectId, "Updated Title", "Updated Desc", null, null);
 
         when(projectService.update(eq(id), any(), any())).thenReturn(response);
 
@@ -90,7 +90,7 @@ class ProjectControllerTest extends BaseControllerTest {
     @DisplayName("GET /api/v1/projects/{id} - Success")
     void getProjectByIdSuccess() throws Exception {
         UUID id = UUID.fromString(projectId);
-        ProjectResponseDto response = new ProjectResponseDto(projectId, "Found Project", "Description", null, null, null);
+        ProjectResponseDto response = new ProjectResponseDto(projectId, "Found Project", "Description", null, null);
 
         when(projectService.getById(id)).thenReturn(response);
 
@@ -117,8 +117,8 @@ class ProjectControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("GET /api/v1/projects - Success (List)")
     void getAllProjectsSuccess() throws Exception {
-        ProjectResponseDto p1 = new ProjectResponseDto(UUID.randomUUID().toString(), "Project 1", "Desc 1", null, null, null);
-        ProjectResponseDto p2 = new ProjectResponseDto(UUID.randomUUID().toString(), "Project 2", "Desc 2", null, null, null);
+        ProjectResponseDto p1 = new ProjectResponseDto(UUID.randomUUID().toString(), "Project 1", "Desc 1", null, null);
+        ProjectResponseDto p2 = new ProjectResponseDto(UUID.randomUUID().toString(), "Project 2", "Desc 2", null, null);
         List<ProjectResponseDto> projects = List.of(p1, p2);
 
         when(projectService.getAll()).thenReturn(projects);
@@ -143,8 +143,8 @@ class ProjectControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("GET /api/v1/projects/my - Success")
     void getMyProjectsSuccess() throws Exception {
-        ProjectResponseDto p1 = new ProjectResponseDto(UUID.randomUUID().toString(), "My Own Project", "Owner", null, null, null);
-        ProjectResponseDto p2 = new ProjectResponseDto(UUID.randomUUID().toString(), "Collaborator Project", "Collaborator", null, null, null);
+        ProjectResponseDto p1 = new ProjectResponseDto(UUID.randomUUID().toString(), "My Own Project", "Owner", null, null);
+        ProjectResponseDto p2 = new ProjectResponseDto(UUID.randomUUID().toString(), "Collaborator Project", "Collaborator", null, null);
         List<ProjectResponseDto> myProjects = List.of(p1, p2);
 
         when(projectService.getMyProjects(any())).thenReturn(myProjects);

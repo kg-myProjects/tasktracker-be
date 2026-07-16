@@ -32,7 +32,7 @@ import java.nio.file.Paths;
 import static de.upteams.tasktracker.user.util.UserUtils.MAX_AVATAR_SIZE;
 
 /**
- * Service for various operations with Employees
+ * Service for various operations with users
  */
 @Service
 @RequiredArgsConstructor
@@ -148,5 +148,3 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(UserNotFoundException::new);
     }
 }
-
-

@@ -4,7 +4,7 @@ import de.upteams.tasktracker.exception.handling.exceptions.common.RestApiExcept
 import org.springframework.http.HttpStatus;
 
 /**
- * Exception that throws when some problem occurs during Employee registration
+ * Exception that throws when some problem occurs during user registration
  */
 public class UserConfirmationException extends RestApiException {
 

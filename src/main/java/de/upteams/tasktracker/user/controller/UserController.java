@@ -13,14 +13,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 /**
- * REST Controller that receives http-requests for various operations with Employees
+ * REST Controller that receives http-requests for various operations with users
  */
 @RestController
 @RequiredArgsConstructor
 public class UserController implements UserApi {
 
     /**
-     * Service for various operations with Employees
+     * Service for various operations with users
      */
     private final UserService service;
 
@@ -28,7 +28,6 @@ public class UserController implements UserApi {
     public List<UserResponseDto> getAll() {
         return service.getAll();
     }
-
 
     @Override
     public UserDetailsDto getUserDetails() {

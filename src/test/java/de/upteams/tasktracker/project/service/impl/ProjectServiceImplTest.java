@@ -120,7 +120,7 @@ class ProjectServiceImplTest {
         mappedProject.setProjectTeam(new HashSet<>());
 
         ProjectResponseDto responseDto =
-                new ProjectResponseDto("1","Test Project","Description",null,null,null);
+                new ProjectResponseDto("1","Test Project","Description",null,null);
 
         when(mappingService.mapDtoToEntity(dto)).thenReturn(mappedProject);
         when(repository.save(mappedProject)).thenReturn(mappedProject);
@@ -165,7 +165,7 @@ class ProjectServiceImplTest {
                         projectId.toString(),
                         "New title",
                         "New description",
-                        null, null, null));
+                        null, null));
 
         ProjectResponseDto result = service.update(projectId, dto, user);
 
@@ -204,7 +204,7 @@ class ProjectServiceImplTest {
                         id.toString(),
                         "Title",
                         "Desc",
-                        null,null,null));
+                        null,null));
 
         ProjectResponseDto result = service.getById(id);
 
@@ -223,7 +223,7 @@ class ProjectServiceImplTest {
                         project.getId().toString(),
                         "Title",
                         "Desc",
-                        null,null,null));
+                        null,null));
 
         List<ProjectResponseDto> result = service.getAll();
 
@@ -266,7 +266,7 @@ class ProjectServiceImplTest {
 
         when(mappingService.mapEntityToDto(project))
                 .thenReturn(new ProjectResponseDto(
-                        "1","Title","Desc",null,null,null));
+                        "1","Title","Desc",null,null));
 
         List<ProjectResponseDto> result = service.getMyProjects(user);
 

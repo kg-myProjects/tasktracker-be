@@ -12,16 +12,30 @@ import java.util.UUID;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, UUID> {
-    @Query("SELECT DISTINCT p FROM Project p LEFT JOIN FETCH p.projectTeam c LEFT JOIN FETCH c.appUser")
+
+    @Query("""
+            SELECT DISTINCT p
+            FROM Project p
+            LEFT JOIN FETCH p.projectTeam c
+            LEFT JOIN FETCH c.appUser
+            """)
     List<Project> findAllWithTeam();
-    @Query("SELECT p FROM Project p LEFT JOIN FETCH p.projectTeam c LEFT JOIN FETCH c.appUser WHERE p.id = :id")
+
+    @Query("""
+            SELECT p
+            FROM Project p
+            LEFT JOIN FETCH p.projectTeam c
+            LEFT JOIN FETCH c.appUser
+            WHERE p.id = :id
+            """)
     Optional<Project> findByIdWithTeam(@Param("id") UUID id);
-    @Query("SELECT DISTINCT p FROM Project p " +
-            "LEFT JOIN FETCH p.projectTeam c " +
-            "LEFT JOIN FETCH p.owner " +
-            "WHERE p.owner.id = :userId OR c.appUser.id = :userId")
+
+    @Query("""
+            SELECT DISTINCT p
+            FROM Project p
+            LEFT JOIN FETCH p.projectTeam c
+            LEFT JOIN FETCH p.owner
+            WHERE p.owner.id = :userId OR c.appUser.id = :userId
+            """)
     List<Project> findAllForUser(@Param("userId") UUID userId);
-
-
-
 }
