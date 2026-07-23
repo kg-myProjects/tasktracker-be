@@ -3,6 +3,7 @@ package de.upteams.tasktracker.user.service.impl;
 import de.upteams.tasktracker.exception.handling.exceptions.avatar.AvatarProcessingException;
 import de.upteams.tasktracker.exception.handling.exceptions.avatar.InvalidAvatarFileException;
 import de.upteams.tasktracker.user.dto.request.UpdateUserDetailsDto;
+import de.upteams.tasktracker.user.dto.response.UpdateAvatarResponseDto;
 import de.upteams.tasktracker.user.dto.response.UserDetailsDto;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
 import de.upteams.tasktracker.user.entity.AppUser;
@@ -108,7 +109,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public UserDetailsDto updateAvatar(MultipartFile file) {
+    public UpdateAvatarResponseDto updateAvatar(MultipartFile file) {
 
         AppUser user = getCurrentUserOrThrow();
 
@@ -130,7 +131,10 @@ public class UserServiceImpl implements UserService {
             user.setAvatarUpdatedAt(System.currentTimeMillis());
             AppUser saved = repository.save(user);
 
-            return mappingService.mapEntityToUserDetailsDto(saved);
+            return new UpdateAvatarResponseDto(
+                    saved.getAvatarUrl(),
+                    saved.getAvatarUpdatedAt()
+            );
 
         } catch (IOException e) {
             throw new AvatarProcessingException("Failed to process avatar file on server", e);

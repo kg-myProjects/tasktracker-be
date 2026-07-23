@@ -1,6 +1,7 @@
 package de.upteams.tasktracker.user.service.interfaces;
 
 import de.upteams.tasktracker.user.dto.request.UpdateUserDetailsDto;
+import de.upteams.tasktracker.user.dto.response.UpdateAvatarResponseDto;
 import de.upteams.tasktracker.user.dto.response.UserDetailsDto;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
 import de.upteams.tasktracker.user.entity.AppUser;
@@ -28,5 +29,5 @@ public interface UserService {
 
     UserDetailsDto updateUserDetails(UpdateUserDetailsDto dto);
 
-    UserDetailsDto updateAvatar(MultipartFile file);
+    UpdateAvatarResponseDto updateAvatar(MultipartFile file);
 }

@@ -1,6 +1,7 @@
 package de.upteams.tasktracker.user.controller.api;
 
 import de.upteams.tasktracker.user.dto.request.UpdateUserDetailsDto;
+import de.upteams.tasktracker.user.dto.response.UpdateAvatarResponseDto;
 import de.upteams.tasktracker.user.dto.response.UserDetailsDto;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
 import org.springframework.http.MediaType;
@@ -22,8 +23,6 @@ public interface UserApi extends UserApiSwaggerDoc {
     @PreAuthorize("hasRole('ADMIN')")
     List<UserResponseDto> getAll();
 
-
-
     @GetMapping("/me-details")
     UserDetailsDto getUserDetails();
 
@@ -31,5 +30,5 @@ public interface UserApi extends UserApiSwaggerDoc {
     UserDetailsDto updateUserDetails(@RequestBody UpdateUserDetailsDto request);
 
     @PatchMapping(value = "/update-avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    UserDetailsDto updateAvatar(@RequestParam("file") MultipartFile file);
+    UpdateAvatarResponseDto updateAvatar(@RequestParam("file") MultipartFile file);
 }
