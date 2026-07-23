@@ -2,6 +2,7 @@ package de.upteams.tasktracker.user.controller;
 
 import de.upteams.tasktracker.user.controller.api.UserApi;
 import de.upteams.tasktracker.user.dto.request.UpdateUserDetailsDto;
+import de.upteams.tasktracker.user.dto.response.UpdateAvatarResponseDto;
 import de.upteams.tasktracker.user.dto.response.UserDetailsDto;
 import de.upteams.tasktracker.user.dto.response.UserResponseDto;
 import de.upteams.tasktracker.user.service.interfaces.UserService;
@@ -40,7 +41,7 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public UserDetailsDto updateAvatar(MultipartFile file) {
+    public UpdateAvatarResponseDto updateAvatar(MultipartFile file) {
         return service.updateAvatar(file);
     }
 }
