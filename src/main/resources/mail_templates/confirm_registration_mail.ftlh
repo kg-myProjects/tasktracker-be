@@ -8,42 +8,38 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #020617;
+            background-color: #0D1117;
+            font-family: "Segoe UI", Arial, sans-serif;
         }
 
         .outer-table {
             width: 100%;
-	        height: 100%;
-   	        min-height: 100vh;
-            background-color: #020617;
-            background-image: url('https://tracker-app.online/background.png');
-            background-size: cover;
-            background-position: center;
+            background-color: #0D1117;
+            border-spacing: 0;
         }
 
         .outer-td {
             padding: 75px 20px 75px 20px;
-            background-color: rgba(2, 6, 23, 0.75);
+            background-color: #0D1117;
         }
 
         .container {
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
-            background-color: #1e293b;
-            border-radius: 10px;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border: 2px solid #06b6d433;
+            box-shadow: 0 2px 4px #0E7490;
+            border: 2px solid #0E7490;
             border-collapse: separate;
+            border-spacing: 0;
         }
 
         .header {
-            background: linear-gradient(90deg, #0f172a 0%, #083344 50%, #0f172a 100%);
+            background: linear-gradient(90deg, #0D1117 0%, #0E7490 50%, #0D1117 100%);
             padding: 20px;
             text-align: center;
-            font-family: Arial, sans-serif;
-            border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+            border-bottom: 1px solid #06B6D433;
             border-radius: 8px 8px 0 0;
         }
 
@@ -51,25 +47,24 @@
             margin: 0 0 8px 0;
             font-size: 24px;
             text-transform: uppercase;
-            color: #22d3ee;
+            color: #22D3EE;
         }
 
         .content {
-            background-color: rgba(2, 6, 23, 0.9);
+            background-color: #161B22;
             padding: 20px;
-            font-family: Arial, sans-serif;
-            color: #9ca3af;
+            color: #9CA3AF;
             font-size: 16px;
             line-height: 1.5;
         }
 
         .content h2 {
             margin: 0;
-            color: #9ca3af;
+            color: #9CA3AF;
         }
 
         .content a {
-            color: #22d3ee;
+            color: #22D3EE;
             text-decoration: underline;
         }
 
@@ -79,11 +74,11 @@
             font-weight: 900;
             letter-spacing: -1px;
             color: #ffffff;
-            text-shadow: 0 0 10px rgba(6, 182, 212, 1);
+            text-shadow: 0 0 10px #06B6D4;
         }
 
         .logo-accent {
-            color: #22d3ee;
+            color: #22D3EE;
         }
 
         .button-wrapper {
@@ -93,24 +88,22 @@
 
         .button {
             display: inline-block;
-            background-color: #06b6d4;
+            background-color: #0E7490;
             color: #ffffff !important;
             text-decoration: none !important;
             padding: 10px 16px;
-            border-radius: 12px;
+            border-radius: 5px;
             font-weight: bold;
             font-size: 14px;
             line-height: 20px;
-            font-family: Arial, sans-serif;
         }
 
         .footer {
-            background: linear-gradient(90deg, #0f172a 0%, #083344 50%, #0f172a 100%);
+            background: linear-gradient(90deg, #0D1117 0%, #0E7490 50%, #0D1117 100%);
             padding: 20px;
             text-align: center;
-            font-family: Arial, sans-serif;
             font-size: 12px;
-            color: #22d3ee;
+            color: #22D3EE;
             border-radius: 0 0 8px 8px;
         }
     </style>
@@ -118,7 +111,7 @@
     <body>
         <table class="outer-table">
             <tr>
-                <td class="outer-td">
+                <td class="outer-td" align="center">
                     <table class="container">
                     <tr>
                         <td class="header">
